@@ -19,6 +19,11 @@ import {parseDirectiveNode} from "./src/plugins/remark-directive-rehype.js";
 import { remarkReadingTime } from "./src/plugins/remark-reading-time.mjs"
 import {remarkExcerpt} from "./src/plugins/remark-excerpt.js";
 
+
+
+import remarkToc from "remark-toc"
+
+
 const oklchToHex = (str) => {
   const DEFAULT_HUE = 250
   const regex = /-?\d+(\.\d+)?/g
@@ -41,7 +46,7 @@ export default defineConfig({
       animationClass: 'transition-swup-',   // see https://swup.js.org/options/#animationselector
                                             // the default value `transition-` cause transition delay
                                             // when the Tailwind class `transition-all` is used
-      containers: ['main'],
+      containers: ['main','#toc'],
       smoothScrolling: true,
       cache: true,
       preload: true,
@@ -69,7 +74,7 @@ export default defineConfig({
     }),
   ],
   markdown: {
-    remarkPlugins: [remarkMath, remarkReadingTime, remarkExcerpt, remarkGithubAdmonitionsToDirectives, remarkDirective, parseDirectiveNode],
+    remarkPlugins: [remarkMath, remarkReadingTime, remarkDirective, parseDirectiveNode, [remarkToc,]],
     rehypePlugins: [
       rehypeKatex,
       rehypeSlug,
