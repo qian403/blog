@@ -21,8 +21,6 @@ import {remarkExcerpt} from "./src/plugins/remark-excerpt.js";
 
 
 
-import remarkToc from "remark-toc"
-
 
 const oklchToHex = (str) => {
   const DEFAULT_HUE = 250
@@ -74,7 +72,7 @@ export default defineConfig({
     }),
   ],
   markdown: {
-    remarkPlugins: [remarkMath, remarkReadingTime, remarkDirective, parseDirectiveNode, [remarkToc,]],
+    remarkPlugins: [remarkMath, remarkReadingTime, remarkExcerpt, remarkGithubAdmonitionsToDirectives, remarkDirective, parseDirectiveNode],
     rehypePlugins: [
       rehypeKatex,
       rehypeSlug,
