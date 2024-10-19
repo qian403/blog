@@ -1,7 +1,7 @@
 ---
 title: better-nano小腳本
 published: 2024-05-06
-description: ''
+description: '一個優化nano的小小腳本'
 image: ''
 tags: [nano]
 category: 'Linux'
