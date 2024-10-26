@@ -375,6 +375,13 @@ const setup = () => {
 			heightExtend.classList.remove('hidden')
 		}
 	});
+		// Hide the TOC while scrolling back to top
+		let toc = document.getElementById('toc-wrapper');
+		if (toc) {
+			toc.classList.add('toc-not-ready')
+		}
+
+
 	window.swup.hooks.on('page:view', () => {
 		// hide the temp high element when the transition is done
 		const heightExtend = document.getElementById('page-height-extend')
@@ -384,9 +391,15 @@ const setup = () => {
 	});
 	window.swup.hooks.on('visit:end', (visit: {to: {url: string}}) => {
 		// execute 1s later
-		const heightExtend = document.getElementById('page-height-extend')
-		if (heightExtend) {
-			heightExtend.classList.add('hidden')
+		setTimeout(() => {
+			const heightExtend = document.getElementById('page-height-extend')
+			if (heightExtend) {
+				heightExtend.classList.add('hidden')
+			}
+		}, 200)
+		const toc = document.getElementById('toc-wrapper');
+		if (toc) {
+			toc.classList.remove('toc-not-ready')
 		}
 	});
 }
@@ -395,6 +408,7 @@ if (window?.swup?.hooks) {
 } else {
 	document.addEventListener('swup:enable', setup)
 }
+let toc = document.getElementById('toc-wrapper');
 
 let backToTopBtn = document.getElementById('back-to-top-btn');
 let navbar = document.getElementById('navbar-wrapper')
@@ -405,6 +419,14 @@ function scrollFunction() {
 		} else {
 			backToTopBtn.classList.add('hide')
 		}
+		if (toc) {
+		if (document.body.scrollTop > 600 || document.documentElement.scrollTop > 600) {
+			toc.classList.remove('toc-hide')
+		} else {
+			toc.classList.add('toc-hide')
+		}
+	}
+
 	}
 
 	if (!bannerEnabled) return
