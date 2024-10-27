@@ -84,7 +84,7 @@ Chain OUTPUT (policy ACCEPT)
 target     prot opt source               destination 
 ```
 # 結論
-這樣就完成了，這樣就可以限制特定IP範圍訪問80Port了，這樣就可以達到一個類似Cloudflare Zero Trust的效果了
+這樣就完成了，這樣就可以限制特定IP範圍訪問80Port了，這樣就可以達到一個類似Cloudflare Zero Trust的效果了，另外在下規則之前記得先看一下，不然會把自己擋在外面，~~親身經歷~~。
 # 參考
 - [Cloudflare IP範圍](https://www.cloudflare.com/zh-tw/ips/)
 - [Cloudflare IP範圍](https://www.cloudflare.com/ips-v4/#)
