@@ -3,10 +3,11 @@ import GlobalStyles from '@components/GlobalStyles.astro'
 import '@fontsource/roboto/400.css'
 import '@fontsource/roboto/500.css'
 import '@fontsource/roboto/700.css'
-import ImageWrapper from '@components/misc/ImageWrapper.astro'
-
 import { profileConfig, siteConfig } from '@/config'
 import ConfigCarrier from '@components/ConfigCarrier.astro'
+import ImageWrapper from '@components/misc/ImageWrapper.astro'
+import { Fathom } from 'astro-analytics' /// add  analytics 功能
+import { Umami } from 'astro-umami-analytics'
 import {
   AUTO_MODE,
   DARK_MODE,
@@ -16,7 +17,6 @@ import {
 import { defaultFavicons } from '../constants/icon'
 import type { Favicon } from '../types/config'
 import { url, pathsEqual } from '../utils/url-utils'
-import { Umami } from "astro-umami-analytics";
 interface Props {
   title?: string
   banner?: string
@@ -61,12 +61,12 @@ if (!lang) {
 const siteLang = lang.replace('_', '-')
 
 const bannerOffsetByPosition = {
-	'top': '30vh',
-	'center': '15vh',
-	'bottom': '0'
+  top: '30vh',
+  center: '15vh',
+  bottom: '0',
 }
-const bannerOffset = bannerOffsetByPosition[siteConfig.banner.position || 'center']
-
+const bannerOffset =
+  bannerOffsetByPosition[siteConfig.banner.position || 'center']
 ---
 
 <!DOCTYPE html>
@@ -74,7 +74,7 @@ const bannerOffset = bannerOffsetByPosition[siteConfig.banner.position || 'cente
 	  data-overlayscrollbars-initialize
 >
 	<head>
-
+		<Umami id="6a2b071d-cea3-4ec1-beb9-e35481368db3" src="https://cloud.umami.is/script.js"/>
 		<title>{pageTitle}</title>
 
 		<meta charset="UTF-8" />
