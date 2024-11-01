@@ -16,7 +16,7 @@ import {
 import { defaultFavicons } from '../constants/icon'
 import type { Favicon } from '../types/config'
 import { url, pathsEqual } from '../utils/url-utils'
-
+import { Umami } from "astro-umami-analytics";
 interface Props {
   title?: string
   banner?: string
@@ -90,7 +90,8 @@ const bannerOffset = bannerOffsetByPosition[siteConfig.banner.position || 'cente
         ) : (
         <meta property="og:type" content="website" />
         )}
-
+		<!-- Umami 功能-->
+		<Umami id="6a2b071d-cea3-4ec1-beb9-e35481368db3" />
 		<meta name="twitter:card" content="summary_large_image">
 		<meta property="twitter:url" content={Astro.url}>
 		<meta name="twitter:title" content={pageTitle}>
