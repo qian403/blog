@@ -1,5 +1,5 @@
 ---
-title: 使用 iptables 限制特定 IP 範圍訪問80Port
+title: 快速實驗使用 iptables 限制特定 IP 範圍訪問80Port
 published: 2024-10-27
 description: '這是一篇紀錄使用 iptables 限制特定 IP 範圍訪問80Port的文章'
 image: ''
