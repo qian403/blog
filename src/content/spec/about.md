@@ -6,6 +6,7 @@ AS215934
  - Discord: qian_30
  - Email: qian@qian30.net
  - Telegram: @qian50
+ - [Instagram: @qian40_](https://www.instagram.com/qian40_?igsh=emg0Y3U1N3FnZHpu&utm_source=qr)
 
 ## Skills
  - Linux
