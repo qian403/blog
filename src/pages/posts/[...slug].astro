@@ -40,7 +40,9 @@ const jsonLd = {
     url: Astro.site,
   },
   datePublished: formatDateToYYYYMMDD(entry.data.published),
-  inLanguage: (entry.data.lang ? entry.data.lang.replace('_', '-') : siteConfig.lang.replace('_', '-')),
+  inLanguage: entry.data.lang
+    ? entry.data.lang.replace('_', '-')
+    : siteConfig.lang.replace('_', '-'),
   // TODO include cover image here
 }
 ---
@@ -128,6 +130,24 @@ const jsonLd = {
             </div>}
         </a>
     </div>
+
+
+    <script src="https://giscus.app/client.js"
+    data-repo="qian403/giscus"
+    data-repo-id="R_kgDOOBkIWg"
+    data-category="General"
+    data-category-id="DIC_kwDOOBkIWs4CndjZ"
+    data-mapping="url"
+    data-strict="0"
+    data-reactions-enabled="1"
+    data-emit-metadata="0"
+    data-input-position="bottom"
+    data-theme="preferred_color_scheme"
+    data-lang="zh-TW"
+    crossorigin="anonymous"
+    async>
+</script>
+
 
 </MainGridLayout>
 
