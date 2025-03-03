@@ -1,21 +1,20 @@
 ---
-import MainGridLayout from '../layouts/MainGridLayout.astro'
 import { getEntry } from 'astro:content'
 import Markdown from '@components/misc/Markdown.astro'
 import I18nKey from '../i18n/i18nKey'
 import { i18n } from '../i18n/translation'
+import MainGridLayout from '../layouts/MainGridLayout.astro'
 
 // 定義你自己的連結
 const myItems = [
   {
     title: '工具網站',
-    imgurl: 'http://localhost:4321/_image?href=%2F%40fs%2FD%3A%2Fqian%2Fqianowo%2Fweb%2Fblog%2Fsrc%2Fassets%2Fimages%2Fme.png%3ForigWidth%3D600%26origHeight%3D600%26origFormat%3Dpng&f=webp',
+    imgurl:
+      'http://localhost:4321/_image?href=%2F%40fs%2FD%3A%2Fqian%2Fqianowo%2Fweb%2Fblog%2Fsrc%2Fassets%2Fimages%2Fme.png%3ForigWidth%3D600%26origHeight%3D600%26origFormat%3Dpng&f=webp',
     desc: '一個小小的工具網站專案，用來練習前端，Vue建立',
     siteurl: 'https://tools.qian30.net',
     tags: ['專案'],
   },
-
-
 ]
 
 // 如果友站連結內容來自內容檔案，你可以使用 getEntry；這裡示範直接定義友站連結
@@ -26,6 +25,13 @@ const friendItems = [
     imgurl: 'https://blog.bob0623.net/_astro/avatar.BCKyvhet_ZvdnjX.webp',
     desc: '高中學長bob的Blog',
     siteurl: 'https://blog.bob0623.net/',
+    tags: ['朋友!'],
+  },
+  {
+    title: '呂老闆',
+    imgurl: 'https://ricky.place/images/profile.jpg',
+    desc: '呂大老闆',
+    siteurl: 'https://ricky.place/',
     tags: ['朋友!'],
   },
 ]
