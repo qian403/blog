@@ -131,23 +131,67 @@ const jsonLd = {
         </a>
     </div>
 
-
     <script src="https://giscus.app/client.js"
-    data-repo="qian403/giscus"
-    data-repo-id="R_kgDOOBkIWg"
-    data-category="General"
-    data-category-id="DIC_kwDOOBkIWs4CndjZ"
-    data-mapping="url"
-    data-strict="0"
-    data-reactions-enabled="1"
-    data-emit-metadata="0"
-    data-input-position="bottom"
-    data-theme="preferred_color_scheme"
-    data-lang="zh-TW"
-    crossorigin="anonymous"
-    async>
-</script>
+        data-repo="qian403/giscus"
+        data-repo-id="R_kgDOOBkIWg"
+        data-category="General"
+        data-category-id="DIC_kwDOOBkIWs4CndjZ"
+        data-mapping="url"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="light"
+        data-lang="zh-TW"
+        crossorigin="anonymous"
+        async>
+    </script>
 
+    <!-- Giscus 主題切換腳本 -->
+    <script is:inline>
+        const updateGiscusTheme = () => {
+            const isDarkMode = document.documentElement.classList.contains('dark');
+            const theme = isDarkMode ? 'dark' : 'light';
+            
+            const giscusFrame = document.querySelector('iframe.giscus-frame');
+            if (giscusFrame) {
+                giscusFrame.contentWindow.postMessage(
+                    { giscus: { setConfig: { theme } } },
+                    'https://giscus.app'
+                );
+            }
+        };
+
+        // 在 giscus 載入後更新主題
+        window.addEventListener('load', () => {
+            // 等待 giscus iframe 加載完成
+            const checkGiscusLoaded = setInterval(() => {
+                const giscusFrame = document.querySelector('iframe.giscus-frame');
+                if (giscusFrame) {
+                    clearInterval(checkGiscusLoaded);
+                    updateGiscusTheme();
+                }
+            }, 300);
+            
+            // 5秒後停止檢查，避免無限循環
+            setTimeout(() => clearInterval(checkGiscusLoaded), 5000);
+        });
+
+        // 監聽深色模式變化
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (
+                    mutation.type === 'attributes' && 
+                    mutation.attributeName === 'class' &&
+                    (mutation.target === document.documentElement)
+                ) {
+                    updateGiscusTheme();
+                }
+            });
+        });
+
+        observer.observe(document.documentElement, { attributes: true });
+    </script>
 
 </MainGridLayout>
 
