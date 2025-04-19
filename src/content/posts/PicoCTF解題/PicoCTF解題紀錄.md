@@ -1,8 +1,8 @@
 ---
-title: 'PicoCTF Web Exploitation 解題紀錄'
+title: 'PicoCTF Web Exploitation Easy分級解題紀錄'
 published: 2025-04-19
 lastUpdated: '2025-04-20 04:00'
-description: '紀錄一點web解題'
+description: '紀錄一點算簡單的CTF解題'
 image: ''
 tags: [PicoCTF, Web Exploitation, CTF, 網路安全]
 category: '資安'
@@ -15,6 +15,7 @@ lang: ''
 
 
 ## SSTI1
+
 首先你會看到一個酷酷的網站，有一個輸入框，你會發現不論輸入啥他都會顯示在頁面上，我們可以試試看輸入```{{7*7}}```  會得到什麼
 <img src="https://i.imgur.com/mbFg62p.png" width="300" height="200" />
 沒錯!一個大大的49，這就是一個SSTI的漏洞，這個漏洞可以讓我們執行python的程式碼，接下來我們可以試試看```{{7*7*7*7}}``` 會得到什麼
