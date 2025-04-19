@@ -3,9 +3,8 @@ title: 有人自己洩漏註記詞?
 published: 2024-10-19
 description: '網路上說不玩了要送註記詞跟USDT??'
 image: ''
-tags: [web3, wallet,crypto]
+tags: [web3, wallet,crypto,SCAM]
 category: 'crypto'
-
 draft: false 
 lang: ''
 ---

@@ -18,7 +18,7 @@ import { GithubCardComponent } from "./src/plugins/rehype-component-github-card.
 import {parseDirectiveNode} from "./src/plugins/remark-directive-rehype.js";
 import { remarkReadingTime } from "./src/plugins/remark-reading-time.mjs"
 import {remarkExcerpt} from "./src/plugins/remark-excerpt.js";
-
+import remarkSpoiler from './src/plugins/remarkSpoiler.js';
 
 
 
@@ -31,6 +31,8 @@ const oklchToHex = (str) => {
     format: "hex",
   })
 }
+
+
 
 // https://astro.build/config
 export default defineConfig({
@@ -72,7 +74,7 @@ export default defineConfig({
     }),
   ],
   markdown: {
-    remarkPlugins: [remarkMath, remarkReadingTime, remarkExcerpt, remarkGithubAdmonitionsToDirectives, remarkDirective, parseDirectiveNode],
+    remarkPlugins: [remarkMath, remarkReadingTime, remarkExcerpt, remarkGithubAdmonitionsToDirectives, remarkDirective, parseDirectiveNode,remarkSpoiler ],
     rehypePlugins: [
       rehypeKatex,
       rehypeSlug,
