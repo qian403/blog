@@ -8,7 +8,7 @@ import { Icon } from 'astro-icon/components'
 import { siteConfig } from '../config'
 import type { MarkdownHeading } from 'astro'
 import TOC from "../components/widget/TOC.astro";
-
+import UmamiAnalytics from '../components/UmamiAnalytics.astro';
 interface Props {
   title?: string
   banner?: string
@@ -31,7 +31,7 @@ const hasBannerLink = !!siteConfig.banner.credit.url
         <Navbar></Navbar>
     </div>
 </div>
-
+<UmamiAnalytics />
 <div class="absolute w-full" class:list={[{"top-[30vh]": siteConfig.banner.enable, "top-[5.5rem]": !siteConfig.banner.enable}]}>
     <div class="relative max-w-[var(--page-width)] mx-auto">
         <div id="main-grid" class="transition duration-700 w-full left-0 right-0 grid grid-cols-[17.5rem_auto] grid-rows-[auto_1fr_auto] lg:grid-rows-[auto]
