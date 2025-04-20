@@ -12,6 +12,7 @@ lang: ''
 
 
 # 在 Astro 上各種胡搞瞎搞
+紀錄一下我的一些胡搞瞎搞
 
 ## 在文章中加入防雷海苔功能
 ### 🔧 步驟 1：建立自訂 remark 插件
@@ -127,3 +128,83 @@ remarkPlugins: [remarkMath, remarkReadingTime, remarkExcerpt, remarkGithubAdmoni
 這是一段正常文字，其中包含 <span class="spoiler">這是防雷內容</span>，滑過才能看到。
 ```
 ||這是效果||
+
+
+## 在頁腳處新增網站存在時間
+先看效果
+![image](https://i.imgur.com/ZFUZZMh.png)
+
+### 🔧1.先創建時間的組件
+新增一個檔案```src/components/SiteRuntime.astro```
+```astro
+---
+
+const startDate = new Date('2023-01-01') // 替換為您的網站實際上線日期
+---
+
+<div id="site-runtime" class="text-sm opacity-75 dark:text-white text-black">
+  網站已運行：<span id="runtime-counter">計算中...</span>
+</div>
+
+<script>
+  function updateRuntime() {
+    const startDate = new Date('2023-01-01'); // 替換為您的網站實際上線日期
+    const currentDate = new Date();
+    
+
+    const timeDiff = currentDate.getTime() - startDate.getTime();
+    
+    let seconds = Math.floor(timeDiff / 1000);
+    let minutes = Math.floor(seconds / 60);
+    let hours = Math.floor(minutes / 60);
+    let days = Math.floor(hours / 24);
+    
+    const years = Math.floor(days / 365);
+    const months = Math.floor((days % 365) / 30);
+    days = days % 30;
+    hours = hours % 24;
+    minutes = minutes % 60;
+    seconds = seconds % 60;
+    
+    let runtimeText = '';
+    
+    if (years > 0) {
+      runtimeText += `${years} 年 `;
+    }
+    
+    if (months > 0 || years > 0) {
+      runtimeText += `${months} 個月 `;
+    }
+    
+    runtimeText += `${days} 天 ${hours} 時 ${minutes} 分 ${seconds} 秒`;
+    
+    document.getElementById('runtime-counter').textContent = runtimeText;
+  }
+  
+  updateRuntime();
+  setInterval(updateRuntime, 1000);
+</script>
+```
+### ⚙️2. 在頁腳引入這個組件
+可能是在 ```src\layouts\MainGridLayout.astro```中
+```astro
+---
+import SiteRuntime from '../components/SiteRuntime.astro';
+// 其他導入...
+---
+
+<!-- 您的頁腳部分 -->
+<footer class="mt-8 py-6 border-t border-gray-200 dark:border-gray-700">
+  <div class="container mx-auto px-4">
+    <div class="flex flex-col items-center justify-center text-center">
+      <div class="mb-2">
+        <SiteRuntime />
+      </div>
+      <div class="text-sm opacity-75 dark:text-white text-black">
+        © {new Date().getFullYear()} qian. All Rights Reserved.
+      </div>
+    </div>
+  </div>
+</footer>
+```
+
