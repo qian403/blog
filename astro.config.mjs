@@ -18,9 +18,8 @@ import { GithubCardComponent } from "./src/plugins/rehype-component-github-card.
 import {parseDirectiveNode} from "./src/plugins/remark-directive-rehype.js";
 import { remarkReadingTime } from "./src/plugins/remark-reading-time.mjs"
 import {remarkExcerpt} from "./src/plugins/remark-excerpt.js";
-import remarkSpoiler from './src/plugins/remarkSpoiler.js';
-
-
+import remarkSpoiler from './src/plugins/remarkSpoiler.js'; //防雷海苔
+import remarkImageWidth from './src/plugins/remark-image-width.js' //圖片調整大小
 
 const oklchToHex = (str) => {
   const DEFAULT_HUE = 250
@@ -74,7 +73,7 @@ export default defineConfig({
     }),
   ],
   markdown: {
-    remarkPlugins: [remarkMath, remarkReadingTime, remarkExcerpt, remarkGithubAdmonitionsToDirectives, remarkDirective, parseDirectiveNode,remarkSpoiler ],
+    remarkPlugins: [remarkMath, remarkReadingTime, remarkExcerpt, remarkGithubAdmonitionsToDirectives, remarkDirective, parseDirectiveNode,remarkSpoiler,remarkImageWidth, ],
     rehypePlugins: [
       rehypeKatex,
       rehypeSlug,

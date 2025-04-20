@@ -7,18 +7,26 @@ import Layout from './Layout.astro'
 import { Icon } from 'astro-icon/components'
 import { siteConfig } from '../config'
 import type { MarkdownHeading } from 'astro'
-import TOC from "../components/widget/TOC.astro";
-import UmamiAnalytics from '../components/UmamiAnalytics.astro';
+import TOC from '../components/widget/TOC.astro'
+import UmamiAnalytics from '../components/UmamiAnalytics.astro' //Umami Analytics
+import SiteRuntime from '../components/SiteRuntime.astro' // Site runtime
 interface Props {
   title?: string
   banner?: string
   description?: string
   lang?: string
-  setOGTypeArticle?: boolean;
-  headings? : MarkdownHeading[]
+  setOGTypeArticle?: boolean
+  headings?: MarkdownHeading[]
 }
 
-const { title, banner, description, lang, setOGTypeArticle, headings = [] } = Astro.props
+const {
+  title,
+  banner,
+  description,
+  lang,
+  setOGTypeArticle,
+  headings = [],
+} = Astro.props
 const hasBannerCredit =
   siteConfig.banner.enable && siteConfig.banner.credit.enable
 const hasBannerLink = !!siteConfig.banner.credit.url
@@ -79,6 +87,18 @@ const hasBannerLink = !!siteConfig.banner.credit.url
                 </div>
             </div>
         </div> -->
+        <footer class="mt-8 py-6 border-t border-gray-200 dark:border-gray-700">
+            <div class="container mx-auto px-4">
+              <div class="flex flex-col items-center justify-center text-center">
+                <div class="mb-2">
+                  <SiteRuntime />
+                </div>
+                <div class="text-sm opacity-75 dark:text-white text-black">
+                  © {new Date().getFullYear()} qian. All Rights Reserved.
+                </div>
+              </div>
+            </div>
+          </footer>
         <BackToTop></BackToTop>
     </div>
 </div>
