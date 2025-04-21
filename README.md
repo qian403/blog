@@ -64,17 +64,20 @@ All commands are run from the root of the project, from a terminal:
 
 
 ## 我的commit message規範
-Emoji | 分類 | 用途說明
-✨ | Feature | 新功能、新頁面、新元件
-🐛 | Fix | Bug 修正
-♻️ | Refactor | 重構、優化程式碼（功能未變）
-💄 | UI | UI 調整、樣式更新
-📝 | Docs | 文件或註解的變更
-🔧 | Chore | 工具設定調整、建構流程更新
-🚀 | Deploy | 部署相關變更
-✅ | Test | 增加或修改測試
-⬆️ | Upgrade | 套件升級
-⬇️ | Downgrade | 套件降級或回退
+
+| Emoji | 分類       | 用途說明                        |
+|-------|------------|---------------------------------|
+| ✨     | Feature    | 新功能、新頁面、新元件          |
+| 🐛     | Fix        | Bug 修正                        |
+| ♻️     | Refactor   | 重構、優化程式碼（功能未變）    |
+| 💄     | UI         | UI 調整、樣式更新               |
+| 📝     | Docs       | 文件或註解的變更                |
+| 🔧     | Chore      | 工具設定調整、建構流程更新      |
+| 🚀     | Deploy     | 部署相關變更                    |
+| ✅     | Test       | 增加或修改測試                  |
+| ⬆️     | Upgrade    | 套件升級                        |
+| ⬇️     | Downgrade  | 套件降級或回退                  |
+
 
 ```md
 [emoji 修正類別] 簡短描述你做了什麼
