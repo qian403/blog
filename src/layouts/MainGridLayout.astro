@@ -3,13 +3,13 @@ import Footer from '@components/Footer.astro'
 import Navbar from '@components/Navbar.astro'
 import BackToTop from '@components/control/BackToTop.astro'
 import SideBar from '@components/widget/SideBar.astro'
-import Layout from './Layout.astro'
-import { Icon } from 'astro-icon/components'
-import { siteConfig } from '../config'
 import type { MarkdownHeading } from 'astro'
-import TOC from '../components/widget/TOC.astro'
-import UmamiAnalytics from '../components/UmamiAnalytics.astro' //Umami Analytics
+import { Icon } from 'astro-icon/components'
 import SiteRuntime from '../components/SiteRuntime.astro' // Site runtime
+import UmamiAnalytics from '../components/UmamiAnalytics.astro' //Umami Analytics
+import TOC from '../components/widget/TOC.astro'
+import { siteConfig } from '../config'
+import Layout from './Layout.astro'
 interface Props {
   title?: string
   banner?: string
@@ -94,7 +94,7 @@ const hasBannerLink = !!siteConfig.banner.credit.url
                   <SiteRuntime />
                 </div>
                 <div class="text-sm opacity-75 dark:text-white text-black">
-                  © {new Date().getFullYear()} qian. All Rights Reserved.
+                  
                 </div>
               </div>
             </div>
