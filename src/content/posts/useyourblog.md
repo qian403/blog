@@ -201,7 +201,7 @@ import SiteRuntime from '../components/SiteRuntime.astro';
         <SiteRuntime />
       </div>
       <div class="text-sm opacity-75 dark:text-white text-black">
-        © {new Date().getFullYear()} qian. All Rights Reserved.
+      
       </div>
     </div>
   </div>
