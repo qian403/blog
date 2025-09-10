@@ -36,4 +36,5 @@ export const zh_TW: Translation = {
   [Key.publishedAt]: '發佈於',
   [Key.license]: '許可協議',
   [Key.links]: '連結',
+  [Key.moments]: '動態',
 }
