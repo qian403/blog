@@ -1,9 +1,9 @@
 ---
-title: Markdown 是什麼!
+title: Markdown 完整教學指南:語法、範例與實用技巧一次掌握
 published: 2025-07-23
-description: '解釋還有示範Markdown語法'
+description: '從基礎到進階的 Markdown 完整教學!包含標題、列表、表格、程式碼區塊、數學公式等等的語法範例。適合部落格撰寫、README 文件、筆記軟體使用者學習,讓你 10 分鐘快速上手 Markdown 輕量級標記語言。'
 image: ''
-tags: [Markdown]
+tags: [Markdown, 教學, 語法]
 category: 'Markdown'
 draft: false 
 lang: 'zh-TW'
@@ -157,13 +157,13 @@ print("Hello, World!")
 #### 表格對齊
 ```markdown
 | 左對齊 | 置中對齊 | 右對齊 |
-| :--- | :---: | ---: |
-| 內容 | 內容 | 內容 |
+| :----- | :------: | -----: |
+| 內容   |   內容   |   內容 |
 ```
 
 | 左對齊 | 置中對齊 | 右對齊 |
-| :--- | :---: | ---: |
-| 內容 | 內容 | 內容 |
+| :----- | :------: | -----: |
+| 內容   |   內容   |   內容 |
 
 ### 分隔線
 
