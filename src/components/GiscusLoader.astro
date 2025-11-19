@@ -36,6 +36,9 @@ const reactionsEnabled = giscusConfig.reactionsEnabled ? '1' : '0'
     const categoryId = giscusDiv.getAttribute('data-category-id')
     const reactionsEnabled = giscusDiv.getAttribute('data-reactions-enabled')
     const theme = document.documentElement.getAttribute('data-theme')
+    
+    console.log('Giscus config:', { origin, repo, repoId, category, categoryId, theme })
+    
     if (
       !origin ||
       !repo ||
@@ -45,6 +48,7 @@ const reactionsEnabled = giscusConfig.reactionsEnabled ? '1' : '0'
       !reactionsEnabled ||
       !theme
     ) {
+      console.error('Missing config:', { origin, repo, repoId, category, categoryId, reactionsEnabled, theme })
       throw new Error('Giscus configuration missing in the Giscus div.')
     }
     const script = document.createElement('script')
@@ -53,18 +57,23 @@ const reactionsEnabled = giscusConfig.reactionsEnabled ? '1' : '0'
     script.setAttribute('data-repo-id', repoId)
     script.setAttribute('data-category', category)
     script.setAttribute('data-category-id', categoryId)
-    script.setAttribute('data-mapping', 'pathname')
+    script.setAttribute('data-mapping', 'url')
     script.setAttribute('data-strict', '0')
     script.setAttribute('data-reactions-enabled', reactionsEnabled)
     script.setAttribute('data-emit-metadata', '0')
     // Setting this to 'bottom' doesn't work. Not sure why.
     script.setAttribute('data-input-position', 'top')
     script.setAttribute('data-theme', `${origin}/giscus/${theme}.css`)
-    script.setAttribute('data-lang', 'en')
+    script.setAttribute('data-lang', 'zh-TW')
     script.setAttribute('loading', 'lazy')
     script.crossOrigin = 'anonymous'
     script.async = true
-    document.body.appendChild(script)
+    
+    console.log('Loading Giscus with theme:', `${origin}/giscus/${theme}.css`)
+    console.log('Mapping path:', window.location.pathname)
+    
+    // Append script to the giscus div, not to document.body
+    giscusDiv.appendChild(script)
   }
   async function updateTheme(theme: string) {
     console.log('Updating Giscus theme to:', theme)
