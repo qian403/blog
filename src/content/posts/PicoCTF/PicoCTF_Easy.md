@@ -2,7 +2,7 @@
 title: 'PicoCTF Web Exploitation Easy分級解題紀錄'
 published: 2025-04-19
 lastUpdated: '2025-04-20 04:00'
-description: '紀錄一點算簡單的CTF解題'
+description: '紀錄 PicoCTF Web Exploitation Easy分級的解題過程與心得'
 image: ''
 tags: [PicoCTF, Web Exploitation, CTF, 網路安全]
 category: '資安'
