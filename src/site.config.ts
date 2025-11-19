@@ -179,7 +179,7 @@ const config: SiteConfig = {
   giscus: {
     repo: 'qian403/giscus',
     repoId: 'R_kgDOOBkIWg',
-    category: 'Announcements',
+    category: 'General',
     categoryId: 'DIC_kwDOOBkIWs4CndjY',
     reactionsEnabled: true, // Enable reactions on post itself
   },
