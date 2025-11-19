@@ -154,6 +154,19 @@ let generatedCss: string = cssLines.join('\n')
     {themeMode === 'light-dark-auto' && <LightDarkAutoThemeLoader />}
     {themeMode === 'select' && <SelectThemeLoader />}
     <script src="~/scripts/spoiler.ts"></script>
+    
+    <!-- Analytics: Umami -->
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="6a2b071d-cea3-4ec1-beb9-e35481368db3"></script>
+    
+    <!-- Analytics: Google Analytics -->
+    <!-- 請將 G-XXXXXXXXXX 替換為您的 GA4 Measurement ID -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-7KC0HFNDJ4"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-7KC0HFNDJ4');
+    </script>
   </head>
   <body class="w-full h-full m-0 bg-background text-foreground">
     <div
