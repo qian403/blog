@@ -1,0 +1,103 @@
+---
+import Layout from '~/layouts/Layout.astro'
+import PageHeader from '~/components/PageHeader.astro'
+import GiscusLoader from '~/components/GiscusLoader.astro'
+import DividerText from '~/components/DividerText.astro'
+import siteConfig from '~/site.config'
+
+// 友站連結資料
+const friendLinks = [
+  {
+    name: '高中學長的Blog',
+    avatar: 'https://avatars.githubusercontent.com/u/84854334?v=4',
+    description: '高中學長bob的Blog',
+    url: 'https://blog.bob0623.net/',
+  },
+  {
+    name: '呂老闆',
+    avatar: 'https://ricky.place/images/profile.jpg',
+    description: '呂大老闆',
+    url: 'https://ricky.place/',
+  },
+  {
+    name: '第三夏尔',
+    avatar: 'https://thirdshire.com/blackcat_avatar.jpg',
+    description: '认真生活，积极摸鱼',
+    url: 'https://thirdshire.com/',
+  },
+]
+---
+
+<Layout title="Friend Links">
+  <PageHeader>Friend Links</PageHeader>
+  <section class="max-w-2xl">
+    <div class="space-y-4 mb-8">
+      <p class="opacity-70">
+        這裡是我推薦的友站連結，歡迎交流！
+      </p>
+    </div>
+
+    <!-- 友站連結列表 -->
+    <div class="grid gap-4 md:grid-cols-2">
+      {
+        friendLinks.map((friend) => (
+          <a
+            href={friend.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="flex items-center gap-4 p-4 rounded-lg border border-separator hover:bg-accent/10 transition-colors group"
+          >
+            {friend.avatar && (
+              <img
+                src={friend.avatar}
+                alt={friend.name}
+                class="w-12 h-12 rounded-full object-cover"
+              />
+            )}
+            <div class="flex-1 min-w-0">
+              <div class="font-medium group-hover:text-accent transition-colors">
+                {friend.name}
+              </div>
+              {friend.description && (
+                <div class="text-sm opacity-70 truncate">
+                  {friend.description}
+                </div>
+              )}
+            </div>
+            <svg
+              class="w-5 h-5 opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 7l5 5m0 0l-5 5m5-5H6"
+              />
+            </svg>
+          </a>
+        ))
+      }
+    </div>
+
+    <!-- 友站申請說明 -->
+    <div class="mt-8 p-4 rounded-lg bg-accent/5 border border-separator">
+      <h3 class="font-semibold mb-2">友站申請</h3>
+      <p class="text-sm opacity-70">
+        如果你想出現在上面，歡迎在下方留言區留下你的網站資訊！
+      </p>
+    </div>
+  </section>
+
+  <!-- 留言區 -->
+  {
+    siteConfig.giscus && (
+      <section class="max-w-2xl mt-12">
+        <DividerText text="Comments" />
+        <GiscusLoader />
+      </section>
+    )
+  }
+</Layout>

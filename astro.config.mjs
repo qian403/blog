@@ -1,137 +1,82 @@
-import sitemap from '@astrojs/sitemap';
-import svelte from "@astrojs/svelte"
-import tailwind from "@astrojs/tailwind"
-import swup from '@swup/astro';
-import Compress from "astro-compress"
-import icon from "astro-icon"
-import { defineConfig } from "astro/config"
-import Color from "colorjs.io"
-import rehypeAutolinkHeadings from "rehype-autolink-headings"
-import rehypeComponents from "rehype-components"; /* Render the custom directive content */
-import rehypeKatex from "rehype-katex"
-import rehypeSlug from "rehype-slug"
-import remarkDirective from "remark-directive" /* Handle directives */
-import remarkGithubAdmonitionsToDirectives from "remark-github-admonitions-to-directives";
-import remarkMath from "remark-math"
-import { AdmonitionComponent } from "./src/plugins/rehype-component-admonition.mjs"
-import { GithubCardComponent } from "./src/plugins/rehype-component-github-card.mjs"
-import {parseDirectiveNode} from "./src/plugins/remark-directive-rehype.js";
-import { remarkReadingTime } from "./src/plugins/remark-reading-time.mjs"
-import {remarkExcerpt} from "./src/plugins/remark-excerpt.js";
-import remarkSpoiler from './src/plugins/remarkSpoiler.js'; //防雷海苔
-import remarkImageWidth from './src/plugins/remark-image-width.js' //圖片調整大小
-
-const oklchToHex = (str) => {
-  const DEFAULT_HUE = 250
-  const regex = /-?\d+(\.\d+)?/g
-  const matches = str.string.match(regex)
-  const lch = [matches[0], matches[1], DEFAULT_HUE]
-  return new Color("oklch", lch).to("srgb").toString({
-    format: "hex",
-  })
-}
-
-
+// @ts-check
+import { defineConfig } from 'astro/config'
+import tailwindcss from '@tailwindcss/vite'
+import sitemap from '@astrojs/sitemap'
+import mdx from '@astrojs/mdx'
+import { rehypeHeadingIds } from '@astrojs/markdown-remark'
+import rehypeAutolinkHeadings from 'rehype-autolink-headings'
+import expressiveCode from 'astro-expressive-code'
+import siteConfig from './src/site.config'
+import { pluginLineNumbers } from '@expressive-code/plugin-line-numbers'
+import remarkDescription from './src/plugins/remark-description' /* Add description to frontmatter */
+import remarkReadingTime from './src/plugins/remark-reading-time' /* Add reading time to frontmatter */
+import rehypeTitleFigure from './src/plugins/rehype-title-figure' /* Wraps titles in figures */
+import { remarkGithubCard } from './src/plugins/remark-github-card'
+import { fromHtmlIsomorphic } from 'hast-util-from-html-isomorphic'
+import rehypeExternalLinks from 'rehype-external-links'
+import remarkDirective from 'remark-directive' /* Handle ::: directives as nodes */
+import rehypeUnwrapImages from 'rehype-unwrap-images'
+import { remarkAdmonitions } from './src/plugins/remark-admonitions' /* Add admonitions */
+import remarkCharacterDialogue from './src/plugins/remark-character-dialogue' /* Custom plugin to handle character admonitions */
+import remarkUnknownDirectives from './src/plugins/remark-unknown-directives' /* Custom plugin to handle unknown admonitions */
+import remarkMath from 'remark-math' /* for latex math support */
+import rehypeKatex from 'rehype-katex' /* again, for latex math support */
+import remarkGemoji from './src/plugins/remark-gemoji' /* for shortcode emoji support */
+import rehypePixelated from './src/plugins/rehype-pixelated' /* Custom plugin to handle pixelated images */
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://blog.qian30.net/",
-  base: "/",
-  trailingSlash: "always",
-  integrations: [
-    tailwind(),
-    swup({
-      theme: false,
-      animationClass: 'transition-swup-',   // see https://swup.js.org/options/#animationselector
-                                            // the default value `transition-` cause transition delay
-                                            // when the Tailwind class `transition-all` is used
-      containers: ['main','#toc'],
-      smoothScrolling: true,
-      cache: true,
-      preload: true,
-      accessibility: true,
-      updateHead: true,
-      updateBodyClass: false,
-      globalInstance: true,
-    }),
-    icon({
-      include: {
-        "material-symbols": ["*"],
-        "fa6-brands": ["*"],
-        "fa6-regular": ["*"],
-        "fa6-solid": ["*"],
-      },
-    }),
-    svelte(),
-    sitemap(),
-    Compress({
-      CSS: false,
-      Image: false,
-      Action: {
-        Passed: async () => true,   // https://github.com/PlayForm/Compress/issues/376
-      },
-    }),
-  ],
+  site: siteConfig.site,
+  trailingSlash: siteConfig.trailingSlashes ? 'always' : 'never',
+  prefetch: true,
   markdown: {
-    remarkPlugins: [remarkMath, remarkReadingTime, remarkExcerpt, remarkGithubAdmonitionsToDirectives, remarkDirective, parseDirectiveNode,remarkSpoiler,remarkImageWidth, ],
+    remarkPlugins: [
+      [remarkDescription, { maxChars: 200 }],
+      remarkReadingTime,
+      remarkDirective,
+      remarkGithubCard,
+      remarkAdmonitions,
+      [remarkCharacterDialogue, { characters: siteConfig.characters }],
+      remarkUnknownDirectives,
+      remarkMath,
+      remarkGemoji,
+    ],
     rehypePlugins: [
-      rehypeKatex,
-      rehypeSlug,
-      [rehypeComponents, {
-        components: {
-          github: GithubCardComponent,
-          note: (x, y) => AdmonitionComponent(x, y, "note"),
-          tip: (x, y) => AdmonitionComponent(x, y, "tip"),
-          important: (x, y) => AdmonitionComponent(x, y, "important"),
-          caution: (x, y) => AdmonitionComponent(x, y, "caution"),
-          warning: (x, y) => AdmonitionComponent(x, y, "warning"),
-        },
-      }],
+      [rehypeHeadingIds, { headingIdCompat: true }],
+      [rehypeAutolinkHeadings, { behavior: 'wrap' }],
+      rehypeTitleFigure,
       [
-        rehypeAutolinkHeadings,
+        rehypeExternalLinks,
         {
-          behavior: "append",
-          properties: {
-            className: ["anchor"],
-          },
-          content: {
-            type: "element",
-            tagName: "span",
-            properties: {
-              className: ["anchor-icon"],
-              'data-pagefind-ignore': true,
-            },
-            children: [
-              {
-                type: "text",
-                value: "#",
-              },
-            ],
-          },
+          rel: ['noreferrer', 'noopener'],
+          target: '_blank',
         },
       ],
+      rehypeUnwrapImages,
+      rehypePixelated,
+      rehypeKatex,
     ],
   },
+  image: {
+    responsiveStyles: true,
+  },
   vite: {
-    build: {
-      rollupOptions: {
-        onwarn(warning, warn) {
-          // temporarily suppress this warning
-          if (warning.message.includes("is dynamically imported by") && warning.message.includes("but also statically imported by")) {
-            return;
-          }
-          warn(warning);
-        }
-      }
-    },
-    css: {
-      preprocessorOptions: {
-        stylus: {
-          define: {
-            oklchToHex: oklchToHex,
-          },
-        },
+    plugins: [tailwindcss()],
+  },
+  integrations: [
+    sitemap(),
+    expressiveCode({
+      themes: siteConfig.themes.include,
+      useDarkModeMediaQuery: false,
+      defaultProps: {
+        showLineNumbers: false,
+        wrap: false,
       },
-    },
+      plugins: [pluginLineNumbers()],
+    }), // Must come after expressive-code integration
+    mdx(),
+  ],
+  experimental: {
+    contentIntellisense: true,
   },
 })

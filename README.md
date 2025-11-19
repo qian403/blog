@@ -1,33 +1,52 @@
-# 🍥Fuwari
+# qian's Blog
 
-A static blog template built with [Astro](https://astro.build).
+基於 [MultiTerm](https://github.com/stelcodes/multiterm-astro) 主題建立的個人部落格,使用 [Astro](https://astro.build) 框架開發。
 
-[**🖥️ Live Demo (Vercel)**](https://fuwari.vercel.app)&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;
-[**📦 Old Hexo Version**](https://github.com/saicaca/hexo-theme-vivia)&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;
-[**🌏 中文**](https://github.com/saicaca/fuwari/blob/main/README.zh-CN.md)&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;
-[**🌏 日本語**](https://github.com/saicaca/fuwari/blob/main/README.ja-JP.md)&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;
-[**🌏 한국어**](https://github.com/saicaca/fuwari/blob/main/README.ko.md)&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;
-[**🌏 Español**](https://github.com/saicaca/fuwari/blob/main/README.es.md)
+## ✨ 特色
 
-> README version: `2024-09-10`
+- 🎨 59 種顏色主題可選擇
+- 📱 響應式設計
+- 🔍 全文搜索功能 (Pagefind)
+- 📡 RSS 訂閱
+- 🎨 程式碼語法高亮
+- 🔢 數學公式支援 (KaTeX)
+- 😀 Emoji 支援
+- 📅 GitHub Calendar 整合
+- ⏱️ 文章閱讀時間顯示
+- 📚 系列文章支援
+- 🏷️ 標籤系統
 
-![Preview Image](https://raw.githubusercontent.com/saicaca/resource/main/fuwari/home.png)
+## 🚀 使用方式
 
-## ✨ Features
+1. 安裝依賴:
+   ```bash
+   pnpm install
+   ```
 
-- [x] Built with [Astro](https://astro.build) and [Tailwind CSS](https://tailwindcss.com)
-- [x] Smooth animations and page transitions
-- [x] Light / dark mode
-- [x] Customizable theme colors & banner
-- [x] Responsive design
-- [ ] Comments
-- [x] Search
-- [ ] TOC
+2. 啟動開發伺服器:
+   ```bash
+   pnpm dev
+   ```
 
-## 🚀 How to Use
+3. 建置網站:
+   ```bash
+   pnpm build
+   ```
 
-1. [Generate a new repository](https://github.com/saicaca/fuwari/generate) from this template or fork this repository.
-2. To edit your blog locally, clone your repository, run `pnpm install` AND `pnpm add sharp` to install dependencies.
+4. 預覽建置結果:
+   ```bash
+   pnpm preview
+   ```
+
+## 📝 文章
+
+所有文章位於 `src/content/posts/` 目錄下。
+
+## 📧 聯絡方式
+
+- GitHub: [@qian403](https://github.com/qian403)
+- Email: qian@qian30.net
+- Telegram: [@qian50](https://t.me/qian50)
    - Install [pnpm](https://pnpm.io) `npm install -g pnpm` if you haven't.
 3. Edit the config file `src/config.ts` to customize your blog.
 4. Run `pnpm new-post <filename>` to create a new post and edit it in `src/content/posts/`.
@@ -53,7 +72,7 @@ lang: jp      # Set only if the post's language differs from the site's language
 All commands are run from the root of the project, from a terminal:
 
 | Command                             | Action                                           |
-|:------------------------------------|:-------------------------------------------------|
+| :---------------------------------- | :----------------------------------------------- |
 | `pnpm install` AND `pnpm add sharp` | Installs dependencies                            |
 | `pnpm dev`                          | Starts local dev server at `localhost:4321`      |
 | `pnpm build`                        | Build your production site to `./dist/`          |
@@ -65,18 +84,18 @@ All commands are run from the root of the project, from a terminal:
 
 ## 我的commit message規範
 
-| Emoji | 分類       | 用途說明                        |
-|-------|------------|---------------------------------|
-| ✨     | Feature    | 新功能、新頁面、新元件          |
-| 🐛     | Fix        | Bug 修正                        |
-| ♻️     | Refactor   | 重構、優化程式碼（功能未變）    |
-| 💄     | UI         | UI 調整、樣式更新               |
-| 📝     | Docs       | 文件或註解的變更                |
-| 🔧     | Chore      | 工具設定調整、建構流程更新      |
-| 🚀     | Deploy     | 部署相關變更                    |
-| ✅     | Test       | 增加或修改測試                  |
-| ⬆️     | Upgrade    | 套件升級                        |
-| ⬇️     | Downgrade  | 套件降級或回退                  |
+| Emoji | 分類      | 用途說明                     |
+| ----- | --------- | ---------------------------- |
+| ✨     | Feature   | 新功能、新頁面、新元件       |
+| 🐛     | Fix       | Bug 修正                     |
+| ♻️     | Refactor  | 重構、優化程式碼（功能未變） |
+| 💄     | UI        | UI 調整、樣式更新            |
+| 📝     | Docs      | 文件或註解的變更             |
+| 🔧     | Chore     | 工具設定調整、建構流程更新   |
+| 🚀     | Deploy    | 部署相關變更                 |
+| ✅     | Test      | 增加或修改測試               |
+| ⬆️     | Upgrade   | 套件升級                     |
+| ⬇️     | Downgrade | 套件降級或回退               |
 
 
 ```md
