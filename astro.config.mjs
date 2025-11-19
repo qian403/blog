@@ -23,6 +23,7 @@ import remarkMath from 'remark-math' /* for latex math support */
 import rehypeKatex from 'rehype-katex' /* again, for latex math support */
 import remarkGemoji from './src/plugins/remark-gemoji' /* for shortcode emoji support */
 import rehypePixelated from './src/plugins/rehype-pixelated' /* Custom plugin to handle pixelated images */
+import remarkSpoiler from './src/plugins/remark-spoiler' /* Custom plugin to handle spoiler syntax ||content|| */
 
 // https://astro.build/config
 export default defineConfig({
@@ -40,6 +41,7 @@ export default defineConfig({
       remarkUnknownDirectives,
       remarkMath,
       remarkGemoji,
+      remarkSpoiler,
     ],
     rehypePlugins: [
       [rehypeHeadingIds, { headingIdCompat: true }],

@@ -610,3 +610,41 @@ article img {
     @apply border-accent cursor-pointer;
   }
 }
+
+/* Spoiler effect - blur and reveal on click/hover */
+.spoiler {
+  @apply inline-block relative cursor-pointer transition-all duration-300;
+  background: color-mix(in oklab, var(--theme-accent) 30%, transparent);
+  color: transparent;
+  filter: blur(8px);
+  -webkit-user-select: none;
+  user-select: none;
+  border-radius: 4px;
+  padding: 0 4px;
+}
+
+.spoiler:hover {
+  filter: blur(6px);
+  background: color-mix(in oklab, var(--theme-accent) 20%, transparent);
+}
+
+.spoiler[data-spoiler="revealed"],
+.spoiler:active {
+  filter: blur(0);
+  background: transparent;
+  color: inherit;
+  -webkit-user-select: text;
+  user-select: text;
+  animation: spoiler-reveal 0.3s ease-out;
+}
+
+@keyframes spoiler-reveal {
+  0% {
+    filter: blur(8px);
+    opacity: 0.5;
+  }
+  100% {
+    filter: blur(0);
+    opacity: 1;
+  }
+}
