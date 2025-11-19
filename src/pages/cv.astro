@@ -4,7 +4,7 @@ import PageHeader from '~/components/PageHeader.astro'
 import TableOfContents from '~/components/TableOfContents.astro'
 
 const headings = [
-  { depth: 2, slug: 'personal-info', text: 'Personal Info' },
+  { depth: 2, slug: 'about-me', text: 'About me' },
   { depth: 2, slug: 'work-experience', text: 'Work Experience' },
   { depth: 2, slug: 'education', text: 'Education' },
   { depth: 2, slug: 'certifications', text: 'Certifications' },
@@ -20,51 +20,49 @@ const headings = [
   <div class="flex flex-col xl:gap-1 2xl:gap-18 xl:flex-row xl:items-start">
     <TableOfContents headings={headings} />
     <article class="cv-page prose prose-neutral dark:prose-invert xl:min-w-full 2xl:min-w-full">
-    <!-- 個人資訊 -->
-    <section class="mb-10" id="personal-info">
-      <h2 class="text-3xl font-bold mb-6 border-b-2 border-accent pb-2">Personal Info</h2>
-      <div class="not-prose space-y-3">
-        <div class="flex items-center gap-3">
-          <span class="font-semibold min-w-[100px]">姓名</span>
-          <span>CHIEN (CHIA CHIEN HSU)</span>
-        </div>
-        <div class="flex items-center gap-3">
-          <span class="font-semibold min-w-[100px]">身份</span>
-          <span>大學生 (資工系)</span>
-        </div>
-        <div class="flex items-center gap-3">
-          <span class="font-semibold min-w-[100px]">Email</span>
-          <a href="mailto:qian@qian30.net" class="text-accent hover:underline">qian@qian30.net</a>
-        </div>
-        <div class="flex items-center gap-3">
-          <span class="font-semibold min-w-[100px]">AS Number</span>
-          <span>AS215934</span>
-        </div>
+    <!-- 關於我 -->
+    <section class="mb-10" id="about-me">
+      <h2 class="text-3xl font-bold mb-6 border-b-2 border-accent pb-2">About me</h2>
+      <div class="not-prose space-y-4 text-base leading-relaxed">
+        <p>
+          嗨！我是 <strong>CHIEN</strong>（徐嘉謙）。目前就讀於<strong>國立宜蘭大學資訊工程系</strong>，是一位對網路技術與資訊安全充滿熱情的學生。
+        </p>
+        <p>
+          我運營著個人自治系統 <strong class="text-accent">AS215934</strong>，透過實際操作深入研究 BGP 路由協議與網路架構。從高職資訊科開始，我就對系統管理、網路運維產生濃厚興趣，並持續在這些領域深耕。
+        </p>
+        <p>
+          目前在<strong>瀚霖智動銷售科技有限公司</strong>擔任實習工程師，負責系統維運、資訊安全以及全端開發工作。同時也積極參與開源社群，在 SITCON（學生計算機年會）擔任多個職務，從場務志工、行政組副組長、副召，到即將在 2026 年擔任總召。
+        </p>
+        <p>
+          我相信技術的價值在於解決實際問題與分享知識。歡迎透過 <a href="mailto:qian@qian30.net" class="text-accent hover:underline">qian@qian30.net</a> 與我交流討論！
+        </p>
       </div>
     </section>
 
     <!-- 工作經驗 -->
     <section class="mb-10" id="work-experience">
       <h2 class="text-3xl font-bold mb-6 border-b-2 border-accent pb-2">Work Experience</h2>
-      <div class="space-y-4">
-        <div class="border-l-4 border-accent pl-4 py-1">
-          <div class="flex justify-between items-baseline gap-4">
-            <div class="flex-1 min-w-0">
-              <h3 class="text-base font-bold">實習工程師 <span class="text-accent font-normal">@ 瀚霖智動銷售科技有限公司</span></h3>
-              <p class="text-sm opacity-70 mt-0.5">系統維運與安全部門 • 系統維運 • 資訊安全 • 前後端開發</p>
+      <div class="not-prose grid gap-4">
+        <div class="p-6 rounded-lg border border-neutral-200 dark:border-neutral-800 hover:border-accent dark:hover:border-accent transition-all hover:shadow-lg">
+          <div class="flex justify-between items-start mb-3">
+            <div class="flex-1">
+              <h3 class="text-lg font-bold mb-1">實習工程師</h3>
+              <div class="text-base text-accent font-semibold">瀚霖智動銷售科技有限公司</div>
             </div>
-            <span class="text-sm opacity-70 whitespace-nowrap">2024/11 - 至今</span>
+            <span class="text-sm opacity-70 whitespace-nowrap ml-4">2024/11 - 至今</span>
           </div>
+          <p class="text-sm opacity-80">系統維運與安全部門 • 系統維運 • 資訊安全 • 前後端開發</p>
         </div>
         
-        <div class="border-l-4 border-accent pl-4 py-1">
-          <div class="flex justify-between items-baseline gap-4">
-            <div class="flex-1 min-w-0">
-              <h3 class="text-base font-bold">實習網路管理工程師 <span class="text-accent font-normal">@ 一三五有限公司</span></h3>
-              <p class="text-sm opacity-70 mt-0.5">電腦部門 • 網路管理與維護</p>
+        <div class="p-6 rounded-lg border border-neutral-200 dark:border-neutral-800 hover:border-accent dark:hover:border-accent transition-all hover:shadow-lg">
+          <div class="flex justify-between items-start mb-3">
+            <div class="flex-1">
+              <h3 class="text-lg font-bold mb-1">實習網路管理工程師</h3>
+              <div class="text-base text-accent font-semibold">一三五有限公司</div>
             </div>
-            <span class="text-sm opacity-70 whitespace-nowrap">2020/7 - 2023/8</span>
+            <span class="text-sm opacity-70 whitespace-nowrap ml-4">2020/7 - 2023/8</span>
           </div>
+          <p class="text-sm opacity-80">電腦部門 • 網路管理與維護</p>
         </div>
       </div>
     </section>
@@ -72,23 +70,27 @@ const headings = [
     <!-- 學歷 -->
     <section class="mb-10" id="education">
       <h2 class="text-3xl font-bold mb-6 border-b-2 border-accent pb-2">Education</h2>
-      <div class="space-y-5">
-        <div class="border-l-4 border-accent pl-4">
-          <div class="flex justify-between items-start mb-1">
-            <h3 class="text-lg font-bold">國立宜蘭大學</h3>
+      <div class="not-prose grid gap-4">
+        <div class="p-6 rounded-lg border border-neutral-200 dark:border-neutral-800 hover:border-accent dark:hover:border-accent transition-all hover:shadow-lg">
+          <div class="flex justify-between items-start mb-3">
+            <div class="flex-1">
+              <h3 class="text-lg font-bold mb-1">國立宜蘭大學</h3>
+              <div class="text-base text-accent font-semibold">資訊工程系</div>
+            </div>
             <span class="text-sm opacity-70 whitespace-nowrap ml-4">2024 - 至今</span>
           </div>
-          <div class="text-base font-semibold text-accent mb-2">資訊工程系</div>
-          <p class="text-sm opacity-90">主修資訊工程,專注於網路技術、系統架構與資訊安全領域</p>
+          <p class="text-sm opacity-80">主修資訊工程,專注於網路技術、系統架構與資訊安全領域</p>
         </div>
         
-        <div class="border-l-4 border-accent pl-4">
-          <div class="flex justify-between items-start mb-1">
-            <h3 class="text-lg font-bold">國立羅東高工</h3>
+        <div class="p-6 rounded-lg border border-neutral-200 dark:border-neutral-800 hover:border-accent dark:hover:border-accent transition-all hover:shadow-lg">
+          <div class="flex justify-between items-start mb-3">
+            <div class="flex-1">
+              <h3 class="text-lg font-bold mb-1">國立羅東高工</h3>
+              <div class="text-base text-accent font-semibold">資訊科</div>
+            </div>
             <span class="text-sm opacity-70 whitespace-nowrap ml-4">2021 - 2023</span>
           </div>
-          <div class="text-base font-semibold text-accent mb-2">資訊科</div>
-          <p class="text-sm opacity-90">建立程式設計與網路基礎,開始接觸技能競賽與系統管理</p>
+          <p class="text-sm opacity-80">建立程式設計與網路基礎,開始接觸技能競賽與系統管理</p>
         </div>
       </div>
     </section>
