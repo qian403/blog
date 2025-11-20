@@ -19,21 +19,22 @@
 ## 🚀 使用方式
 
 1. 安裝依賴:
+
    ```bash
    pnpm install
    ```
-
 2. 啟動開發伺服器:
+
    ```bash
    pnpm dev
    ```
-
 3. 建置網站:
+
    ```bash
    pnpm build
    ```
-
 4. 預覽建置結果:
+
    ```bash
    pnpm preview
    ```
@@ -47,7 +48,8 @@
 - GitHub: [@qian403](https://github.com/qian403)
 - Email: qian@qian30.net
 - Telegram: [@qian50](https://t.me/qian50)
-   - Install [pnpm](https://pnpm.io) `npm install -g pnpm` if you haven't.
+  - Install [pnpm](https://pnpm.io) `npm install -g pnpm` if you haven't.
+
 3. Edit the config file `src/config.ts` to customize your blog.
 4. Run `pnpm new-post <filename>` to create a new post and edit it in `src/content/posts/`.
 5. Deploy your blog to Vercel, Netlify, GitHub Pages, etc. following [the guides](https://docs.astro.build/en/guides/deploy/). You need to edit the site configuration in `astro.config.mjs` before deployment.
@@ -71,33 +73,12 @@ lang: jp      # Set only if the post's language differs from the site's language
 
 All commands are run from the root of the project, from a terminal:
 
-| Command                             | Action                                           |
-| :---------------------------------- | :----------------------------------------------- |
-| `pnpm install` AND `pnpm add sharp` | Installs dependencies                            |
-| `pnpm dev`                          | Starts local dev server at `localhost:4321`      |
-| `pnpm build`                        | Build your production site to `./dist/`          |
-| `pnpm preview`                      | Preview your build locally, before deploying     |
-| `pnpm new-post <filename>`          | Create a new post                                |
-| `pnpm astro ...`                    | Run CLI commands like `astro add`, `astro check` |
-| `pnpm astro --help`                 | Get help using the Astro CLI                     |
-
-
-## 我的commit message規範
-
-| Emoji | 分類      | 用途說明                     |
-| ----- | --------- | ---------------------------- |
-| ✨     | Feature   | 新功能、新頁面、新元件       |
-| 🐛     | Fix       | Bug 修正                     |
-| ♻️     | Refactor  | 重構、優化程式碼（功能未變） |
-| 💄     | UI        | UI 調整、樣式更新            |
-| 📝     | Docs      | 文件或註解的變更             |
-| 🔧     | Chore     | 工具設定調整、建構流程更新   |
-| 🚀     | Deploy    | 部署相關變更                 |
-| ✅     | Test      | 增加或修改測試               |
-| ⬆️     | Upgrade   | 套件升級                     |
-| ⬇️     | Downgrade | 套件降級或回退               |
-
-
-```md
-[emoji 修正類別] 簡短描述你做了什麼
-```
+| Command                                 | Action                                               |
+| :-------------------------------------- | :--------------------------------------------------- |
+| `pnpm install` AND `pnpm add sharp` | Installs dependencies                                |
+| `pnpm dev`                            | Starts local dev server at `localhost:4321`        |
+| `pnpm build`                          | Build your production site to `./dist/`            |
+| `pnpm preview`                        | Preview your build locally, before deploying         |
+| `pnpm new-post <filename>`            | Create a new post                                    |
+| `pnpm astro ...`                      | Run CLI commands like `astro add`, `astro check` |
+| `pnpm astro --help`                   | Get help using the Astro CLI                         |
