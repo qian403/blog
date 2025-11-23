@@ -72,11 +72,29 @@ const friendLinks = [
             class="flex items-center gap-4 p-4 rounded-lg border border-separator hover:bg-accent/10 transition-colors group"
           >
             {friend.avatar && (
-              <img
-                src={friend.avatar}
-                alt={friend.name}
-                class="w-12 h-12 rounded-full object-cover"
-              />
+
+
+              /* ========== 元元生日帽裝飾 - 開始 (YuanYuan Birthday Hat - Start) ========== */
+              <div class={friend.name === '元元' ? 'friend-avatar-container' : ''}>
+                
+                
+                <img
+                  src={friend.avatar}
+                  alt={friend.name}
+                  class="w-12 h-12 rounded-full object-cover"
+                />
+
+
+                {friend.name === '元元' && (
+                  <div class="friend-birthday-hat">
+                    <div class="friend-hat-cone"></div>
+                    <div class="friend-hat-pom"></div>
+                  </div>
+                )}
+              </div>
+              /* ========== 元元生日帽裝飾 - 結束 (YuanYuan Birthday Hat - End) ========== */
+            
+            
             )}
             <div class="flex-1 min-w-0">
               <div class="font-medium group-hover:text-accent transition-colors">
@@ -128,3 +146,68 @@ const friendLinks = [
     )
   }
 </Layout>
+
+{/* ========== 元元生日帽樣式 - 開始 (YuanYuan Birthday Hat Styles - Start) ========== */}
+<style>
+  .friend-avatar-container {
+    position: relative;
+    display: inline-block;
+  }
+
+  .friend-birthday-hat {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    pointer-events: none;
+  }
+
+  /* 帽子主體 (錐形) - 縮小版本適配小頭像 */
+  .friend-hat-cone {
+    width: 0;
+    height: 0;
+    border-left: 9px solid transparent;
+    border-right: 9px solid transparent;
+    border-bottom: 16px solid #e74c3c;
+    position: relative;
+    transform: rotate(-10deg);
+  }
+
+  /* 帽子上的條紋裝飾 */
+  .friend-hat-cone::before {
+    content: '';
+    position: absolute;
+    bottom: -11px;
+    left: -6px;
+    width: 12px;
+    height: 3px;
+    background: #f39c12;
+    border-radius: 1px;
+  }
+
+  /* 帽子頂部的絨球 */
+  .friend-hat-pom {
+    position: absolute;
+    top: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 5px;
+    height: 5px;
+    background: #f1c40f;
+    border-radius: 50%;
+    box-shadow: 0 0 3px rgba(241, 196, 15, 0.6);
+  }
+
+  /* 絨球的高光效果 */
+  .friend-hat-pom::after {
+    content: '';
+    position: absolute;
+    top: 1px;
+    left: 1px;
+    width: 2px;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+  }
+</style>
+{/* ========== 元元生日帽樣式 - 結束 (YuanYuan Birthday Hat Styles - End) ========== */}
