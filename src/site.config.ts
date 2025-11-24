@@ -193,6 +193,7 @@ const config: SiteConfig = {
     owl: '/owl.webp',
     unicorn: '/unicorn.webp',
     duck: '/duck.webp',
+    rabbit: '../sticker/rabbit.webp',
   },
 }
 
