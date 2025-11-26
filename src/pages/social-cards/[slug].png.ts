@@ -8,11 +8,17 @@ import path from 'path'
 import fs from 'fs'
 import type { ReactNode } from 'react'
 
-// Load the font file as binary data
+// Load the JetBrains Mono font file as binary data
 const fontPath = path.resolve(
   './node_modules/@expo-google-fonts/jetbrains-mono/400Regular/JetBrainsMono_400Regular.ttf',
 )
 const fontData = fs.readFileSync(fontPath) // Reads the file as a Buffer
+
+// Load the Noto Sans TC font for Chinese characters
+const chineseFontPath = path.resolve(
+  './node_modules/@fontsource/noto-sans-tc/files/noto-sans-tc-chinese-traditional-400-normal.woff',
+)
+const chineseFontData = fs.readFileSync(chineseFontPath)
 
 const avatarPath = path.resolve(siteConfig.socialCardAvatarImage)
 let avatarData: Buffer | undefined
@@ -52,13 +58,19 @@ const ogOptions: SatoriOptions = {
       style: 'normal',
       weight: 400,
     },
+    {
+      data: chineseFontData,
+      name: 'Noto Sans TC',
+      style: 'normal',
+      weight: 400,
+    },
   ],
   height: 630,
   width: 1200,
 }
 
 const markup = (title: string, pubDate: string | undefined, author: string) =>
-  html(`<div tw="flex flex-col max-w-full justify-center h-full bg-[${bg}] text-[${fg}] p-12">
+  html(`<div tw="flex flex-col max-w-full justify-center h-full bg-[${bg}] text-[${fg}] p-12" style="font-family: 'JetBrains Mono', 'Noto Sans TC', sans-serif;">
     <div style="border-width: 12px; border-radius: 80px;" tw="flex items-center max-w-full p-8 border-[${accent}]/30">
       ${
         avatarBase64

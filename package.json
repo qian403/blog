@@ -20,6 +20,7 @@
     "@expo-google-fonts/jetbrains-mono": "^0.4.0",
     "@expressive-code/plugin-line-numbers": "^0.41.3",
     "@fontsource-variable/jetbrains-mono": "^5.2.6",
+    "@fontsource/noto-sans-tc": "^5.2.8",
     "@pagefind/default-ui": "^1.4.0",
     "@resvg/resvg-js": "^2.6.2",
     "@tailwindcss/vite": "^4.1.13",
