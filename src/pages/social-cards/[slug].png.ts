@@ -12,12 +12,11 @@ import type { ReactNode } from 'react'
 const fontPath = path.resolve(
   './node_modules/@expo-google-fonts/jetbrains-mono/400Regular/JetBrainsMono_400Regular.ttf',
 )
-const fontData = fs.readFileSync(fontPath) // Reads the file as a Buffer
+const fontData = fs.readFileSync(fontPath)
 
-// Load the Noto Sans TC font for Chinese characters
-const chineseFontPath = path.resolve(
-  './node_modules/@fontsource/noto-sans-tc/files/noto-sans-tc-chinese-traditional-400-normal.woff',
-)
+// Load Source Han Sans TC (思源黑體) for complete Traditional Chinese support
+// This is a full font file from Adobe/Google without subsetting issues
+const chineseFontPath = path.resolve('./public/fonts/SourceHanSansTC-Regular.otf')
 const chineseFontData = fs.readFileSync(chineseFontPath)
 
 const avatarPath = path.resolve(siteConfig.socialCardAvatarImage)
@@ -60,7 +59,7 @@ const ogOptions: SatoriOptions = {
     },
     {
       data: chineseFontData,
-      name: 'Noto Sans TC',
+      name: 'Source Han Sans TC',
       style: 'normal',
       weight: 400,
     },
@@ -70,7 +69,7 @@ const ogOptions: SatoriOptions = {
 }
 
 const markup = (title: string, pubDate: string | undefined, author: string) =>
-  html(`<div tw="flex flex-col max-w-full justify-center h-full bg-[${bg}] text-[${fg}] p-12" style="font-family: 'JetBrains Mono', 'Noto Sans TC', sans-serif;">
+  html(`<div tw="flex flex-col max-w-full justify-center h-full bg-[${bg}] text-[${fg}] p-12" style="font-family: 'JetBrains Mono', 'Source Han Sans TC', sans-serif;">
     <div style="border-width: 12px; border-radius: 80px;" tw="flex items-center max-w-full p-8 border-[${accent}]/30">
       ${
         avatarBase64

@@ -1,5 +1,5 @@
 ---
-title: uv 完全指南：極速 Python 套件與專案管理工具
+title: uv 完全指南：極速 Python 套件與專案管理工具。
 published: 2025-11-24
 description: 'uv 是一個用 Rust 編寫的極速 Python 包和專案管理器，比 pip 快 10-100 倍！一個工具取代 pip、pip-tools、pipx、poetry、pyenv、virtualenv 等多種工具。'
 image: ''

@@ -20,7 +20,6 @@
     "@expo-google-fonts/jetbrains-mono": "^0.4.0",
     "@expressive-code/plugin-line-numbers": "^0.41.3",
     "@fontsource-variable/jetbrains-mono": "^5.2.6",
-    "@fontsource/noto-sans-tc": "^5.2.8",
     "@pagefind/default-ui": "^1.4.0",
     "@resvg/resvg-js": "^2.6.2",
     "@tailwindcss/vite": "^4.1.13",
@@ -59,6 +58,7 @@
     "unist-util-visit": "^5.0.0"
   },
   "devDependencies": {
+    "@napi-rs/canvas": "^0.1.82",
     "@types/markdown-it": "^14.1.2",
     "@types/sanitize-html": "^2.16.0",
     "pagefind": "^1.4.0",
