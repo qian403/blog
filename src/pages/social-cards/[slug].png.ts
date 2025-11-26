@@ -14,8 +14,8 @@ const fontPath = path.resolve(
 )
 const fontData = fs.readFileSync(fontPath)
 
-// Load Source Han Sans TC (思源黑體) for complete Traditional Chinese support
-// This is a full font file from Adobe/Google without subsetting issues
+// Load Source Han Sans TC (思源黑體) Regular - complete Traditional Chinese font
+// Same as Noto Sans CJK TC, from Adobe/Google, single weight ~16MB
 const chineseFontPath = path.resolve('./public/fonts/SourceHanSansTC-Regular.otf')
 const chineseFontData = fs.readFileSync(chineseFontPath)
 
@@ -69,7 +69,7 @@ const ogOptions: SatoriOptions = {
 }
 
 const markup = (title: string, pubDate: string | undefined, author: string) =>
-  html(`<div tw="flex flex-col max-w-full justify-center h-full bg-[${bg}] text-[${fg}] p-12" style="font-family: 'JetBrains Mono', 'Source Han Sans TC', sans-serif;">
+  html(`<div tw="flex flex-col max-w-full justify-center h-full bg-[${bg}] text-[${fg}] p-12" style="font-family: 'JetBrains Mono', 'Noto Sans TC', sans-serif;">
     <div style="border-width: 12px; border-radius: 80px;" tw="flex items-center max-w-full p-8 border-[${accent}]/30">
       ${
         avatarBase64
