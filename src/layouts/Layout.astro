@@ -4,6 +4,7 @@ import Header from '~/components/Header.astro'
 import Footer from '~/components/Footer.astro'
 import LightDarkAutoThemeLoader from '~/components/LightDarkAutoThemeLoader.astro'
 import SelectThemeLoader from '~/components/SelectThemeLoader.astro'
+import StructuredData from '~/components/StructuredData.astro'
 import siteConfig from '~/site.config'
 import { pick, resolveThemeColorStyles } from '~/utils'
 import crypto from 'crypto'
@@ -13,9 +14,11 @@ interface Props {
   description?: string
   tags?: string[]
   author?: string
+  published?: Date
+  updated?: Date
 }
 
-const { title, description, tags, author } = Astro.props
+const { title, description, tags, author, published, updated } = Astro.props
 const pageUrl = new URL(Astro.url.pathname, Astro.site).href.replace(/\/$/, '') // Remove trailing slash for consistency
 const pageType = Astro.url.pathname.startsWith('/posts') ? 'article' : 'website'
 const pageTitle = title ? `${title} - ${siteConfig.title}` : siteConfig.title
@@ -115,7 +118,7 @@ let generatedCss: string = cssLines.join('\n')
 
 <!doctype html>
 <html
-  lang="en"
+  lang="zh-TW"
   data-theme={defaultTheme}
   data-dark-theme={darkTheme}
   data-light-theme={lightTheme}
@@ -125,6 +128,7 @@ let generatedCss: string = cssLines.join('\n')
   <head>
     <meta charset="UTF-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta name="theme-color" content="#1a1a1a" />
     <meta name="generator" content={Astro.generator} />
     <meta name="title" content={pageTitle} />
     <meta name="description" content={pageDescription} />
@@ -133,6 +137,7 @@ let generatedCss: string = cssLines.join('\n')
     <meta property="og:description" content={pageDescription} />
     <meta property="og:url" content={pageUrl} />
     <meta property="og:type" content={pageType} />
+    <meta property="og:locale" content="zh_TW" />
     {pageImage && <meta property="og:image" content={pageImage} />}
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={pageTitle} />
@@ -155,6 +160,19 @@ let generatedCss: string = cssLines.join('\n')
     {themeMode === 'light-dark-auto' && <LightDarkAutoThemeLoader />}
     {themeMode === 'select' && <SelectThemeLoader />}
     <script src="~/scripts/spoiler.ts"></script>
+    
+    <!-- SEO: Structured Data -->
+    <StructuredData
+      type={pageType}
+      title={title}
+      description={pageDescription}
+      author={pageAuthor}
+      publishDate={published}
+      modifiedDate={updated}
+      image={pageImage}
+      url={pageUrl}
+      tags={tags}
+    />
     
     <!-- Analytics: Umami -->
     <script defer src="https://cloud.umami.is/script.js" data-website-id="6a2b071d-cea3-4ec1-beb9-e35481368db3"></script>

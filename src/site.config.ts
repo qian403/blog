@@ -4,13 +4,13 @@ const config: SiteConfig = {
   // Absolute URL to the root of your published site, used for generating links and sitemaps.
   site: 'https://blog.qian30.net',
   // The name of your site, used in the title and for SEO.
-  title: 'CHIEN',
+  title: 'CHIEN 的技術筆記',
   // The description of your site, used for SEO and RSS feed.
-  description: 'CHIEN 的個人部落格 - 分享網路技術、資訊安全、BGP 路由與系統運維相關文章',
+  description: 'CHIEN (qian) 的個人技術部落格，專注於網路技術、資訊安全、BGP 路由、系統運維及 Linux 相關主題。分享實戰經驗與深度技術文章。',
   // The author of the site, used in the footer, SEO, and RSS feed.
   author: 'CHIEN (qian)',
   // Keywords for SEO, used in the meta tags.
-  tags: ['Astro', 'Blog', 'qian', 'CHIEN', '資訊安全', '網路技術', 'BGP', 'AS215934', '系統運維', 'InfoSec', 'Networking', 'Linux'],
+  tags: ['Astro', 'Blog', 'qian', 'CHIEN', '資訊安全', 'InfoSec', '網路技術', 'Networking', 'BGP', 'AS215934', '系統運維', 'DevOps', 'Linux', 'Server', 'Security', '技術筆記', 'Tech Blog'],
   // Path to the image used for generating social media previews.
   // Needs to be a square JPEG file due to limitations of the social card generator.
   // Try https://squoosh.app/ to easily convert images to JPEG.
