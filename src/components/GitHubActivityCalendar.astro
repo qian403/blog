@@ -46,16 +46,26 @@ async function fetchData(
     }
   }
   const apiUrl = 'https://github-contributions-api.jogruber.de/v4/'
-  const response = await fetch(`${apiUrl}${username}?y=${String(year)}`)
-  const data = (await response.json()) as GitHubActivityApiResponse
-  if (!response.ok) {
-    const message = data.error || 'Unknown error'
-    throw Error(`Fetching GitHub contribution data for "${username}" failed: ${message}`)
+  try {
+    const response = await fetch(`${apiUrl}${username}?y=${String(year)}`)
+    if (!response.ok) {
+      const data = (await response.json()) as GitHubActivityApiResponse
+      const message = data.error || 'Unknown error'
+      throw Error(`Fetching GitHub contribution data for "${username}" failed: ${message}`)
+    }
+    const data = (await response.json()) as GitHubActivityApiResponse
+    validateActivities(data.contributions)
+    return data
+  } catch (e) {
+    console.warn(`[GitHubActivityCalendar] Failed to fetch data for ${username}:`, e)
+    return {
+      total: {
+        [year]: 0,
+        lastYear: 0,
+      },
+      contributions: [],
+    }
   }
-
-  validateActivities(data.contributions)
-
-  return data
 }
 
 function calcColorScale([start, end]: [string, string], steps: number): Array<string> {
