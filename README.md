@@ -84,4 +84,9 @@ All commands are run from the root of the project, from a terminal:
 | `pnpm astro --help`                   | Get help using the Astro CLI                         |
 
 ## 小備注
+今天是我生日
 11月過了記得把生日帽移掉
+
+## 🎉 彩帶特效
+
+網站目前全站啟用了彩帶飄落特效。若要移除此效果，請修改 `src/layouts/Layout.astro`，將底部的 `<script>` 區塊（包含 `canvas-confetti` 相關程式碼）刪除即可。

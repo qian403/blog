@@ -197,5 +197,37 @@ let generatedCss: string = cssLines.join('\n')
       </main>
       <Footer />
     </div>
+    <script>
+      import confetti from 'canvas-confetti'
+
+      let skew = 1
+      const colors = ['#26ccff', '#a25afd', '#ff5e7e', '#88ff5a', '#fcff42', '#ffa62d', '#ff36ff']
+
+      function randomInRange(min, max) {
+        return Math.random() * (max - min) + min
+      }
+
+      ;(function frame() {
+        skew = Math.max(0.8, skew - 0.001)
+
+        confetti({
+          particleCount: 1,
+          startVelocity: 0,
+          ticks: 200,
+          origin: {
+            x: Math.random(),
+            // since particles fall down, start a bit higher than random
+            y: Math.random() * skew - 0.2,
+          },
+          colors: [colors[Math.floor(Math.random() * colors.length)]],
+          shapes: ['square', 'circle'],
+          gravity: randomInRange(0.4, 0.6),
+          scalar: randomInRange(0.4, 1),
+          drift: randomInRange(-0.4, 0.4),
+        })
+
+        requestAnimationFrame(frame)
+      })()
+    </script>
   </body>
 </html>

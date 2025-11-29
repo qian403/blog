@@ -1,5 +1,5 @@
 ---
-title: Better Nano: 讓你的 Nano 編輯器更好用 (優化腳本推薦)
+title: 'Better Nano: 讓你的 Nano 編輯器更好用 (優化腳本推薦)'
 published: 2024-05-06
 description: '介紹 better-nano 優化腳本，為 Nano 提供各種優化，提升使用效率。'
 image: ''
