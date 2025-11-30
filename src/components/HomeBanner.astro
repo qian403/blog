@@ -16,7 +16,6 @@ const { avatarImage, githubCalendar } = Astro.props
   >
     {
       avatarImage && (
-        /* ========== 生日帽裝飾 - 開始 (Birthday Hat Decoration - Start) ========== */
         <div class="avatar-container">
           <Image
             priority
@@ -27,13 +26,7 @@ const { avatarImage, githubCalendar } = Astro.props
             height={144}
             width={144}
           />
-          {/* CSS 生日帽 */}
-          <div class="birthday-hat">
-            <div class="hat-cone"></div>
-            <div class="hat-pom"></div>
-          </div>
         </div>
-        /* ========== 生日帽裝飾 - 結束 (Birthday Hat Decoration - End) ========== */
       )
     }
     <div>
@@ -45,68 +38,10 @@ const { avatarImage, githubCalendar } = Astro.props
   {githubCalendar && <GitHubActivityCalendar username={githubCalendar} />}
 </div>
 
-{/* ========== 生日帽樣式 - 開始 (Birthday Hat Styles - Start) ========== */}
 <style>
   .avatar-container {
     position: relative;
     display: inline-block;
     flex-shrink: 0;
   }
-
-  .birthday-hat {
-    position: absolute;
-    top: -28px;
-    left: 50%;
-    transform: translateX(-50%);
-    pointer-events: none;
-  }
-
-  /* 帽子主體 (錐形) */
-  .hat-cone {
-    width: 0;
-    height: 0;
-    border-left: 22px solid transparent;
-    border-right: 22px solid transparent;
-    border-bottom: 38px solid #e74c3c;
-    position: relative;
-    transform: rotate(-10deg);
-  }
-
-  /* 帽子上的條紋裝飾 */
-  .hat-cone::before {
-    content: '';
-    position: absolute;
-    bottom: -26px;
-    left: -15px;
-    width: 30px;
-    height: 6px;
-    background: #f39c12;
-    border-radius: 2px;
-  }
-
-  /* 帽子頂部的絨球 */
-  .hat-pom {
-    position: absolute;
-    top: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 12px;
-    height: 12px;
-    background: #f1c40f;
-    border-radius: 50%;
-    box-shadow: 0 0 6px rgba(241, 196, 15, 0.6);
-  }
-
-  /* 絨球的高光效果 */
-  .hat-pom::after {
-    content: '';
-    position: absolute;
-    top: 2px;
-    left: 3px;
-    width: 5px;
-    height: 5px;
-    background: rgba(255, 255, 255, 0.8);
-    border-radius: 50%;
-  }
 </style>
-{/* ========== 生日帽樣式 - 結束 (Birthday Hat Styles - End) ========== */}
