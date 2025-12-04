@@ -23,14 +23,14 @@ DNS 也常被用作**網路審查**工具。透過 **DNS 污染**、**RPZ (Respo
 - **繞過網路限制**：訪問被封鎖的網站（如小紅書）
 
 > [!IMPORTANT]
-> 更改為國際公共 DNS（如 Cloudflare 1.1.1.1 或 Google 8.8.8.8）可繞過 DNS 封鎖，但請注意可能涉及法律問題，使用前請自行評估風險。
+> 更改為國際公共 DNS(如 Google 8.8.8.8 或 Cloudflare 1.1.1.1)可繞過 DNS 封鎖,但請注意可能涉及法律問題,使用前請自行評估風險。
 
 ### 推薦的公共 DNS
 
 | DNS 提供商 | 主要 DNS | 備用 DNS | 特色 |
 |-----------|---------|---------|------|
+| **Google** | `8.8.8.8` | `8.8.4.4` | 速度快、穩定性高、全球覆蓋 |
 | **Cloudflare** | `1.1.1.1` | `1.0.0.1` | 注重隱私、速度最快 |
-| **Google** | `8.8.8.8` | `8.8.4.4` | 速度快、穩定性高 |
 | **Quad9** | `9.9.9.9` | `149.112.112.112` | 主打安全性 |
 
 ---
@@ -70,15 +70,15 @@ DNS 也常被用作**網路審查**工具。透過 **DNS 污染**、**RPZ (Respo
 2. 在網路連線上按右鍵 > 「內容」
 3. 雙擊「網際網路通訊協定第 4 版 (TCP/IPv4)」
 4. 選擇「使用下列的 DNS 伺服器位址」
-   - 慣用：`1.1.1.1`
-   - 其他：`1.0.0.1`
+   - 慣用：`8.8.8.8`
+   - 其他：`8.8.4.4`
 5. 點選「確定」
 
 #### PowerShell（進階）
 
 ```powershell
 # 以系統管理員身分執行
-Set-DnsClientServerAddress -InterfaceAlias "Wi-Fi" -ServerAddresses ("1.1.1.1","1.0.0.1")
+Set-DnsClientServerAddress -InterfaceAlias "Wi-Fi" -ServerAddresses ("8.8.8.8","8.8.4.4")
 ```
 
 ---
@@ -87,12 +87,12 @@ Set-DnsClientServerAddress -InterfaceAlias "Wi-Fi" -ServerAddresses ("1.1.1.1","
 
 1. Apple 選單 > 「系統設定」> 「網路」
 2. 選擇連線 > 「詳細資料」> 「DNS」
-3. 點選 `+` 新增 DNS：`1.1.1.1` 和 `1.0.0.1`
+3. 點選 `+` 新增 DNS：`8.8.8.8` 和 `8.8.4.4`
 4. 點選「好」> 「套用」
 
 **終端機方式**：
 ```bash
-sudo networksetup -setdnsservers Wi-Fi 1.1.1.1 1.0.0.1
+sudo networksetup -setdnsservers Wi-Fi 8.8.8.8 8.8.4.4
 ```
 
 ---
@@ -104,11 +104,11 @@ sudo networksetup -setdnsservers Wi-Fi 1.1.1.1 1.0.0.1
 
 1. 「設定」> 「Wi-Fi」> 點選網路旁的 `ⓘ`
 2. 「設定 DNS」> 選擇「手動」
-3. 刪除現有 DNS，新增 `1.1.1.1` 和 `1.0.0.1`
+3. 刪除現有 DNS，新增 `8.8.8.8` 和 `8.8.4.4`
 4. 點選「儲存」
 
 :::tip
-推薦安裝 Cloudflare 的 1.1.1.1 App 啟用加密 DNS
+推薦安裝 Google 或 Cloudflare 的 App (如 1.1.1.1) 啟用加密 DNS
 :::
 
 ### Android
@@ -130,7 +130,7 @@ sudo networksetup -setdnsservers Wi-Fi 1.1.1.1 1.0.0.1
 
 1. 長按 Wi-Fi 網路 > 「修改網路」> 「進階選項」
 2. IP 設定改為「靜態」
-3. DNS 1：`1.1.1.1`，DNS 2：`1.0.0.1`
+3. DNS 1：`8.8.8.8`，DNS 2：`8.8.4.4`
 
 ---
 
@@ -157,8 +157,8 @@ nslookup google.com
 
 ### Q2: 我該選擇哪個 DNS？
 
-- **一般使用者**：Cloudflare (1.1.1.1) 或 Google (8.8.8.8)
-- **注重隱私**：Cloudflare
+- **一般使用者**：Google (8.8.8.8) 或 Cloudflare (1.1.1.1)
+- **注重隱私**：Cloudflare (1.1.1.1)
 - **注重安全**：Quad9 (9.9.9.9)
 
 ### Q3: 如何恢復預設設定？
