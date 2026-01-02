@@ -16,9 +16,10 @@ interface Props {
   author?: string
   published?: Date
   updated?: Date
+  noindex?: boolean
 }
 
-const { title, description, tags, author, published, updated } = Astro.props
+const { title, description, tags, author, published, updated, noindex } = Astro.props
 const pageUrl = new URL(Astro.url.pathname, Astro.site).href.replace(/\/$/, '') // Remove trailing slash for consistency
 const pageType = Astro.url.pathname.startsWith('/posts') ? 'article' : 'website'
 const pageTitle = title ? `${title} - ${siteConfig.title}` : siteConfig.title
@@ -144,6 +145,7 @@ let generatedCss: string = cssLines.join('\n')
     <meta name="twitter:description" content={pageDescription} />
     {pageImage && <meta name="twitter:image" content={pageImage} />}
     <meta name="keywords" content={pageKeywords} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
     <link rel="canonical" href={pageUrl} />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <link rel="icon" href="/favicon.ico" sizes="any" />
