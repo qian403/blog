@@ -2,7 +2,7 @@ import type { SiteConfig } from '~/types'
 
 const config: SiteConfig = {
   // Absolute URL to the root of your published site, used for generating links and sitemaps.
-  site: 'https://blog.qian30.net',
+  site: 'https://chien.dev',
   // The name of your site, used in the title and for SEO.
   title: 'CHIEN 的技術筆記',
   // The description of your site, used for SEO and RSS feed.

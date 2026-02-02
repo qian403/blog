@@ -46,7 +46,7 @@
 ## 📧 聯絡方式
 
 - GitHub: [@qian403](https://github.com/qian403)
-- Email: qian@qian30.net
+- Email: hi@chien.dev
 - Telegram: [@qian50](https://t.me/qian50)
   - Install [pnpm](https://pnpm.io) `npm install -g pnpm` if you haven't.
 

@@ -33,6 +33,6 @@ title: About Me
 
 ![Discord Badge](https://discord-readme-badge.vercel.app/api?id=679496165183586335)
 
-Email: qian@qian30.net
+Email: hi@chien.dev
 GitHub: [@qian403](https://github.com/qian403)
 Telegram: [@qian50](https://t.me/qian50)
