@@ -54,6 +54,12 @@ const friendLinks = [
     avatar: 'https://www.gravatar.com/avatar/f6d0a62624d1d82d90ea3232e3663561?s=512',
     description: '三哥',
     url: 'https://sange.ge'
+  },
+  {
+    name: 'bc',
+    avatar: '/friends/bc.png',
+    description: '直升機',
+    url: 'https://bcxy.me/'
   }
 ]
 ---
@@ -81,6 +87,7 @@ const friendLinks = [
               <img
                 src={friend.avatar}
                 alt={friend.name}
+                loading="lazy"
                 class="w-12 h-12 rounded-full object-cover"
               />
             )}
@@ -118,7 +125,7 @@ const friendLinks = [
       <p class="text-sm opacity-70">
         如果你想出現在上面，歡迎在下方留言區留下你的網站資訊，我需要標題、描述、圖片連結、連結！
         這是我的圖片連結</br>
-        <link href="https://chien.dev/avatar.jpg" > https://chien.dev/avatar.jpg</link></br>
+        <link href="https://blog.chien.dev/avatar.jpg" > https://blog.chien.dev/avatar.jpg</link></br>
         如果沒有描述的話，我就會依照我對你了解還有去翻你的 Blog 之後幫你加上去喔！
       </p>
     </div>
