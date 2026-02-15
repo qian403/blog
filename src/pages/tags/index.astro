@@ -1,0 +1,16 @@
+---
+import Layout from '~/layouts/Layout.astro'
+import { getSortedPosts } from '~/utils'
+import BlockHeader from '~/components/BlockHeader.astro'
+import TagsSection from '~/components/TagsSection.astro'
+import PageHeader from '~/components/PageHeader.astro'
+
+const sortedPosts = await getSortedPosts()
+---
+
+<Layout title="Tags">
+  <PageHeader>Tags</PageHeader>
+  <section>
+    <TagsSection posts={sortedPosts} />
+  </section>
+</Layout>

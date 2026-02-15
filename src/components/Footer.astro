@@ -1,21 +1,30 @@
 ---
-
-import { profileConfig } from '../config'
-import { url } from '../utils/url-utils'
+import siteConfig from '~/site.config'
+import SocialLinks from '~/components/SocialLinks.astro'
 ---
 
-<!--<div class="border-t border-[var(&#45;&#45;primary)] mx-16 border-dashed py-8 max-w-[var(&#45;&#45;page-width)] flex flex-col items-center justify-center px-6">-->
-<div class="transition border-t border-black/10 dark:border-white/15 my-10 border-dashed mx-32"></div>
-<!--<div class="transition bg-[oklch(92%_0.01_var(&#45;&#45;hue))] dark:bg-black rounded-2xl py-8 mt-4 mb-8 flex flex-col items-center justify-center px-6">-->
-<div class="transition border-dashed border-[oklch(85%_0.01_var(--hue))] dark:border-white/15 rounded-2xl mb-12 flex flex-col items-center justify-center px-6">
-    <div class="transition text-50 text-sm">
-        © 2025 {profileConfig.name}. All Rights Reserved. /
-        <a class="transition link text-[var(--primary)] font-medium" target="_blank" href={url('rss.xml')}>RSS</a> /
-        <a class="transition link text-[var(--primary)] font-medium" target="_blank" href={url('sitemap-index.xml')}>Sitemap</a>
-    </div>
-    <div class="transition text-50 text-sm">
-        Powered by
-        <a class="transition link text-[var(--primary)] font-medium" target="_blank" href="https://astro.build">Astro</a> &
-        <a class="transition link text-[var(--primary)] font-medium" target="_blank" href="https://github.com/saicaca/fuwari">Fuwari</a>
-    </div>
-</div>
+<footer
+  class="mt-auto pt-9 md:pt-11 grow-0 flex flex-col gap-6 items-center justify-between max-w-full text-foreground/80"
+>
+  {siteConfig.socialLinks && <SocialLinks socialLinks={siteConfig.socialLinks} />}
+  <div class="flex flex-col md:flex-row flex-wrap flex-1 items-center justify-center">
+    <span class="my-1">
+      {siteConfig.author} © 2026
+    </span>
+    <span class="mx-5 hidden md:block"> :: </span>
+    <span class="my-1">
+      Powered by <a
+        class="underline"
+        target="_blank"
+        rel="noopener noreferrer"
+        href="https://astro.build">Astro</a
+      >
+      & <a
+        class="underline"
+        target="_blank"
+        rel="noopener noreferrer"
+        href="https://github.com/stelcodes/multiterm-astro">MultiTerm</a
+      >
+    </span>
+  </div>
+</footer>

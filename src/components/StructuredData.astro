@@ -1,0 +1,135 @@
+---
+/**
+ * StructuredData Component
+ * 生成 JSON-LD 結構化數據以增強 SEO
+ * 支援 BlogPosting、WebSite、BreadcrumbList 等 Schema.org 類型
+ */
+import siteConfig from '~/site.config'
+
+interface Props {
+  type: 'article' | 'website'
+  title?: string
+  description?: string
+  author?: string
+  publishDate?: Date
+  modifiedDate?: Date
+  image?: string
+  url: string
+  tags?: string[]
+}
+
+const { 
+  type, 
+  title, 
+  description, 
+  author, 
+  publishDate, 
+  modifiedDate, 
+  image, 
+  url,
+  tags 
+} = Astro.props
+
+// WebSite Schema (用於首頁)
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: siteConfig.title,
+  description: siteConfig.description,
+  url: siteConfig.site,
+  author: {
+    '@type': 'Person',
+    name: siteConfig.author,
+  },
+  inLanguage: 'zh-TW',
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: {
+      '@type': 'EntryPoint',
+      urlTemplate: `${siteConfig.site}/posts?q={search_term_string}`,
+    },
+    'query-input': 'required name=search_term_string',
+  },
+}
+
+// Blog Schema (宣告這是個人部落格)
+const blogSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Blog',
+  name: siteConfig.title,
+  description: siteConfig.description,
+  url: siteConfig.site,
+  author: {
+    '@type': 'Person',
+    name: siteConfig.author,
+  },
+  inLanguage: 'zh-TW',
+}
+
+// BlogPosting Schema (用於文章頁面)
+const articleSchema = type === 'article' ? {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: title,
+  description: description || siteConfig.description,
+  image: image || `${siteConfig.site}/social-cards/__default.png`,
+  datePublished: publishDate?.toISOString(),
+  dateModified: (modifiedDate || publishDate)?.toISOString(),
+  author: {
+    '@type': 'Person',
+    name: author || siteConfig.author,
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: siteConfig.title,
+    logo: {
+      '@type': 'ImageObject',
+      url: `${siteConfig.site}/favicon.ico`,
+    },
+  },
+  mainEntityOfPage: {
+    '@type': 'WebPage',
+    '@id': url,
+  },
+  url: url,
+  inLanguage: 'zh-TW',
+  keywords: tags?.join(', ') || siteConfig.tags.join(', '),
+} : null
+
+// BreadcrumbList Schema
+const breadcrumbSchema = type === 'article' ? {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Home',
+      item: siteConfig.site,
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: 'Posts',
+      item: `${siteConfig.site}/posts`,
+    },
+    {
+      '@type': 'ListItem',
+      position: 3,
+      name: title,
+      item: url,
+    },
+  ],
+} : null
+
+// 組合所有結構化數據
+const schemas = [
+  type === 'website' ? websiteSchema : articleSchema,
+  type === 'website' ? blogSchema : null,
+  breadcrumbSchema,
+].filter(Boolean)
+---
+
+{schemas.map((schema) => (
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+))}

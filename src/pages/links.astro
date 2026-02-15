@@ -1,163 +1,136 @@
 ---
-import { imageConfig } from 'astro:assets'
-import { getEntry } from 'astro:content'
-import I18nKey from '../i18n/i18nKey'
-import { i18n } from '../i18n/translation'
-import MainGridLayout from '../layouts/MainGridLayout.astro'
-
-// 直接使用多行字串
-const myLinksDescription = `  
-這裡是用來放朋友的連結還有一些有用的工具!希望工具對你也有所幫助。
-
-如果你也想加入朋友行列!，請聯繫我，我會盡快把你加上去ㄉ，我也會時不時去你那邊晃晃。  
-
-  - 名稱: Qian's Blog
-
-  - 網址: https://blog.qian30.net
-
-  - 描述: 記錄、分享一下我在做啥還有一點生活碎片:D
-
-  - 頭像: https://blog.qian30.net/_astro/me.Dk9CSTMP_Z1YKmpJ.webp
-
-`
-
-const myItems = [
-  {
-    title: '工具網站',
-    imgurl:
-      'http://localhost:4321/_image?href=%2F%40fs%2FD%3A%2Fqian%2Fqianowo%2Fweb%2Fblog%2Fsrc%2Fassets%2Fimages%2Fme.png%3ForigWidth%3D600%26origHeight%3D600%26origFormat%3Dpng&f=webp',
-    desc: '一個小小的工具網站專案，用來練習前端，Vue建立',
-    siteurl: 'https://tools.qian30.net',
-    tags: ['專案'],
-  },
-]
-
-const friendsPost = await getEntry('spec', 'Links')
-const friendItems = [
-  {
-    title: '高中學長的Blog',
-    imgurl: 'https://blog.bob0623.net/_astro/avatar.BCKyvhet_ZvdnjX.webp',
-    desc: '高中學長bob的Blog',
-    siteurl: 'https://blog.bob0623.net/',
-    tags: ['朋友!'],
-  },
-  {
-    title: '呂老闆',
-    imgurl: 'https://ricky.place/images/profile.jpg',
-    desc: '呂大老闆',
-    siteurl: 'https://ricky.place/',
-    tags: ['朋友!'],
-  },
-  {
-    title: '第三夏尔',
-    imgurl: 'https://thirdshire.com/blackcat_avatar.jpg',
-    desc: '认真生活，积极摸鱼',
-    siteurl: 'https://thirdshire.com/',
-    tags: ['朋友!'],
-  },
-]
+import Layout from '~/layouts/Layout.astro'
+import PageHeader from '~/components/PageHeader.astro'
 ---
 
-<MainGridLayout title={i18n(I18nKey.links)} description={i18n(I18nKey.links)}>
-    <!-- 上半部：我的連結 -->
-    <section>
-      <h2 class="text-xl font-bold mb-4 dark:text-white text-black">我的連結</h2>
-      
-      <!-- 描述區塊 -->
-      <div class="mb-6 p-6 rounded-[var(--radius-large)] bg-[var(--card-bg,#f5f5f5)] dark:bg-[var(--card-bg,#333)] shadow-sm">
-        {myLinksDescription.split('\n\n').map((paragraph, i) => (
-          <>
-            {paragraph.startsWith('- ') ? (
-              <ul class="list-disc pl-5 dark:text-white text-black mb-4">
-                {paragraph.split('\n- ').map((item, j) => (
-                  j === 0 ? 
-                    <li class="dark:text-white text-black">{item.substring(2)}</li> : 
-                    <li class="dark:text-white text-black">{item}</li>
-                ))}
-              </ul>
-            ) : (
-              <p class="dark:text-white text-black mb-4">{paragraph}</p>
-            )}
-          </>
-        ))}
-      </div>
-      
-      <!-- 連結卡片區域添加背景 -->
-      <div class="p-6 rounded-[var(--radius-large)] bg-[var(--card-bg,#f5f5f5)] dark:bg-[var(--card-bg,#333)] shadow-sm">
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-8">
-        {myItems.map((item) => (
+<Layout title="Links">
+  <PageHeader>Links</PageHeader>
+  <section class="max-w-2xl">
+    <div class="space-y-6">
+      <!-- 社交平台 -->
+      <div>
+        <h2 class="text-xl font-semibold mb-4">Social</h2>
+        <div class="space-y-3">
           <a
-            href={item.siteurl}
+            href="https://github.com/qian403"
             target="_blank"
             rel="noopener noreferrer"
-            class="flex flex-nowrap items-stretch h-28 gap-4 rounded-[var(--radius-large)] bg-[var(--card-bg,#f5f5f5)] dark:bg-[var(--card-bg,#333)] hover:shadow-lg hover:scale-105 transition transform duration-300"
+            class="flex items-center gap-3 p-4 rounded-lg border border-separator hover:bg-accent/10 transition-colors"
           >
-            <div class="w-28 h-28 flex-shrink-0 rounded-lg overflow-hidden bg-zinc-200 dark:bg-zinc-900">
-              <img src={item.imgurl} alt="頭像" class="w-full h-full object-cover">
-            </div>
-            <div class="grow w-full flex flex-col justify-center">
-              <div class="font-bold transition text-lg dark:text-white text-black mb-1">{item.title}</div>
-              <div class="dark:text-white text-black text-sm font-medium">{item.desc}</div>
-              <div class="flex items-center mt-1">
-                {(item.tags && item.tags.length > 0)
-                  ? item.tags.map((tag, i) => (
-                      <>
-                        {i > 0 && <span class="mx-1.5 dark:text-white text-black text-sm">/</span>}
-                        <span class="transition dark:text-white text-black text-sm font-medium">{tag}</span>
-                      </>
-                    ))
-                  : <span class="transition dark:text-white text-black text-sm font-medium">{i18n(I18nKey.noTags)}</span>}
-              </div>
-            </div>
-            <div class="flex items-center pr-4">
-              <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" class="transition dark:text-white text-black text-4xl iconify iconify--material-symbols" width="1em" height="1em" viewBox="0 0 24 24">
-                <path fill="currentColor" d="M12.6 12L8.7 8.1q-.275-.275-.275-.7t.275-.7t.7-.275t.7.275l4.6 4.6q.15.15.213.325t.062.375t-.062.375t-.213.325l-4.6 4.6q-.275.275-.7.275t-.7-.275t-.275-.7t.275-.7z"></path>
-              </svg>
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+              <path
+                d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+              ></path>
+            </svg>
+            <div>
+              <div class="font-medium">GitHub</div>
+              <div class="text-sm opacity-70">@qian403</div>
             </div>
           </a>
-        ))}
-      </div>
-      </div>
-    </section>
-    
-    <!-- 下半部：友站連結 -->
-    <section class="mt-8">
-      <h2 class="text-xl font-bold mb-4 dark:text-white text-black">友站連結</h2>
-      <!-- 友站連結卡片區域添加背景 -->
-      <div class="p-6 rounded-[var(--radius-large)] bg-[var(--card-bg,#f5f5f5)] dark:bg-[var(--card-bg,#333)] shadow-sm">
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-8">
-        {friendItems.map((item) => (
+
           <a
-            href={item.siteurl}
+            href="https://t.me/qian50"
             target="_blank"
             rel="noopener noreferrer"
-            class="flex flex-nowrap items-stretch h-28 gap-4 rounded-[var(--radius-large)] bg-[var(--card-bg,#f5f5f5)] dark:bg-[var(--card-bg,#333)] hover:shadow-lg hover:scale-105 transition transform duration-300"
+            class="flex items-center gap-3 p-4 rounded-lg border border-separator hover:bg-accent/10 transition-colors"
           >
-            <div class="w-28 h-28 flex-shrink-0 rounded-lg overflow-hidden bg-zinc-200 dark:bg-zinc-900">
-              <img src={item.imgurl} alt="頭像" class="w-full h-full object-cover">
-            </div>
-            <div class="grow w-full flex flex-col justify-center">
-              <div class="font-bold transition text-lg dark:text-white text-black mb-1">{item.title}</div>
-              <div class="dark:text-white text-black text-sm font-medium">{item.desc}</div>
-              <div class="flex items-center mt-1">
-                {(item.tags && item.tags.length > 0)
-                  ? item.tags.map((tag, i) => (
-                      <>
-                        {i > 0 && <span class="mx-1.5 dark:text-white text-black text-sm">/</span>}
-                        <span class="transition dark:text-white text-black text-sm font-medium">{tag}</span>
-                      </>
-                    ))
-                  : <span class="transition dark:text-white text-black text-sm font-medium">{i18n(I18nKey.noTags)}</span>}
-              </div>
-            </div>
-            <div class="flex items-center pr-4">
-              <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" class="transition dark:text-white text-black text-4xl iconify iconify--material-symbols" width="1em" height="1em" viewBox="0 0 24 24">
-                <path fill="currentColor" d="M12.6 12L8.7 8.1q-.275-.275-.275-.7t.275-.7t.7-.275t.7.275l4.6 4.6q.15.15.213.325t.062.375t-.062.375t-.213.325l-4.6 4.6q-.275.275-.7.275t-.7-.275t-.275-.7t.275-.7z"></path>
-              </svg>
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+              <path
+                d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"
+              ></path>
+            </svg>
+            <div>
+              <div class="font-medium">Telegram</div>
+              <div class="text-sm opacity-70">@qian50</div>
             </div>
           </a>
-        ))}
+
+          <a
+            href="https://www.instagram.com/chien40_/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="flex items-center gap-3 p-4 rounded-lg border border-separator hover:bg-accent/10 transition-colors"
+          >
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+              <path
+                d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"
+              ></path>
+            </svg>
+            <div>
+              <div class="font-medium">Instagram</div>
+              <div class="text-sm opacity-70">@qian40_</div>
+            </div>
+          </a>
+        </div>
       </div>
+
+      <!-- 聯絡方式 -->
+      <div>
+        <h2 class="text-xl font-semibold mb-4">Contact</h2>
+        <div class="space-y-3">
+          <a
+            href="mailto:hi@chien.dev"
+            class="flex items-center gap-3 p-4 rounded-lg border border-separator hover:bg-accent/10 transition-colors"
+          >
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+              ></path>
+            </svg>
+            <div>
+              <div class="font-medium">Email</div>
+              <div class="text-sm opacity-70">hi@chien.dev</div>
+            </div>
+          </a>
+
+          <div class="flex items-center gap-3 p-4 rounded-lg border border-separator">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+              <path
+                d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0a12.64 12.64 0 0 0-.617-1.25a.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.078.078 0 0 0 .084-.028a14.09 14.09 0 0 0 1.226-1.994a.076.076 0 0 0-.041-.106a13.107 13.107 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128a10.2 10.2 0 0 0 .372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127a12.299 12.299 0 0 1-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028a19.839 19.839 0 0 0 6.002-3.03a.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.956-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.946 2.418-2.157 2.418z"
+              ></path>
+            </svg>
+            <div>
+              <div class="font-medium">Discord</div>
+              <div class="text-sm opacity-70">qian_30</div>
+            </div>
+          </div>
+        </div>
       </div>
-    </section>
-  </MainGridLayout>
+
+      <!-- 其他連結 -->
+      <div>
+        <h2 class="text-xl font-semibold mb-4">Others</h2>
+        <div class="space-y-3">
+          <a
+            href="https://tools.chien.dev"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="flex items-center gap-3 p-4 rounded-lg border border-separator hover:bg-accent/10 transition-colors"
+          >
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+              ></path>
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+              ></path>
+            </svg>
+            <div>
+              <div class="font-medium">小工具</div>
+              <div class="text-sm opacity-70">tools.chien.dev</div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
