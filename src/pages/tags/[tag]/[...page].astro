@@ -27,6 +27,8 @@ const pageTitle =
 ---
 
 <Layout title={pageTitle} description={`All posts tagged with ${tagTitle}`}>
+  {page.url.prev && <link rel="prev" href={encodeURI(page.url.prev)} slot="head" />}
+  {page.url.next && <link rel="next" href={encodeURI(page.url.next)} slot="head" />}
   <div class="mt-2 sm:mt-0">
     <PageHeader titlePieces={['tags', tagTitle]} />
     {page.data.map((post) => <PostPreview post={post} />)}

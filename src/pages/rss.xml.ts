@@ -26,6 +26,7 @@ export async function GET(_context: AstroGlobal) {
       description: post.data.description,
       author: post.data.author || siteConfig.author,
       link: `/posts/${post.id}`,
+      categories: post.data.tags || [],
       content: sanitizeHtml(parser.render(post.body || ''), {
         allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img']),
       }),

@@ -18,6 +18,8 @@ const pageTitle = 'Archive' + (page.currentPage > 1 ? ` - Page ${page.currentPag
 ---
 
 <Layout title={pageTitle} description="All posts in the archive">
+  {page.url.prev && <link rel="prev" href={page.url.prev} slot="head" />}
+  {page.url.next && <link rel="next" href={page.url.next} slot="head" />}
   <div class="mt-2 sm:mt-0">
     <PageHeader />
     {page.data.map((post) => <PostPreview post={post} />)}
