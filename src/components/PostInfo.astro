@@ -1,14 +1,16 @@
 ---
-import { dateString, SeriesGroup } from '~/utils'
+import { dateString, dateTimeString, SeriesGroup } from '~/utils'
 import { render, type CollectionEntry } from 'astro:content'
 import type { Collation } from '~/types'
 
 interface Props {
   post: CollectionEntry<'posts'>
+  detailed?: boolean
   class?: string
 }
 
-const { post, class: className } = Astro.props
+const { post, detailed = false, class: className } = Astro.props
+const fmt = detailed ? dateTimeString : dateString
 const { remarkPluginFrontmatter } = await render(post)
 const { minutesRead } = remarkPluginFrontmatter
 const seriesFrontmatter = post.data.series
@@ -42,18 +44,25 @@ if (seriesFrontmatter) {
       )
     }
     <div class="shrink-0 pl-0.5 text-[17px] sm:text-base">
-      <time>{dateString(post.data.published)}</time>
+      <span>創建時間 <time>{fmt(post.data.published)}</time></span>
       {
-        post.data.author && (
-          <span class="before:content-['·'] before:font-bold before:inline-block before:mx-0.5">
-            {post.data.author}
+        minutesRead && (
+          <span class="before:content-['·'] before:inline-block before:mx-0.5">
+            閱讀時間 {minutesRead}
           </span>
         )
       }
       {
-        minutesRead && (
+        post.data.lastUpdated && (
           <span class="before:content-['·'] before:inline-block before:mx-0.5">
-            {minutesRead}
+            最後更新 <time>{fmt(post.data.lastUpdated)}</time>
+          </span>
+        )
+      }
+      {
+        post.data.author && (
+          <span class="before:content-['·'] before:inline-block before:mx-0.5">
+            {post.data.author}
           </span>
         )
       }

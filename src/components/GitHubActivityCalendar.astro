@@ -21,7 +21,6 @@ import type {
 
 interface Props {
   username: string
-  year?: number
 }
 
 function range(n: number) {
@@ -38,10 +37,14 @@ async function fetchData(
     }
     for (const { date, count } of activities) {
       if (!isValid(parseISO(date))) {
-        throw new Error(`Activity date '${date}' is not a valid ISO 8601 date string.`)
+        throw new Error(
+          `Activity date '${date}' is not a valid ISO 8601 date string.`,
+        )
       }
       if (count < 0) {
-        throw new RangeError(`Activity count must not be negative, found ${count}.`)
+        throw new RangeError(
+          `Activity count must not be negative, found ${count}.`,
+        )
       }
     }
   }
@@ -51,40 +54,31 @@ async function fetchData(
     if (!response.ok) {
       const data = (await response.json()) as GitHubActivityApiResponse
       const message = data.error || 'Unknown error'
-      throw Error(`Fetching GitHub contribution data for "${username}" failed: ${message}`)
+      throw Error(
+        `Fetching GitHub contribution data for "${username}" failed: ${message}`,
+      )
     }
     const data = (await response.json()) as GitHubActivityApiResponse
     validateActivities(data.contributions)
     return data
   } catch (e) {
-    console.warn(`[GitHubActivityCalendar] Failed to fetch data for ${username}:`, e)
+    console.warn(
+      `[GitHubActivityCalendar] Failed to fetch data for ${username}:`,
+      e,
+    )
     return {
-      total: {
-        [year]: 0,
-        lastYear: 0,
-      },
+      total: { [year]: 0, lastYear: 0 },
       contributions: [],
     }
   }
 }
 
-function calcColorScale([start, end]: [string, string], steps: number): Array<string> {
-  return range(steps).map((i) => {
-    switch (i) {
-      case 0:
-        return start
-      case steps - 1:
-        return end
-      default: {
-        const pos = (i / (steps - 1)) * 100
-        return `color-mix(in oklab, ${end} ${parseFloat(pos.toFixed(2))}%, ${start})`
-      }
-    }
-  })
-}
-
-function fillHoles(activities: Array<GitHubActivityDay>): Array<GitHubActivityDay> {
-  const calendar = new Map<string, GitHubActivityDay>(activities.map((a) => [a.date, a]))
+function fillHoles(
+  activities: Array<GitHubActivityDay>,
+): Array<GitHubActivityDay> {
+  const calendar = new Map<string, GitHubActivityDay>(
+    activities.map((a) => [a.date, a]),
+  )
   const firstActivity = activities[0] as GitHubActivityDay
   const lastActivity = activities[activities.length - 1] as GitHubActivityDay
 
@@ -96,29 +90,21 @@ function fillHoles(activities: Array<GitHubActivityDay>): Array<GitHubActivityDa
     if (calendar.has(date)) {
       return calendar.get(date) as GitHubActivityDay
     }
-    return {
-      date,
-      count: 0,
-      level: 0,
-    }
+    return { date, count: 0, level: 0 }
   })
 }
 
 function groupByWeeks(
   activities: Array<GitHubActivityDay>,
-  weekStart: WeekdayIndex = 0, // 0 = Sunday
+  weekStart: WeekdayIndex = 0,
 ): Array<GitHubActivityWeek> {
   const normalizedActivities = fillHoles(activities)
-  // Determine the first date of the calendar. If the first date is not the
-  // passed weekday, the respective weekday one week earlier is used.
   const firstActivity = normalizedActivities[0] as GitHubActivityDay
   const firstDate = parseISO(firstActivity.date)
   const firstCalendarDate =
     getDay(firstDate) === weekStart
       ? firstDate
       : subWeeks(nextDay(firstDate, weekStart), 1)
-  // To correctly group activities by week, it is necessary to left-pad the list
-  // because the first date might not be set start weekday.
   const paddedActivities = [
     ...(Array(differenceInCalendarDays(firstDate, firstCalendarDate)).fill(
       undefined,
@@ -126,8 +112,6 @@ function groupByWeeks(
     ...normalizedActivities,
   ]
   const numberOfWeeks = Math.ceil(paddedActivities.length / 7)
-
-  // Finally, group activities by week
   return [...Array(numberOfWeeks).keys()].map((weekIndex) =>
     paddedActivities.slice(weekIndex * 7, weekIndex * 7 + 7),
   )
@@ -145,10 +129,13 @@ function getMonthLabels(
       }
       const month = monthNames[getMonth(parseISO(firstActivity.date))]
       if (!month) {
-        const monthName = new Date(firstActivity.date).toLocaleString('en-US', {
-          month: 'short',
-        })
-        throw new Error(`Unexpected error: undefined month label for ${monthName}.`)
+        const monthName = new Date(firstActivity.date).toLocaleString(
+          'en-US',
+          { month: 'short' },
+        )
+        throw new Error(
+          `Unexpected error: undefined month label for ${monthName}.`,
+        )
       }
       const prevLabel = labels[labels.length - 1]
       if (weekIndex === 0 || !prevLabel || prevLabel.label !== month) {
@@ -158,11 +145,9 @@ function getMonthLabels(
     }, [])
     .filter(({ weekIndex }, index, labels) => {
       const minWeeks = 3
-      // Skip the first month label if there is not enough space to the next one.
       if (index === 0) {
         return labels[1] && labels[1].weekIndex - weekIndex >= minWeeks
       }
-      // Skip the last month label if there is not enough data in that month
       if (index === labels.length - 1) {
         return weeks.slice(weekIndex).length >= minWeeks
       }
@@ -170,94 +155,102 @@ function getMonthLabels(
     })
 }
 
-const { username, year = 'last' } = Astro.props
+// Build-time: fetch current year + a few past years
+const { username } = Astro.props
+const currentYear = new Date().getFullYear()
+const startYear = currentYear - 4 // fetch 5 years of data
 
-const data = await fetchData(username, year)
-
-const themeFromColorscheme: [string, string] = [
-  'var(--theme-background)',
-  'var(--theme-accent)',
+const monthNames = [
+  'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
 ]
-
-const totalCount = year === 'last' ? data.total.lastYear : data.total[year]
 const maxLevel = 4
 const blockMargin = 4
 const labelMargin = 8
 const blockRadius = 2
 const blockSize = 12
 const fontSize = 14
-const hideColorLegend = false
-const hideMonthLabels = false
-const hideTotalCount = false
-const weekStart = 0 // 0 = Sunday, 1 = Monday, etc.
+const weekStart = 0
 
-const colorScale = calcColorScale(themeFromColorscheme, maxLevel + 1)
-const activities = data.contributions
-
-const firstActivity = activities[0]
-const activityYear = getYear(parseISO(firstActivity.date))
-const weeks = groupByWeeks(activities, weekStart)
-const labels = {
-  months: [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec',
-  ],
-  totalCount: `{{count}} contributions in ${year === 'last' ? 'the last year' : '{{year}}'}`,
-  legend: {
-    less: 'Less',
-    more: 'More',
-  },
+type YearData = {
+  totalCount: number
+  weeks: GitHubActivityWeek[]
+  monthLabels: GitHubActivityMonthLabel[]
+  width: number
+  height: number
 }
-const labelHeight = hideMonthLabels ? 0 : fontSize + labelMargin
-const width = weeks.length * (blockSize + blockMargin) - blockMargin
-const height = labelHeight + (blockSize + blockMargin) * 7 - blockMargin
+
+const yearKeys = ['last', ...range(currentYear - startYear + 1).map((i) => startYear + i)]
+const allYearData: Record<string, YearData> = {}
+
+for (const yk of yearKeys) {
+  const data = await fetchData(username, yk as number | 'last')
+  if (data.contributions.length === 0) continue
+  const weeks = groupByWeeks(data.contributions, weekStart)
+  const monthLabels = getMonthLabels(weeks, monthNames)
+  const labelHeight = fontSize + labelMargin
+  const width = weeks.length * (blockSize + blockMargin) - blockMargin
+  const height = labelHeight + (blockSize + blockMargin) * 7 - blockMargin
+  const totalCount =
+    yk === 'last' ? data.total.lastYear : data.total[yk as number]
+  allYearData[String(yk)] = { totalCount, weeks, monthLabels, width, height }
+}
+
+const labelHeight = fontSize + labelMargin
+const defaultKey = 'last'
+const defaultData = allYearData[defaultKey]
 ---
 
+{defaultData && (
 <article
   id="github-activity-calendar"
   class="w-max max-w-full flex flex-col gap-2 text-sm"
+  data-block-size={blockSize}
+  data-block-margin={blockMargin}
+  data-block-radius={blockRadius}
+  data-label-height={labelHeight}
+  data-max-level={maxLevel}
 >
+  <div class="flex items-center gap-3 mb-1">
+    <label for="gh-year-select" class="sr-only">Select year</label>
+    <select
+      id="gh-year-select"
+      class="bg-foreground/5 border border-foreground/16 rounded-lg px-2.5 py-1 text-sm cursor-pointer hover:border-foreground/30 transition-colors"
+    >
+      <option value="last" selected>Last Year</option>
+      {Object.keys(allYearData)
+        .filter((k) => k !== 'last')
+        .sort((a, b) => Number(b) - Number(a))
+        .map((y) => (
+          <option value={y}>{y}</option>
+        ))}
+    </select>
+  </div>
   <div
     class="max-w-full overflow-x-auto pt-0.5"
-    style={{
-      // Don't cover the calendar with the scrollbar.
-      scrollbarGutter: 'stable',
-    }}
+    style={{ scrollbarGutter: 'stable' }}
   >
     <svg
+      id="gh-calendar-svg"
       class="block visible"
-      width={width}
-      height={height}
-      viewBox={`0 0 ${width} ${height}`}
+      width={defaultData.width}
+      height={defaultData.height}
+      viewBox={`0 0 ${defaultData.width} ${defaultData.height}`}
     >
-      {
-        !hideMonthLabels && (
-          <g>
-            {getMonthLabels(weeks, labels.months).map(({ label, weekIndex }) => (
-              <text
-                x={(blockSize + blockMargin) * weekIndex}
-                y={0}
-                dominant-baseline="hanging"
-                fill="currentColor"
-              >
-                {label}
-              </text>
-            ))}
-          </g>
-        )
-      }
-      {
-        weeks.map((week, weekIndex) => (
+      <g id="gh-month-labels">
+        {defaultData.monthLabels.map(({ label, weekIndex }) => (
+          <text
+            x={(blockSize + blockMargin) * weekIndex}
+            y={0}
+            dominant-baseline="hanging"
+            fill="currentColor"
+          >
+            {label}
+          </text>
+        ))}
+      </g>
+      <g id="gh-weeks">
+        {defaultData.weeks.map((week, weekIndex) => (
           <g transform={`translate(${(blockSize + blockMargin) * weekIndex}, 0)`}>
             {week.map((activity, dayIndex) => {
               if (!activity) return null
@@ -270,48 +263,109 @@ const height = labelHeight + (blockSize + blockMargin) * 7 - blockMargin
                   height={blockSize}
                   rx={blockRadius}
                   ry={blockRadius}
-                  fill={colorScale[activity.level]}
+                  fill={`var(--gh-level-${activity.level})`}
                   data-date={activity.date}
                   data-level={activity.level}
                 />
               )
             })}
           </g>
-        ))
-      }
+        ))}
+      </g>
     </svg>
   </div>
-  {
-    !(hideTotalCount && hideColorLegend) && (
-      <footer class="flex flex-col sm:flex-row sm:justify-between gap-x-1 gap-y-2">
-        {!hideTotalCount && (
-          <div>
-            {labels.totalCount
-              ? labels.totalCount
-                  .replace('{{count}}', String(totalCount))
-                  .replace('{{year}}', String(activityYear))
-              : `${totalCount} activities in ${activityYear}`}
-          </div>
-        )}
-        {!hideColorLegend && (
-          <div class="flex items-center gap-[3px]">
-            <span class="mr-1.5">{labels.legend.less}</span>
-            {range(maxLevel + 1).map((level) => (
-              <svg width={blockSize} height={blockSize}>
-                <rect
-                  class="stroke-foreground/10"
-                  width={blockSize}
-                  height={blockSize}
-                  fill={colorScale[level]}
-                  rx={blockRadius}
-                  ry={blockRadius}
-                />
-              </svg>
-            ))}
-            <span class="ml-1.5">{labels.legend.more}</span>
-          </div>
-        )}
-      </footer>
-    )
-  }
+  <footer class="flex flex-col sm:flex-row sm:justify-between gap-x-1 gap-y-2">
+    <div id="gh-total-count">
+      {defaultData.totalCount} contributions in the last year
+    </div>
+    <div class="flex items-center gap-[3px]">
+      <span class="mr-1.5">Less</span>
+      {range(maxLevel + 1).map((level) => (
+        <svg width={blockSize} height={blockSize}>
+          <rect
+            class="stroke-foreground/10"
+            width={blockSize}
+            height={blockSize}
+            fill={`var(--gh-level-${level})`}
+            rx={blockRadius}
+            ry={blockRadius}
+          />
+        </svg>
+      ))}
+      <span class="ml-1.5">More</span>
+    </div>
+  </footer>
 </article>
+)}
+
+<style>
+  #github-activity-calendar {
+    --gh-level-0: var(--theme-background);
+    --gh-level-1: color-mix(in oklab, var(--theme-accent) 25%, var(--theme-background));
+    --gh-level-2: color-mix(in oklab, var(--theme-accent) 50%, var(--theme-background));
+    --gh-level-3: color-mix(in oklab, var(--theme-accent) 75%, var(--theme-background));
+    --gh-level-4: var(--theme-accent);
+  }
+</style>
+
+<script define:vars={{ allYearData, blockSize, blockMargin, blockRadius, labelHeight, maxLevel }}>
+  const select = document.getElementById('gh-year-select')
+  const svg = document.getElementById('gh-calendar-svg')
+  const monthLabelsG = document.getElementById('gh-month-labels')
+  const weeksG = document.getElementById('gh-weeks')
+  const totalCountEl = document.getElementById('gh-total-count')
+
+  if (select && svg && monthLabelsG && weeksG && totalCountEl) {
+    select.addEventListener('change', (e) => {
+      const key = e.target.value
+      const data = allYearData[key]
+      if (!data) return
+
+      // Update SVG size
+      svg.setAttribute('width', String(data.width))
+      svg.setAttribute('height', String(data.height))
+      svg.setAttribute('viewBox', `0 0 ${data.width} ${data.height}`)
+
+      // Update month labels
+      monthLabelsG.innerHTML = ''
+      for (const { label, weekIndex } of data.monthLabels) {
+        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text')
+        text.setAttribute('x', String((blockSize + blockMargin) * weekIndex))
+        text.setAttribute('y', '0')
+        text.setAttribute('dominant-baseline', 'hanging')
+        text.setAttribute('fill', 'currentColor')
+        text.textContent = label
+        monthLabelsG.appendChild(text)
+      }
+
+      // Update weeks
+      weeksG.innerHTML = ''
+      data.weeks.forEach((week, weekIndex) => {
+        const g = document.createElementNS('http://www.w3.org/2000/svg', 'g')
+        g.setAttribute('transform', `translate(${(blockSize + blockMargin) * weekIndex}, 0)`)
+        week.forEach((activity, dayIndex) => {
+          if (!activity) return
+          const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
+          rect.setAttribute('class', 'stroke-foreground/10')
+          rect.setAttribute('x', '0')
+          rect.setAttribute('y', String(labelHeight + (blockSize + blockMargin) * dayIndex))
+          rect.setAttribute('width', String(blockSize))
+          rect.setAttribute('height', String(blockSize))
+          rect.setAttribute('rx', String(blockRadius))
+          rect.setAttribute('ry', String(blockRadius))
+          rect.setAttribute('fill', `var(--gh-level-${activity.level})`)
+          rect.setAttribute('data-date', activity.date)
+          rect.setAttribute('data-level', String(activity.level))
+          g.appendChild(rect)
+        })
+        weeksG.appendChild(g)
+      })
+
+      // Update total count
+      const label = key === 'last'
+        ? `${data.totalCount} contributions in the last year`
+        : `${data.totalCount} contributions in ${key}`
+      totalCountEl.textContent = label
+    })
+  }
+</script>

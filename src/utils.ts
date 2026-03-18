@@ -20,6 +20,13 @@ export function dateString(date: Date) {
   return date.toISOString().split('T')[0]
 }
 
+export function dateTimeString(date: Date) {
+  const d = dateString(date)
+  const h = date.getHours().toString().padStart(2, '0')
+  const m = date.getMinutes().toString().padStart(2, '0')
+  return `${d} ${h}:${m}`
+}
+
 export function pick(obj: Record<string, any>, keys: string[]) {
   return Object.fromEntries(
     keys.filter((key) => key in obj).map((key) => [key, obj[key]]),

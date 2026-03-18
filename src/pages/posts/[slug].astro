@@ -72,7 +72,7 @@ if (postData.tags && postData.tags.length > 0) {
   author={postData.author}
   tags={postData.tags}
   published={postData.published}
-  updated={postData.updated}
+  updated={postData.lastUpdated}
 >
   <article class="max-w-full py-7.5" data-pagefind-body>
     {
@@ -91,7 +91,7 @@ if (postData.tags && postData.tags.length > 0) {
         # {postData.title}
       </h1>
       <div class="my-2 border-l-2 border-accent/80 pl-4 py-2">
-        <PostInfo post={post} class="mb-1" />
+        <PostInfo post={post} detailed class="mb-1" />
         {
           tags && (
             <div class="mt-4">
