@@ -4,11 +4,20 @@ import { getSortedPosts } from '~/utils'
 import BlockHeader from '~/components/BlockHeader.astro'
 import TagsSection from '~/components/TagsSection.astro'
 import PageHeader from '~/components/PageHeader.astro'
+import siteConfig from '~/site.config'
 
 const sortedPosts = await getSortedPosts()
 ---
 
-<Layout title="Tags">
+<Layout
+  title="文章標籤"
+  description="依主題瀏覽部落格文章，快速找到資訊安全、網路技術、BGP、Linux 與 DevOps 相關內容。"
+  pageType="collection"
+  breadcrumbs={[
+    { name: '首頁', item: siteConfig.site },
+    { name: '標籤', item: `${siteConfig.site}/tags` },
+  ]}
+>
   <PageHeader>Tags</PageHeader>
   <section>
     <TagsSection posts={sortedPosts} />

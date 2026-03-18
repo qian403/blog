@@ -44,7 +44,9 @@ if (seriesFrontmatter) {
       )
     }
     <div class="shrink-0 pl-0.5 text-[17px] sm:text-base">
-      <span>創建時間 <time>{fmt(post.data.published)}</time></span>
+      <span>
+        創建時間 <time datetime={post.data.published.toISOString()}>{fmt(post.data.published)}</time>
+      </span>
       {
         minutesRead && (
           <span class="before:content-['·'] before:inline-block before:mx-0.5">
@@ -55,7 +57,7 @@ if (seriesFrontmatter) {
       {
         post.data.lastUpdated && (
           <span class="before:content-['·'] before:inline-block before:mx-0.5">
-            最後更新 <time>{fmt(post.data.lastUpdated)}</time>
+            最後更新 <time datetime={post.data.lastUpdated.toISOString()}>{fmt(post.data.lastUpdated)}</time>
           </span>
         )
       }

@@ -1,6 +1,8 @@
 ---
 layout: '~/layouts/MarkdownLayout.astro'
-title: About Me
+title: 關於 CHIEN
+description: CHIEN 的個人介紹，包含學習背景、技能、網路技術與資訊安全興趣，以及目前參與的實習與社群經歷。
+pageType: profile
 ---
 ## 嗨！我是 CHIEN
 

@@ -25,7 +25,8 @@ const sortedPosts = await getSortedPosts()
 const postsHaveSeries = sortedPosts.some((post) => post.data.series)
 ---
 
-<Layout>
+<Layout description={siteConfig.description} pageType="website">
+  <h1 class="sr-only">CHIEN 的技術筆記｜網路技術、資訊安全、BGP 與 Linux 實戰文章</h1>
   {
     HomeContent && (
       <HomeBanner avatarImage={homeAvatarImage} githubCalendar={homeGithubCalendar}>

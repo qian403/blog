@@ -31,7 +31,16 @@ export const getStaticPaths = (async () => {
 
 const { post, prev, next } = Astro.props
 const postData = post.data
-const { headings, Content: PostContent } = await render(post)
+const { headings, Content: PostContent, remarkPluginFrontmatter } = await render(post)
+const postDescription = postData.description || remarkPluginFrontmatter.description || siteConfig.description
+const postImage = postData.coverImage
+  ? new URL(postData.coverImage.src.src, Astro.site).href
+  : undefined
+const breadcrumbs = [
+  { name: '首頁', item: siteConfig.site },
+  { name: '文章', item: `${siteConfig.site}/posts` },
+  { name: postData.title, item: `${siteConfig.site}/posts/${post.id}` },
+]
 const addendum = await getCollection('addendum')
 let AddendumContent
 let addendumAvatarImage
@@ -68,11 +77,14 @@ if (postData.tags && postData.tags.length > 0) {
 
 <Layout
   title={postData.title}
-  description={postData.description}
+  description={postDescription}
   author={postData.author}
   tags={postData.tags}
   published={postData.published}
   updated={postData.lastUpdated}
+  pageType="article"
+  image={postImage}
+  breadcrumbs={breadcrumbs}
 >
   <article class="max-w-full py-7.5" data-pagefind-body>
     {

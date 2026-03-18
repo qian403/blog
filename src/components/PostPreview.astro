@@ -25,9 +25,9 @@ const articleLink = samePage ? `#${post.id}` : `/posts/${post.id}`
 ---
 
 <article class="w-full py-5 my-1 md:my-4 border-accent/10">
-  <h1 class="mb-3 text-2xl text-heading1 font-semibold">
+  <h2 class="mb-3 text-2xl text-heading1 font-semibold">
     <a href={articleLink}># {post.data.title}</a>
-  </h1>
+  </h2>
   <PostInfo post={post} class="mb-3 mt-4" />
   {description && <p class="pl-0.5 my-4 text-base/7 text-foreground">{description}</p>}
   {

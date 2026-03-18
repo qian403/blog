@@ -14,10 +14,36 @@ export const getStaticPaths = (async ({ paginate }) => {
 }) satisfies GetStaticPaths
 
 const { page } = Astro.props
-const pageTitle = 'Archive' + (page.currentPage > 1 ? ` - Page ${page.currentPage}` : '')
+const pageTitle = page.currentPage > 1 ? `文章彙整（第 ${page.currentPage} 頁）` : '文章彙整'
+const pageDescription =
+  page.currentPage > 1
+    ? `第 ${page.currentPage} 頁的技術文章彙整，收錄網路技術、資訊安全、BGP、DevOps 與 Linux 主題文章。`
+    : '技術文章彙整，收錄網路技術、資訊安全、BGP、DevOps 與 Linux 主題文章。'
+const breadcrumbs = [
+  { name: '首頁', item: siteConfig.site },
+  { name: '文章', item: `${siteConfig.site}/posts` },
+]
+if (page.currentPage > 1) {
+  breadcrumbs.push({
+    name: `第 ${page.currentPage} 頁`,
+    item: new URL(page.url.current, Astro.site).href,
+  })
+}
+const itemList = page.data.map((post, index) => ({
+  name: post.data.title,
+  url: new URL(`/posts/${post.id}`, Astro.site).href,
+  position: index + 1,
+}))
 ---
 
-<Layout title={pageTitle} description="All posts in the archive">
+<Layout
+  title={pageTitle}
+  description={pageDescription}
+  pageType="collection"
+  noindex={page.currentPage > 1}
+  breadcrumbs={breadcrumbs}
+  itemList={itemList}
+>
   {page.url.prev && <link rel="prev" href={page.url.prev} slot="head" />}
   {page.url.next && <link rel="next" href={page.url.next} slot="head" />}
   <div class="mt-2 sm:mt-0">

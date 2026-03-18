@@ -66,7 +66,17 @@ export default defineConfig({
     plugins: [tailwindcss()],
   },
   integrations: [
-    sitemap(),
+    sitemap({
+      filter: (page) => {
+        const pathname = new URL(page).pathname.replace(/\/$/, '') || '/'
+
+        if (pathname === '/friend') return false
+        if (/^\/posts\/\d+$/.test(pathname)) return false
+        if (/^\/tags\/.+\/\d+$/.test(pathname)) return false
+
+        return true
+      },
+    }),
     expressiveCode({
       themes: siteConfig.themes.include,
       useDarkModeMediaQuery: false,
