@@ -38,8 +38,8 @@ const postImage = postData.coverImage
   : undefined
 const breadcrumbs = [
   { name: '首頁', item: siteConfig.site },
-  { name: '文章', item: `${siteConfig.site}/posts` },
-  { name: postData.title, item: `${siteConfig.site}/posts/${post.id}` },
+  { name: '文章', item: `${siteConfig.site}/posts/` },
+  { name: postData.title, item: `${siteConfig.site}/posts/${post.id}/` },
 ]
 const addendum = await getCollection('addendum')
 let AddendumContent
@@ -124,7 +124,7 @@ if (postData.tags && postData.tags.length > 0) {
   {
     nextPostInSeries && (
       <a
-        href={`/posts/${nextPostInSeries.id}`}
+        href={`/posts/${nextPostInSeries.id}/`}
         class="button justify-center -mt-8 mb-8 !whitespace-normal text-center flex gap-2 sm:gap-3 items-center"
       >
         <span>Next: {nextPostInSeries.data.title}</span>

@@ -29,7 +29,7 @@ const pageDescription =
     : `瀏覽所有與「${tagTitle}」相關的技術文章、教學與實作紀錄。`
 const breadcrumbs = [
   { name: '首頁', item: siteConfig.site },
-  { name: '標籤', item: `${siteConfig.site}/tags` },
+  { name: '標籤', item: `${siteConfig.site}/tags/` },
   { name: tagTitle, item: `${siteConfig.site}${tagUrl}` },
 ]
 if (page.currentPage > 1) {
@@ -48,7 +48,7 @@ const itemList = page.data.map((post) => ({
   title={pageTitle}
   description={pageDescription}
   pageType="collection"
-  noindex={page.currentPage > 1}
+  noindex
   tags={[tagTitle]}
   breadcrumbs={breadcrumbs}
   itemList={itemList}

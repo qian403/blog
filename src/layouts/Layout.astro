@@ -51,7 +51,7 @@ const {
   itemList,
 } = Astro.props
 const normalizedSite = siteConfig.site.replace(/\/$/, '')
-const pageUrl = (canonical || new URL(Astro.url.pathname, Astro.site).href).replace(/\/$/, '')
+const pageUrl = canonical || new URL(Astro.url.pathname, Astro.site).href
 const metadataType = pageType === 'article' ? 'article' : 'website'
 const pageTitle = title ? `${title} - ${siteConfig.title}` : siteConfig.title
 const pageDescription = description || siteConfig.description
@@ -67,7 +67,7 @@ const pageKeywords = [
   ...new Set(siteConfig.tags.concat(tags || []).map((word) => word.toLowerCase())),
 ].join(', ')
 const robotsContent = noindex
-  ? 'noindex, nofollow'
+  ? 'noindex, follow'
   : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'
 const twitterHandle = siteConfig.socialLinks.twitter
   ? siteConfig.socialLinks.twitter.replace(/^https?:\/\/(www\.)?(twitter|x)\.com\//, '@')

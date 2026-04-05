@@ -6,11 +6,30 @@ const config: SiteConfig = {
   // The name of your site, used in the title and for SEO.
   title: 'CHIEN 的技術筆記',
   // The description of your site, used for SEO and RSS feed.
-  description: 'CHIEN (qian) 的個人技術部落格，專注於網路技術、資訊安全、BGP 路由、系統運維及 Linux 相關主題。分享實戰經驗與深度技術文章。',
+  description:
+    'CHIEN (qian) 的個人技術部落格，專注於網路技術、資訊安全、BGP 路由、系統運維及 Linux 相關主題。分享實戰經驗與深度技術文章。',
   // The author of the site, used in the footer, SEO, and RSS feed.
   author: 'CHIEN (qian)',
   // Keywords for SEO, used in the meta tags.
-  tags: ['Astro', 'Blog', 'qian', 'CHIEN', '資訊安全', 'InfoSec', '網路技術', 'Networking', 'BGP', 'AS215934', '系統運維', 'DevOps', 'Linux', 'Server', 'Security', '技術筆記', 'Tech Blog'],
+  tags: [
+    'Astro',
+    'Blog',
+    'qian',
+    'CHIEN',
+    '資訊安全',
+    'InfoSec',
+    '網路技術',
+    'Networking',
+    'BGP',
+    'AS215934',
+    '系統運維',
+    'DevOps',
+    'Linux',
+    'Server',
+    'Security',
+    '技術筆記',
+    'Tech Blog',
+  ],
   // Path to the image used for generating social media previews.
   // Needs to be a square JPEG file due to limitations of the social card generator.
   // Try https://squoosh.app/ to easily convert images to JPEG.
@@ -24,7 +43,7 @@ const config: SiteConfig = {
   // Whether Astro should resolve trailing slashes in URLs or not.
   // This value is used in the astro.config.mjs file and in the "Search" component to make sure pagefind links match this setting.
   // It is not recommended to change this, since most links existing in the site currently do not have trailing slashes.
-  trailingSlashes: false,
+  trailingSlashes: true,
   // The navigation links to display in the header.
   navLinks: [
     {
@@ -33,27 +52,27 @@ const config: SiteConfig = {
     },
     {
       name: 'About',
-      url: '/about',
+      url: '/about/',
     },
     {
       name: 'CV',
-      url: '/cv',
+      url: '/cv/',
     },
     {
       name: 'Archive',
-      url: '/posts',
+      url: '/posts/',
     },
     {
       name: 'Tags',
-      url: '/tags',
+      url: '/tags/',
     },
     {
       name: 'Links',
-      url: '/links',
+      url: '/links/',
     },
     {
       name: 'Friend',
-      url: '/friend',
+      url: '/friend/',
     },
   ],
   // The theming configuration for the site.
@@ -183,7 +202,6 @@ const config: SiteConfig = {
     categoryId: 'DIC_kwDOOBkIWs4CndjZ',
     reactionsEnabled: true, // Enable reactions on post itself
   },
-
 
   // These are characters available for the character chat feature.
   // To add your own character, add an image file to the top-level `/public` directory
