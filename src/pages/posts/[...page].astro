@@ -31,7 +31,7 @@ if (page.currentPage > 1) {
 }
 const itemList = page.data.map((post, index) => ({
   name: post.data.title,
-  url: new URL(`/posts/${post.id}`, Astro.site).href,
+  url: new URL(`/posts/${post.id}/`, Astro.site).href,
   position: index + 1,
 }))
 ---

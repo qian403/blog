@@ -65,6 +65,11 @@ const websiteSchema = {
   description: siteConfig.description,
   url: siteConfig.site,
   inLanguage: 'zh-TW',
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: `${siteConfig.site}/?q={search_term_string}`,
+    'query-input': 'required name=search_term_string',
+  },
 }
 
 const blogSchema = {

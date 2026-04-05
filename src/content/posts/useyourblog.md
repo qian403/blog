@@ -1,7 +1,7 @@
 ---
-title: '好好的使用你的Blog!'
+title: 'Astro 部落格客製化教學：留言、Spoiler 與功能擴充實作'
 published: 2025-04-19
-description: '紀錄一下我怎麼在astro上胡搞瞎搞'
+description: '整理 Astro 部落格客製化實作重點，包含 spoiler 語法、留言系統與常見功能擴充，適合想強化個人技術部落格的人。'
 image: ''
 tags: [astro, plugin, Blog]
 category: 'Life'
@@ -9,12 +9,12 @@ draft: false
 lang: ''
 ---
 
-
-
 # 客製化你的 Astro Blog
+
 在用了一陣子的 Astro 之後發現我的模板其實有些功能是我想要但是原本沒有的，因此我就嘗試自己動手修改一些功能，這篇文章就是紀錄以及教學如何客製化你的 Blog。
 
 ## 在文章中加入防雷海苔功能
+
 ### 🔧 步驟 1：建立自訂 remark 插件
 
 首先，我們需要讓 Markdown 能夠識別 `||防雷內容||` 的語法。我們會寫一個簡單的 `remark` 插件，將它轉換為 HTML 的 `<span class="spoiler">防雷內容</span>`。
@@ -22,49 +22,49 @@ lang: ''
 在你的專案中建立一個檔案，例如：`remarkSpoiler.js`（建議放在專案根目錄或 `src/plugins/` 目錄中），內容如下：
 
 ```js
-import { visit } from 'unist-util-visit';
+import { visit } from 'unist-util-visit'
 
 export default function remarkSpoiler() {
   return (tree) => {
     visit(tree, 'text', (node, index, parent) => {
-      const regex = /\|\|(.+?)\|\|/g;
-      const matches = [...node.value.matchAll(regex)];
+      const regex = /\|\|(.+?)\|\|/g
+      const matches = [...node.value.matchAll(regex)]
 
       if (matches.length > 0) {
-        const newNodes = [];
-        let lastIndex = 0;
+        const newNodes = []
+        let lastIndex = 0
 
         for (const match of matches) {
-          const [fullMatch, spoilerText] = match;
-          const matchStart = match.index;
-          const matchEnd = matchStart + fullMatch.length;
+          const [fullMatch, spoilerText] = match
+          const matchStart = match.index
+          const matchEnd = matchStart + fullMatch.length
 
           if (matchStart > lastIndex) {
             newNodes.push({
               type: 'text',
               value: node.value.slice(lastIndex, matchStart),
-            });
+            })
           }
 
           newNodes.push({
             type: 'html',
             value: `<span class="spoiler">${spoilerText}</span>`,
-          });
+          })
 
-          lastIndex = matchEnd;
+          lastIndex = matchEnd
         }
 
         if (lastIndex < node.value.length) {
           newNodes.push({
             type: 'text',
             value: node.value.slice(lastIndex),
-          });
+          })
         }
 
-        parent.children.splice(index, 1, ...newNodes);
+        parent.children.splice(index, 1, ...newNodes)
       }
-    });
-  };
+    })
+  }
 }
 ```
 
@@ -75,15 +75,16 @@ export default function remarkSpoiler() {
 打開你的 `astro.config.mjs`，並加上這段：
 
 ```js
-import { defineConfig } from 'astro/config';
-import remarkSpoiler from './src/plugins/remarkSpoiler.js'; // 路徑根據你的檔案位置調整
+import { defineConfig } from 'astro/config'
+import remarkSpoiler from './src/plugins/remarkSpoiler.js' // 路徑根據你的檔案位置調整
 
 export default defineConfig({
   markdown: {
     remarkPlugins: [remarkSpoiler],
   },
-});
+})
 ```
+
 那邊應該會長這樣，直接在最後加上就好：
 
 ```js
@@ -113,7 +114,6 @@ remarkPlugins: [remarkMath, remarkReadingTime, remarkExcerpt, remarkGithubAdmoni
 }
 ```
 
-
 ### ✅ 使用範例
 
 現在，你就可以在 Markdown 檔案中直接使用這樣的語法了：
@@ -127,18 +127,20 @@ remarkPlugins: [remarkMath, remarkReadingTime, remarkExcerpt, remarkGithubAdmoni
 ```html
 這是一段正常文字，其中包含 <span class="spoiler">這是防雷內容</span>，滑過才能看到。
 ```
+
 ||這是效果||
 
-
 ## 在頁腳處新增網站存在時間
+
 先看效果
 ![image](https://i.imgur.com/ZFUZZMh.png)
 
 ### 🔧1.先創建時間的組件
-新增一個檔案```src/components/SiteRuntime.astro```
+
+新增一個檔案`src/components/SiteRuntime.astro`
+
 ```astro
 ---
-
 const startDate = new Date('2023-01-01') // 替換為您的網站實際上線日期
 ---
 
@@ -148,48 +150,50 @@ const startDate = new Date('2023-01-01') // 替換為您的網站實際上線日
 
 <script>
   function updateRuntime() {
-    const startDate = new Date('2023-01-01'); // 替換為您的網站實際上線日期
-    const currentDate = new Date();
-    
+    const startDate = new Date('2023-01-01') // 替換為您的網站實際上線日期
+    const currentDate = new Date()
 
-    const timeDiff = currentDate.getTime() - startDate.getTime();
-    
-    let seconds = Math.floor(timeDiff / 1000);
-    let minutes = Math.floor(seconds / 60);
-    let hours = Math.floor(minutes / 60);
-    let days = Math.floor(hours / 24);
-    
-    const years = Math.floor(days / 365);
-    const months = Math.floor((days % 365) / 30);
-    days = days % 30;
-    hours = hours % 24;
-    minutes = minutes % 60;
-    seconds = seconds % 60;
-    
-    let runtimeText = '';
-    
+    const timeDiff = currentDate.getTime() - startDate.getTime()
+
+    let seconds = Math.floor(timeDiff / 1000)
+    let minutes = Math.floor(seconds / 60)
+    let hours = Math.floor(minutes / 60)
+    let days = Math.floor(hours / 24)
+
+    const years = Math.floor(days / 365)
+    const months = Math.floor((days % 365) / 30)
+    days = days % 30
+    hours = hours % 24
+    minutes = minutes % 60
+    seconds = seconds % 60
+
+    let runtimeText = ''
+
     if (years > 0) {
-      runtimeText += `${years} 年 `;
+      runtimeText += `${years} 年 `
     }
-    
+
     if (months > 0 || years > 0) {
-      runtimeText += `${months} 個月 `;
+      runtimeText += `${months} 個月 `
     }
-    
-    runtimeText += `${days} 天 ${hours} 時 ${minutes} 分 ${seconds} 秒`;
-    
-    document.getElementById('runtime-counter').textContent = runtimeText;
+
+    runtimeText += `${days} 天 ${hours} 時 ${minutes} 分 ${seconds} 秒`
+
+    document.getElementById('runtime-counter').textContent = runtimeText
   }
-  
-  updateRuntime();
-  setInterval(updateRuntime, 1000);
+
+  updateRuntime()
+  setInterval(updateRuntime, 1000)
 </script>
 ```
+
 ### ⚙️2. 在頁腳引入這個組件
-可能是在 ```src\layouts\MainGridLayout.astro```中
+
+可能是在 `src\layouts\MainGridLayout.astro`中
+
 ```astro
 ---
-import SiteRuntime from '../components/SiteRuntime.astro';
+import SiteRuntime from '../components/SiteRuntime.astro'
 // 其他導入...
 ---
 
@@ -200,11 +204,8 @@ import SiteRuntime from '../components/SiteRuntime.astro';
       <div class="mb-2">
         <SiteRuntime />
       </div>
-      <div class="text-sm opacity-75 dark:text-white text-black">
-      
-      </div>
+      <div class="text-sm opacity-75 dark:text-white text-black"></div>
     </div>
   </div>
 </footer>
 ```
-
