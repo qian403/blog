@@ -21,13 +21,13 @@ lang: 'zh-TW'
 
 ## 台北不限時咖啡廳整理
 
-### CAFE RACO
+### CAFE ACME mini
 
-如果你想找一間交通方便、空間舒服的台北不限時咖啡廳，`CAFE RACO` 是目前我會願意再回訪的一間。
+如果你想找一間交通方便、空間舒服的台北不限時咖啡廳，`CAFE ACME mini` 是目前我會願意再回訪的一間。
 
-名稱：CAFE RACO  
-地址：10491臺北市中山區民生東路二段147巷1號1樓。  
-Google Map 連結：[CAFE RACO](https://maps.app.goo.gl/uDxEoGBwb43skaMt5)  
+名稱：CAFE ACME mini  
+地址：104臺北市中山區松江路169號  
+Google Map 連結：[CAFE ACME mini](https://maps.app.goo.gl/2bR1THgt6ynLddzk9)  
 最近地標：捷運行天宮站 1 號出口，步行約 5 分鐘。  
 不限時：是  
 有插座：是  
