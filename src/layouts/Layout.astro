@@ -205,6 +205,9 @@ let generatedCss: string = cssLines.join('\n')
     <link rel="sitemap" href="/sitemap-index.xml" />
     <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="apple-touch-icon" href="/favicon.ico" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="dns-prefetch" href="https://umami.chien.dev" />
+    <link rel="preload" as="font" type="font/woff2" crossorigin href={`/fonts/${siteConfig.font.replace(/\s+/g, '-')}.woff2`} />
     <slot name="head" />
     <link
       rel="alternate"

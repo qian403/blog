@@ -76,6 +76,27 @@ export default defineConfig({
 
         return true
       },
+      serialize(item) {
+        const url = new URL(item.url)
+        const pathname = url.pathname.replace(/\/$/, '') || '/'
+
+        if (pathname === '/') {
+          item.lastmod = new Date().toISOString().split('T')[0]
+          item.priority = 1.0
+          item.changefreq = 'daily'
+        } else if (pathname.startsWith('/posts/')) {
+          item.priority = 0.8
+          item.changefreq = 'daily'
+        } else if (pathname.startsWith('/tags/')) {
+          item.priority = 0.6
+          item.changefreq = 'weekly'
+        } else if (pathname.startsWith('/about') || pathname.startsWith('/cv') || pathname.startsWith('/links')) {
+          item.priority = 0.7
+          item.changefreq = 'monthly'
+        }
+
+        return item
+      },
     }),
     expressiveCode({
       themes: siteConfig.themes.include,
