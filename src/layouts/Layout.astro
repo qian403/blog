@@ -51,7 +51,9 @@ const {
   itemList,
 } = Astro.props
 const normalizedSite = siteConfig.site.replace(/\/$/, '')
-const pageUrl = canonical || new URL(Astro.url.pathname, Astro.site).href
+// Ensure trailing slash for canonical URL to match actual URLs (fixes Bing indexing)
+const pathname = Astro.url.pathname.endsWith('/') ? Astro.url.pathname : `${Astro.url.pathname}/`
+const pageUrl = canonical || new URL(pathname, Astro.site).href
 const metadataType = pageType === 'article' ? 'article' : 'website'
 const pageTitle = title ? `${title} - ${siteConfig.title}` : siteConfig.title
 const pageDescription = description || siteConfig.description

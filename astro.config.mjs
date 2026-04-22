@@ -79,6 +79,9 @@ export default defineConfig({
       serialize(item) {
         const url = new URL(item.url)
         const pathname = url.pathname.replace(/\/$/, '') || '/'
+        // Ensure trailing slash for all URLs (fixes Bing/GSC canonical mismatch)
+        // Special case: root path should be just '/' not '//'
+        item.url = pathname === '/' ? `${url.origin}/` : `${url.origin}${pathname}/`
 
         if (pathname === '/') {
           item.lastmod = new Date().toISOString().split('T')[0]
