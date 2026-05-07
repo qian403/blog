@@ -2,6 +2,8 @@
 import { defineConfig } from 'astro/config'
 import tailwindcss from '@tailwindcss/vite'
 import sitemap from '@astrojs/sitemap'
+import fs from 'fs'
+import path from 'path'
 import mdx from '@astrojs/mdx'
 import { rehypeHeadingIds } from '@astrojs/markdown-remark'
 import rehypeAutolinkHeadings from 'rehype-autolink-headings'
@@ -24,6 +26,42 @@ import rehypeKatex from 'rehype-katex' /* again, for latex math support */
 import remarkGemoji from './src/plugins/remark-gemoji' /* for shortcode emoji support */
 import rehypePixelated from './src/plugins/rehype-pixelated' /* Custom plugin to handle pixelated images */
 import remarkSpoiler from './src/plugins/remark-spoiler' /* Custom plugin to handle spoiler syntax ||content|| */
+
+// 從文章 frontmatter 讀取日期，用於 sitemap lastmod
+/** @type {Map<string, string>} */
+const postLastmodMap = new Map()
+
+function buildPostLastmodMap() {
+  const postsDir = path.resolve('./src/content/posts')
+  if (!fs.existsSync(postsDir)) return
+  const readDir = (dir) => {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      if (entry.isDirectory()) {
+        readDir(path.join(dir, entry.name))
+      } else if (entry.name.endsWith('.md') || entry.name.endsWith('.mdx')) {
+        const filePath = path.join(dir, entry.name)
+        const content = fs.readFileSync(filePath, 'utf-8')
+        const lastUpdatedMatch = content.match(/^lastUpdated:\s*(.+)$/m)
+        const publishedMatch = content.match(/^published:\s*(.+)$/m)
+        const dateStr = (lastUpdatedMatch?.[1]?.trim() || publishedMatch?.[1]?.trim())?.replace(/^['"]|['"]$/g, '')
+        if (dateStr) {
+          const slug = path.relative(postsDir, filePath)
+            .replace(/\.(md|mdx)$/, '')
+            .replace(/\/index$/, '')
+            .toLowerCase()
+            .replace(/ /g, '-')
+          const date = new Date(dateStr)
+          if (!isNaN(date.getTime())) {
+            postLastmodMap.set(slug, date.toISOString().split('T')[0])
+          }
+        }
+      }
+    }
+  }
+  readDir(postsDir)
+}
+
+buildPostLastmodMap()
 
 // https://astro.build/config
 export default defineConfig({
@@ -77,19 +115,17 @@ export default defineConfig({
         return true
       },
       serialize(item) {
-        const url = new URL(item.url)
-        const pathname = url.pathname.replace(/\/$/, '') || '/'
-        // Ensure trailing slash for all URLs (fixes Bing/GSC canonical mismatch)
-        // Special case: root path should be just '/' not '//'
-        item.url = pathname === '/' ? `${url.origin}/` : `${url.origin}${pathname}/`
+        const pathname = new URL(item.url).pathname.replace(/\/$/, '') || '/'
 
         if (pathname === '/') {
           item.lastmod = new Date().toISOString().split('T')[0]
           item.priority = 1.0
           item.changefreq = 'daily'
         } else if (pathname.startsWith('/posts/')) {
+          const slug = pathname.replace('/posts/', '')
+          item.lastmod = postLastmodMap.get(slug) ?? undefined
           item.priority = 0.8
-          item.changefreq = 'daily'
+          item.changefreq = 'weekly'
         } else if (pathname.startsWith('/tags/')) {
           item.priority = 0.6
           item.changefreq = 'weekly'

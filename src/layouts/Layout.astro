@@ -51,16 +51,14 @@ const {
   itemList,
 } = Astro.props
 const normalizedSite = siteConfig.site.replace(/\/$/, '')
-// Ensure trailing slash for canonical URL to match actual URLs (fixes Bing indexing)
-const pathname = Astro.url.pathname.endsWith('/') ? Astro.url.pathname : `${Astro.url.pathname}/`
-const pageUrl = canonical || new URL(pathname, Astro.site).href
+const pageUrl = canonical || new URL(Astro.url.pathname, Astro.site).href
 const metadataType = pageType === 'article' ? 'article' : 'website'
 const pageTitle = title ? `${title} - ${siteConfig.title}` : siteConfig.title
 const pageDescription = description || siteConfig.description
 const pageAuthor = author || siteConfig.author
 const articleSocialCard =
   pageType === 'article'
-    ? `${normalizedSite}${Astro.url.pathname.replace(/\/posts\//, '/social-cards/')}.png`
+    ? `${normalizedSite}${Astro.url.pathname.replace(/\/$/, '').replace(/\/posts\//, '/social-cards/')}.png`
     : undefined
 const pageImage =
   image || articleSocialCard || `${normalizedSite}/social-cards/__default.png`
@@ -204,6 +202,8 @@ let generatedCss: string = cssLines.join('\n')
     {twitterHandle && <meta name="twitter:site" content={twitterHandle} />}
     <meta name="keywords" content={pageKeywords} />
     <link rel="canonical" href={pageUrl} />
+    <link rel="alternate" hreflang="zh-TW" href={pageUrl} />
+    <link rel="alternate" hreflang="x-default" href={pageUrl} />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="apple-touch-icon" href="/favicon.ico" />
