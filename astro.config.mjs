@@ -109,6 +109,7 @@ export default defineConfig({
         const pathname = new URL(page).pathname.replace(/\/$/, '') || '/'
 
         if (pathname === '/friend') return false
+        if (pathname === '/links') return false
         if (/^\/posts\/\d+$/.test(pathname)) return false
         if (/^\/tags\/.+\/\d+$/.test(pathname)) return false
 
