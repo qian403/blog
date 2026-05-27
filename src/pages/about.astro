@@ -1,0 +1,113 @@
+---
+import Layout from '~/layouts/Layout.astro'
+import PageHeader from '~/components/PageHeader.astro'
+---
+
+<Layout
+  title="關於 CHIEN"
+  description="CHIEN 的個人介紹，包含學習背景、技能、網路技術與資訊安全興趣，以及目前參與的實習與社群經歷。"
+  pageType="profile"
+>
+  <PageHeader>About</PageHeader>
+  <div class="max-w-full py-7.5 prose prose-neutral dark:prose-invert about-page">
+
+    <h2>嗨！我是 CHIEN</h2>
+    <p>
+      你可以叫我柴柴或是 CHIEN，但大部分人都叫我柴柴或是柴<br />
+      一個出生在台灣的 <del>高職生</del> 大學生，目前就讀<strong>國立宜蘭大學資訊工程系</strong>
+    </p>
+
+    <h2>我在做什麼</h2>
+    <ul>
+      <li>運營個人自治系統 <strong>AS215934</strong>，研究 BGP 路由協議</li>
+      <li>專注於資訊安全、網路運維與系統架構</li>
+      <li>目前在<strong>瀚霖智動銷售科技</strong>擔任實習工程師，負責系統維運、資安與全端開發</li>
+      <li>曾在 SITCON 擔任多個職位，從志工、副組長到副召，2026 年將擔任總召</li>
+    </ul>
+
+    <h2>技能樹</h2>
+    <div class="not-prose space-y-5">
+      <!-- Languages & Frameworks -->
+      <div>
+        <p class="text-xs font-semibold uppercase tracking-widest opacity-50 mb-3">Languages & Frameworks</p>
+        <div class="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-7 gap-2 items-start">
+          {[
+            { name: 'Python',      icon: 'python/python-original' },
+            { name: 'JavaScript',  icon: 'javascript/javascript-original' },
+            { name: 'TypeScript',  icon: 'typescript/typescript-original' },
+            { name: 'C++',         icon: 'cplusplus/cplusplus-original' },
+            { name: 'C#',          icon: 'csharp/csharp-original' },
+            { name: 'Go',          icon: 'go/go-original-wordmark' },
+            { name: 'Swift',       icon: 'swift/swift-original' },
+            { name: 'Vue.js',      icon: 'vuejs/vuejs-original' },
+            { name: 'React',       icon: 'react/react-original' },
+            { name: 'Django',      icon: 'django/django-plain' },
+            { name: 'TailwindCSS', icon: 'tailwindcss/tailwindcss-original' },
+          ].map(skill => (
+            <div class="flex flex-col items-center gap-1.5 p-2 rounded-lg border border-separator bg-background hover:bg-accent/5 transition-colors">
+              <img
+                src={`https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/${skill.icon}.svg`}
+                alt={skill.name}
+                class="w-8 h-8 object-contain not-prose"
+                loading="lazy"
+              />
+              <span class="text-xs font-medium text-center leading-tight">{skill.name}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Systems & Infra -->
+      <div>
+        <p class="text-xs font-semibold uppercase tracking-widest opacity-50 mb-3">Systems & Infra</p>
+        <div class="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-7 gap-2 items-start">
+          {[
+            { name: 'Linux',   icon: 'linux/linux-original' },
+            { name: 'Windows', icon: 'windows11/windows11-original' },
+            { name: 'Docker',  icon: 'docker/docker-original' },
+            { name: 'Git',     icon: 'git/git-original' },
+            { name: 'Nginx',   icon: 'nginx/nginx-original' },
+          ].map(skill => (
+            <div class="flex flex-col items-center gap-1.5 p-2 rounded-lg border border-separator bg-background hover:bg-accent/5 transition-colors">
+              <img
+                src={`https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/${skill.icon}.svg`}
+                alt={skill.name}
+                class="w-8 h-8 object-contain not-prose"
+                loading="lazy"
+              />
+              <span class="text-xs font-medium text-center leading-tight">{skill.name}</span>
+            </div>
+          ))}
+          <div class="flex flex-col items-center gap-1.5 p-2 rounded-lg border border-separator bg-background hover:bg-accent/5 transition-colors">
+            <img src="/icons/bgp.svg" alt="BGP" class="w-8 h-8 object-contain not-prose" loading="lazy" />
+            <span class="text-xs font-medium text-center leading-tight">BGP</span>
+          </div>
+          <div class="flex flex-col items-center gap-1.5 p-2 rounded-lg border border-separator bg-background hover:bg-accent/5 transition-colors">
+            <img src="/icons/networking.svg" alt="網路運維" class="w-8 h-8 object-contain not-prose" loading="lazy" />
+            <span class="text-xs font-medium text-center leading-tight">網路運維</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h2>找我聊天</h2>
+    <p>想討論網路技術、資安或是任何有趣的專案嗎？歡迎來找我！</p>
+
+    <p>
+      <img src="https://discord-readme-badge.vercel.app/api?id=679496165183586335" alt="Discord Badge" loading="lazy" />
+    </p>
+
+    <p>
+      Email: <a href="mailto:hi@chien.dev">hi@chien.dev</a><br />
+      GitHub: <a href="https://github.com/qian403" target="_blank" rel="noopener noreferrer">@qian403</a><br />
+      Telegram: <a href="https://t.me/qian50" target="_blank" rel="noopener noreferrer">@qian50</a>
+    </p>
+
+  </div>
+</Layout>
+
+<style>
+  .about-page :is(h1, h2, h3, h4, h5, h6)::before {
+    content: '' !important;
+  }
+</style>

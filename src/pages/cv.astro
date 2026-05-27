@@ -13,6 +13,53 @@ const headings = [
   { depth: 2, slug: 'community-conference', text: 'Community & Conference' },
   { depth: 2, slug: 'contact', text: 'Contact' },
 ]
+
+// YYYY-MM  (end: null = 至今)
+// formerName: 公司改名時舊名稱
+// note: 其他備註，如「(前身為 XX)」或「(集團子公司)」
+const workExperience = [
+  {
+    title: '實習工程師',
+    company: '瀚霖智動銷售科技有限公司',
+    formerName: null as string | null,
+    note: null as string | null,
+    tags: ['系統維運與安全部門', '系統維運', '資訊安全', '前後端開發'],
+    start: '2024-11',
+    end: null as string | null,
+  },
+  {
+    title: '實習網路管理工程師',
+    company: '一三五有限公司',
+    formerName: null as string | null,
+    note: null as string | null,
+    tags: ['電腦部門', '網路管理與維護'],
+    start: '2020-07',
+    end: '2023-08',
+  },
+]
+
+const education = [
+  {
+    school: '國立宜蘭大學',
+    dept: '資訊工程系',
+    desc: '主修資訊工程，專注於網路技術、系統架構與資訊安全領域',
+    start: '2024-09',
+    end: null as string | null,
+  },
+  {
+    school: '國立羅東高工',
+    dept: '資訊科',
+    desc: '建立程式設計與網路基礎，開始接觸技能競賽與系統管理',
+    start: '2021-09',
+    end: '2023-06',
+  },
+]
+
+function fmtDate(d: string | null): string {
+  if (!d) return '至今'
+  const [y, m] = d.split('-')
+  return m ? `${y}/${parseInt(m)}` : y
+}
 ---
 
 <Layout
@@ -46,27 +93,40 @@ const headings = [
     <!-- 工作經驗 -->
     <section class="mb-10" id="work-experience">
       <h2 class="text-3xl font-bold mb-6 border-b-2 border-accent pb-2">Work Experience</h2>
-      <div class="not-prose space-y-3">
-        <div class="rounded-lg border border-neutral-200/80 dark:border-neutral-800 bg-neutral-50/40 dark:bg-neutral-900/20 p-4 md:p-5">
-          <div class="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
-            <div class="min-w-0">
-              <h3 class="text-base font-bold leading-snug">實習工程師</h3>
-              <div class="text-sm text-accent font-semibold mt-1">瀚霖智動銷售科技有限公司</div>
-              <p class="text-sm opacity-80 mt-2">系統維運與安全部門・系統維運・資訊安全・前後端開發</p>
+      <div class="not-prose relative">
+        <!-- line: center of w-5 column = 10px; w-0.5=2px line, left-[9px] → center at 10px -->
+        <div class="absolute top-[0.55rem] bottom-1 left-[9px] w-0.5 bg-accent/20"></div>
+        <div class="space-y-5">
+          {workExperience.map(job => (
+            <div class="flex items-start gap-3">
+              <!-- fixed-width column: dot always centered at x=10px -->
+              <div class="w-5 shrink-0 flex justify-center pt-[0.2rem]">
+                <div class:list={[
+                  "w-2.5 h-2.5 rounded-full z-10 relative",
+                  job.end === null
+                    ? "bg-accent"
+                    : "bg-background border-2 border-accent/40"
+                ]}></div>
+              </div>
+              <div class="flex-1 min-w-0 pb-2">
+                <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-0.5 sm:gap-4">
+                  <div class="min-w-0">
+                    <span class="font-semibold text-sm">{job.title}</span>
+                    <div class="text-xs mt-0.5">
+                      <span class="text-accent font-medium">{job.company}</span>
+                      {job.formerName && <span class="opacity-40 ml-1">(原: {job.formerName})</span>}
+                      {job.note && <span class="opacity-40 ml-1">{job.note}</span>}
+                    </div>
+                  </div>
+                  <div class="text-xs opacity-50 whitespace-nowrap shrink-0">
+                    <span>{fmtDate(job.start)} – {fmtDate(job.end)}</span>
+                    <span class="text-accent/60 ml-1" data-duration data-start={job.start} data-end={job.end ?? ''}></span>
+                  </div>
+                </div>
+                <p class="text-xs opacity-50 mt-1.5">{job.tags.join(' · ')}</p>
+              </div>
             </div>
-            <span class="text-xs md:text-sm opacity-70 whitespace-nowrap rounded-full bg-accent/10 px-2.5 py-1 self-start">2024/11 - 至今</span>
-          </div>
-        </div>
-        
-        <div class="rounded-lg border border-neutral-200/80 dark:border-neutral-800 bg-neutral-50/40 dark:bg-neutral-900/20 p-4 md:p-5">
-          <div class="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
-            <div class="min-w-0">
-              <h3 class="text-base font-bold leading-snug">實習網路管理工程師</h3>
-              <div class="text-sm text-accent font-semibold mt-1">一三五有限公司</div>
-              <p class="text-sm opacity-80 mt-2">電腦部門・網路管理與維護</p>
-            </div>
-            <span class="text-xs md:text-sm opacity-70 whitespace-nowrap rounded-full bg-accent/10 px-2.5 py-1 self-start">2020/7 - 2023/8</span>
-          </div>
+          ))}
         </div>
       </div>
     </section>
@@ -74,27 +134,34 @@ const headings = [
     <!-- 學歷 -->
     <section class="mb-10" id="education">
       <h2 class="text-3xl font-bold mb-6 border-b-2 border-accent pb-2">Education</h2>
-      <div class="not-prose space-y-3">
-        <div class="rounded-lg border border-neutral-200/80 dark:border-neutral-800 bg-neutral-50/40 dark:bg-neutral-900/20 p-4 md:p-5">
-          <div class="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
-            <div class="min-w-0">
-              <h3 class="text-base font-bold leading-snug">國立宜蘭大學</h3>
-              <div class="text-sm text-accent font-semibold mt-1">資訊工程系</div>
-              <p class="text-sm opacity-80 mt-2">主修資訊工程，專注於網路技術、系統架構與資訊安全領域</p>
+      <div class="not-prose relative">
+        <div class="absolute top-[0.55rem] bottom-1 left-[9px] w-0.5 bg-accent/20"></div>
+        <div class="space-y-5">
+          {education.map(edu => (
+            <div class="flex items-start gap-3">
+              <div class="w-5 shrink-0 flex justify-center pt-[0.2rem]">
+                <div class:list={[
+                  "w-2.5 h-2.5 rounded-full z-10 relative",
+                  edu.end === null
+                    ? "bg-accent"
+                    : "bg-background border-2 border-accent/40"
+                ]}></div>
+              </div>
+              <div class="flex-1 min-w-0 pb-2">
+                <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-0.5 sm:gap-4">
+                  <div class="min-w-0">
+                    <span class="font-semibold text-sm">{edu.school}</span>
+                    <div class="text-accent text-xs font-medium mt-0.5">{edu.dept}</div>
+                  </div>
+                  <div class="text-xs opacity-50 whitespace-nowrap shrink-0">
+                    <span>{fmtDate(edu.start)} – {fmtDate(edu.end)}</span>
+                    <span class="text-accent/60 ml-1" data-duration data-start={edu.start} data-end={edu.end ?? ''}></span>
+                  </div>
+                </div>
+                <p class="text-xs opacity-50 mt-1.5">{edu.desc}</p>
+              </div>
             </div>
-            <span class="text-xs md:text-sm opacity-70 whitespace-nowrap rounded-full bg-accent/10 px-2.5 py-1 self-start">2024 - 至今</span>
-          </div>
-        </div>
-        
-        <div class="rounded-lg border border-neutral-200/80 dark:border-neutral-800 bg-neutral-50/40 dark:bg-neutral-900/20 p-4 md:p-5">
-          <div class="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
-            <div class="min-w-0">
-              <h3 class="text-base font-bold leading-snug">國立羅東高工</h3>
-              <div class="text-sm text-accent font-semibold mt-1">資訊科</div>
-              <p class="text-sm opacity-80 mt-2">建立程式設計與網路基礎，開始接觸技能競賽與系統管理</p>
-            </div>
-            <span class="text-xs md:text-sm opacity-70 whitespace-nowrap rounded-full bg-accent/10 px-2.5 py-1 self-start">2021 - 2023</span>
-          </div>
+          ))}
         </div>
       </div>
     </section>
@@ -132,27 +199,70 @@ const headings = [
     <!-- 技能 -->
     <section class="mb-10" id="skills">
       <h2 class="text-3xl font-bold mb-6 border-b-2 border-accent pb-2">Skills</h2>
-      <div class="grid md:grid-cols-2 gap-6">
+      <div class="not-prose space-y-6">
+
+        <!-- Languages & Frameworks -->
         <div>
-          <h3 class="text-lg font-bold mb-3 text-accent">程式語言</h3>
-          <div class="flex flex-wrap gap-2">
-            <span class="px-3 py-1 bg-accent/10 rounded-full text-sm">C++</span>
-            <span class="px-3 py-1 bg-accent/10 rounded-full text-sm">C#</span>
-            <span class="px-3 py-1 bg-accent/10 rounded-full text-sm">Go</span>
-            <span class="px-3 py-1 bg-accent/10 rounded-full text-sm">Python</span>
-            <span class="px-3 py-1 bg-accent/10 rounded-full text-sm">Vue</span>
-            <span class="px-3 py-1 bg-accent/10 rounded-full text-sm">JavaScript/TypeScript</span>
+          <p class="text-xs font-semibold uppercase tracking-widest opacity-50 mb-3">Languages & Frameworks</p>
+          <div class="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-7 gap-2 items-start">
+            {[
+              { name: 'Python',     icon: 'python/python-original' },
+              { name: 'JavaScript', icon: 'javascript/javascript-original' },
+              { name: 'TypeScript', icon: 'typescript/typescript-original' },
+              { name: 'C++',        icon: 'cplusplus/cplusplus-original' },
+              { name: 'C#',         icon: 'csharp/csharp-original' },
+              { name: 'Go',         icon: 'go/go-original-wordmark' },
+              { name: 'Swift',      icon: 'swift/swift-original' },
+              { name: 'Vue.js',     icon: 'vuejs/vuejs-original' },
+              { name: 'React',      icon: 'react/react-original' },
+              { name: 'Django',     icon: 'django/django-plain' },
+              { name: 'TailwindCSS',icon: 'tailwindcss/tailwindcss-original' },
+            ].map(skill => (
+              <div class="flex flex-col items-center gap-1.5 p-2 rounded-lg border border-separator bg-background hover:bg-accent/5 transition-colors">
+                <img
+                  src={`https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/${skill.icon}.svg`}
+                  alt={skill.name}
+                  class="w-8 h-8 object-contain"
+                  loading="lazy"
+                />
+                <span class="text-xs font-medium text-center leading-tight">{skill.name}</span>
+              </div>
+            ))}
           </div>
         </div>
+
+        <!-- Systems & Infra -->
         <div>
-          <h3 class="text-lg font-bold mb-3 text-accent">系統與網路</h3>
-          <div class="flex flex-wrap gap-2">
-            <span class="px-3 py-1 bg-accent/10 rounded-full text-sm">Linux 系統管理</span>
-            <span class="px-3 py-1 bg-accent/10 rounded-full text-sm">Windows Server</span>
-            <span class="px-3 py-1 bg-accent/10 rounded-full text-sm">網路運維</span>
-            <span class="px-3 py-1 bg-accent/10 rounded-full text-sm">BGP 路由協議</span>
+          <p class="text-xs font-semibold uppercase tracking-widest opacity-50 mb-3">Systems & Infra</p>
+          <div class="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-7 gap-2 items-start">
+            {[
+              { name: 'Linux',   icon: 'linux/linux-original' },
+              { name: 'Windows', icon: 'windows11/windows11-original' },
+              { name: 'Docker',  icon: 'docker/docker-original' },
+              { name: 'Git',     icon: 'git/git-original' },
+              { name: 'Nginx',   icon: 'nginx/nginx-original' },
+            ].map(skill => (
+              <div class="flex flex-col items-center gap-1.5 p-2 rounded-lg border border-separator bg-background hover:bg-accent/5 transition-colors">
+                <img
+                  src={`https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/${skill.icon}.svg`}
+                  alt={skill.name}
+                  class="w-8 h-8 object-contain"
+                  loading="lazy"
+                />
+                <span class="text-xs font-medium text-center leading-tight">{skill.name}</span>
+              </div>
+            ))}
+            <div class="flex flex-col items-center gap-1.5 p-2 rounded-lg border border-separator bg-background hover:bg-accent/5 transition-colors">
+              <img src="/icons/bgp.svg" alt="BGP" class="w-8 h-8 object-contain" loading="lazy" />
+              <span class="text-xs font-medium text-center leading-tight">BGP</span>
+            </div>
+            <div class="flex flex-col items-center gap-1.5 p-2 rounded-lg border border-separator bg-background hover:bg-accent/5 transition-colors">
+              <img src="/icons/networking.svg" alt="網路運維" class="w-8 h-8 object-contain" loading="lazy" />
+              <span class="text-xs font-medium text-center leading-tight">網路運維</span>
+            </div>
           </div>
         </div>
+
       </div>
     </section>
 
@@ -348,6 +458,35 @@ const headings = [
   </article>
   </div>
 </Layout>
+
+<script>
+  function calcDuration(startStr: string, endStr: string): string {
+    const parts = startStr.split('-').map(Number)
+    const sy = parts[0], sm = parts[1]
+    let ey: number, em: number
+    if (endStr) {
+      const ep = endStr.split('-').map(Number)
+      ey = ep[0]; em = ep[1]
+    } else {
+      const now = new Date()
+      ey = now.getFullYear()
+      em = now.getMonth() + 1
+    }
+    let years = ey - sy
+    let months = em - sm
+    if (months < 0) { years--; months += 12 }
+    const result: string[] = []
+    if (years > 0) result.push(`${years} 年`)
+    if (months > 0) result.push(`${months} 個月`)
+    return result.length ? `· ${result.join(' ')}` : ''
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-duration]').forEach(el => {
+    const start = el.dataset.start ?? ''
+    const end = el.dataset.end ?? ''
+    if (start) el.textContent = calcDuration(start, end)
+  })
+</script>
 
 <style>
   /* 移除 CV 頁面中 prose 標題的 # 符號 */
