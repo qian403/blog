@@ -4,6 +4,7 @@ import Layout from '~/layouts/Layout.astro'
 import { SeriesGroup } from '~/utils'
 import PageHeader from '~/components/PageHeader.astro'
 import PostPreview from '~/components/PostPreview.astro'
+import siteConfig from '~/site.config'
 
 export const getStaticPaths = (async () => {
   const seriesGroup = await SeriesGroup.build()
@@ -16,11 +17,18 @@ export const getStaticPaths = (async () => {
 }) satisfies GetStaticPaths
 
 const { posts, seriesTitle } = Astro.props
+const breadcrumbs = [
+  { name: '首頁', item: siteConfig.site },
+  { name: '系列文章', item: `${siteConfig.site}/series/` },
+  { name: seriesTitle, item: new URL(Astro.url.pathname, Astro.site).href },
+]
 ---
 
 <Layout
-  title={`Series: ${seriesTitle}`}
-  description={`All posts in the ${seriesTitle} series`}
+  title={`${seriesTitle} 系列文章`}
+  description={`「${seriesTitle}」系列的所有文章，共 ${posts.length} 篇，收錄完整系列內容。`}
+  pageType="collection"
+  breadcrumbs={breadcrumbs}
 >
   <div class="mt-2 sm:mt-0">
     <PageHeader titlePieces={['series', seriesTitle]} />

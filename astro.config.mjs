@@ -130,6 +130,9 @@ export default defineConfig({
         } else if (pathname.startsWith('/tags/')) {
           item.priority = 0.6
           item.changefreq = 'weekly'
+        } else if (pathname.startsWith('/series/')) {
+          item.priority = 0.7
+          item.changefreq = 'weekly'
         } else if (pathname.startsWith('/about') || pathname.startsWith('/cv') || pathname.startsWith('/links')) {
           item.priority = 0.7
           item.changefreq = 'monthly'
