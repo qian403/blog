@@ -32,3 +32,5 @@ hehe
 .cursor/*
 .kilocode/*
 *.tsbuildinfo
+/.playwright-mcp
+/agent.md
