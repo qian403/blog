@@ -48,7 +48,7 @@ const itemList = page.data.map((post) => ({
   title={pageTitle}
   description={pageDescription}
   pageType="collection"
-  noindex={page.currentPage > 1}
+  noindex={page.currentPage > 1 || page.total <= 1}
   tags={[tagTitle]}
   breadcrumbs={breadcrumbs}
   itemList={itemList}

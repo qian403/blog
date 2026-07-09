@@ -273,7 +273,7 @@ abstract class PostsCollationGroup implements CollationGroup<'posts'> {
       this.collations.push({
         title: collationTitle,
         titleSlug: collationTitleSlug,
-        url: `${this.url}/${encodeURIComponent(collationTitleSlug)}`,
+        url: `${this.url}/${encodeURIComponent(collationTitleSlug)}/`,
         entries: [item],
       })
     }

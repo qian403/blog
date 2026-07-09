@@ -111,7 +111,9 @@ export default defineConfig({
         if (pathname === '/friend') return false
         if (pathname === '/links') return false
         if (/^\/posts\/\d+$/.test(pathname)) return false
-        if (/^\/tags\/.+\/\d+$/.test(pathname)) return false
+        // Tag archives are crawlable through article links, but most contain only
+        // one article and add a large number of low-value URLs to the sitemap.
+        if (pathname.startsWith('/tags/')) return false
 
         return true
       },
