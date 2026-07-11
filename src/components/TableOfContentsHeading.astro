@@ -3,10 +3,12 @@ import type { MarkdownHeading } from 'astro'
 
 interface Props {
   heading: MarkdownHeading
+  responsive?: boolean
 }
 
 const {
   heading: { depth, slug, text },
+  responsive = false,
 } = Astro.props
 ---
 
@@ -15,14 +17,31 @@ const {
     {
       Array.from({ length: depth - 1 }, (_v, _k) => (
         <div class="toc-lines flex flex-col items-stretch">
-          <span class="top-box w-4 xl:w-3 basis-4 border-b-1 border-foreground/20 xl:border-foreground/15" />
-          <span class="bottom-box w-4 min-h-1/2 xl:w-3 flex-1 border-t-1 border-foreground/20 xl:border-foreground/15" />
+          <span
+            class:list={[
+              'top-box w-4 basis-4 border-b-1 border-foreground/20',
+              responsive
+                ? 'lg:w-3 lg:border-foreground/15'
+                : 'xl:w-3 xl:border-foreground/15',
+            ]}
+          />
+          <span
+            class:list={[
+              'bottom-box w-4 min-h-1/2 flex-1 border-t-1 border-foreground/20',
+              responsive
+                ? 'lg:w-3 lg:border-foreground/15'
+                : 'xl:w-3 xl:border-foreground/15',
+            ]}
+          />
         </div>
       ))
     }
   </div>
   <a
-    class="inline-block line-clamp-2 ml-3 xl:ml-2 py-1 ps-1 hover:text-accent"
+    class:list={[
+      'ml-3 block py-1 ps-1 line-clamp-2 hover:text-accent',
+      responsive ? 'min-h-11 py-2 lg:ml-2 lg:min-h-0 lg:py-1' : 'xl:ml-2',
+    ]}
     href={`#${slug}`}>{text}</a
   >
 </li>

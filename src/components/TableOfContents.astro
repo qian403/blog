@@ -4,51 +4,123 @@ import TOCHeading from '~/components/TableOfContentsHeading.astro'
 
 interface Props {
   headings: MarkdownHeading[]
+  variant?: 'legacy' | 'responsive'
 }
 
-const { headings } = Astro.props
+const { headings, variant = 'legacy' } = Astro.props
+const isResponsive = variant === 'responsive'
 
 const filteredHeadings = headings.filter(({ depth }) => depth >= 2 && depth <= 3)
 ---
 
 <details
-  open
-  class="toc relative md:mx-2 xl:mx-0 text-foreground/90 text-sm bg-foreground/5 xl:bg-transparent px-8 xl:pr-0 py-6 mt-5 xl:mt-0 xl:w-full rounded-xl border-3 xl:border-none border-accent/10 xl:sticky xl:top-10 xl:max-h-[calc(100vh-2.5rem)] xl:overflow-hidden xl:basis-[274px] 2xl:basis-[320px] xl:order-2 xl:shrink-0 xl:opacity-90"
+  open={!isResponsive}
+  data-variant={variant}
+  class:list={[
+    'toc relative text-sm text-foreground/90',
+    isResponsive
+      ? 'z-20 mt-5 rounded-lg border-2 border-accent/10 bg-background md:sticky md:top-3 md:mx-2 md:shadow-sm lg:top-10 lg:col-start-2 lg:row-start-1 lg:mx-0 lg:mt-0 lg:max-h-[calc(100vh-2.5rem)] lg:w-full lg:overflow-hidden lg:border-none lg:bg-transparent lg:opacity-90 lg:shadow-none'
+      : 'md:mx-2 xl:mx-0 bg-foreground/5 xl:bg-transparent px-8 xl:pr-0 py-6 mt-5 xl:mt-0 xl:w-full rounded-xl border-3 xl:border-none border-accent/10 xl:sticky xl:top-10 xl:max-h-[calc(100vh-2.5rem)] xl:overflow-hidden xl:basis-[274px] 2xl:basis-[320px] xl:order-2 xl:shrink-0 xl:opacity-90',
+  ]}
 >
   <summary
-    class="list-none marker:hidden marker:content-[''] before:content-['>'] before:text-accent before:font-semibold before:absolute before:left-3 cursor-pointer"
-    >Table of Contents</summary
+    class:list={[
+      "cursor-pointer list-none marker:hidden marker:content-[''] before:font-semibold before:text-accent before:content-['>']",
+      isResponsive
+        ? 'flex min-h-11 items-center gap-3 px-4 focus-visible:outline-1 focus-visible:outline-accent focus-visible:outline-offset-2 lg:min-h-0 lg:px-0'
+        : 'before:absolute before:left-3',
+    ]}
   >
-  <nav class="w-full text-sm xl:-ml-1 xl:mt-4 xl:max-h-[calc(100vh-7rem)] xl:overflow-y-auto xl:pr-3">
-    <ul class="mt-4 xl:mt-0 flex flex-col max-w-full">
-      {filteredHeadings.map((heading) => <TOCHeading heading={heading} />)}
+    {
+      isResponsive ? (
+        <>
+          <span class="shrink-0 font-semibold">文章目錄</span>
+          <span class="toc-current ml-auto truncate text-foreground/65 lg:hidden">
+            選擇段落
+          </span>
+        </>
+      ) : (
+        'Table of Contents'
+      )
+    }
+  </summary>
+  <nav
+    class:list={[
+      'w-full text-sm',
+      isResponsive
+        ? 'px-4 pb-4 md:absolute md:top-[calc(100%+0.5rem)] md:left-0 md:max-h-[60vh] md:overflow-y-auto md:rounded-lg md:border-2 md:border-accent/10 md:bg-background md:pt-2 md:shadow-lg lg:static lg:mt-4 lg:-ml-1 lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto lg:rounded-none lg:border-0 lg:bg-transparent lg:px-0 lg:pt-0 lg:pr-3 lg:pb-0 lg:shadow-none'
+        : 'xl:-ml-1 xl:mt-4 xl:max-h-[calc(100vh-7rem)] xl:overflow-y-auto xl:pr-3',
+    ]}
+  >
+    <ul
+      class:list={[
+        'flex max-w-full flex-col',
+        isResponsive ? 'mt-2 md:mt-0' : 'mt-4 xl:mt-0',
+      ]}
+    >
+      {
+        filteredHeadings.map((heading) => (
+          <TOCHeading heading={heading} responsive={isResponsive} />
+        ))
+      }
     </ul>
   </nav>
 </details>
 
 <script>
-  const anchors = document.querySelectorAll('h2[id], h3[id]')
-  const links = document.querySelectorAll('details.toc > nav > ul > li')
+  const toc = document.querySelector<HTMLDetailsElement>('details.toc')
+  const isResponsive = toc?.dataset.variant === 'responsive'
+  const anchorSelector = isResponsive ? '.prose h2[id], .prose h3[id]' : 'h2[id], h3[id]'
+  const anchors = document.querySelectorAll<HTMLElement>(anchorSelector)
+  const links = document.querySelectorAll<HTMLLIElement>('details.toc > nav > ul > li')
+  const currentHeading = toc?.querySelector<HTMLElement>('.toc-current')
+  const desktopQuery = window.matchMedia('(min-width: 1024px)')
+
+  const syncTocMode = (isDesktop: boolean) => {
+    if (toc) toc.open = isDesktop
+  }
+
+  if (isResponsive) {
+    syncTocMode(desktopQuery.matches)
+    desktopQuery.addEventListener('change', (event) => syncTocMode(event.matches))
+  }
+
   if (anchors.length === links.length && anchors.length > 0) {
-    window.addEventListener('scroll', (_event) => {
-      let scrollTop = window.scrollY
+    const updateActiveHeading = () => {
+      const scrollTop = window.scrollY
       let highlighted = false
-      // then iterate backwards, on the first match highlight it and break
-      for (var i = anchors.length - 1; i >= 0; i--) {
-        const anchor = anchors[i] as HTMLElement
-        if (!highlighted && scrollTop > anchor.offsetTop - 75) {
+      for (let i = anchors.length - 1; i >= 0; i--) {
+        const anchor = anchors[i]
+        if (!highlighted && scrollTop >= anchor.offsetTop - 96) {
           links[i].classList.add('active-heading')
+          if (currentHeading) currentHeading.textContent = anchor.textContent
           highlighted = true
         } else {
           links[i].classList.remove('active-heading')
         }
       }
+
+      if (!highlighted && currentHeading) currentHeading.textContent = '選擇段落'
+    }
+
+    links.forEach((item) => {
+      item.querySelector('a')?.addEventListener('click', () => {
+        if (toc && isResponsive && !desktopQuery.matches) toc.open = false
+      })
     })
+
+    updateActiveHeading()
+    window.addEventListener('scroll', updateActiveHeading, { passive: true })
   }
 </script>
 
 <style>
   details[open] summary:before {
     transform: rotate(90deg);
+  }
+
+  :global(.prose h2[id]),
+  :global(.prose h3[id]) {
+    scroll-margin-top: 5rem;
   }
 </style>

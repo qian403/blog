@@ -85,6 +85,7 @@ if (postData.tags && postData.tags.length > 0) {
   pageType="article"
   image={postImage}
   breadcrumbs={breadcrumbs}
+  wide
 >
   <article class="max-w-full py-7.5" data-pagefind-body>
     {
@@ -114,9 +115,15 @@ if (postData.tags && postData.tags.length > 0) {
       </div>
     </div>
     <!-- <hr class="border-accent/10 border-2 rounded-xl hidden lg:block" /> -->
-    <div class="flex flex-col xl:gap-1 2xl:gap-18 xl:flex-row xl:items-start">
-      {postData.toc && headings.length > 0 && <TableOfContents headings={headings} />}
-      <div class="mb-5 xl:min-w-full 2xl:min-w-full prose">
+    <div
+      class="flex flex-col lg:grid lg:grid-cols-[minmax(0,1fr)_14.5rem] lg:items-start lg:gap-6"
+    >
+      {
+        postData.toc && headings.length > 0 && (
+          <TableOfContents headings={headings} variant="responsive" />
+        )
+      }
+      <div class="prose mb-5 min-w-0 lg:col-start-1 lg:row-start-1">
         <PostContent />
       </div>
     </div>
