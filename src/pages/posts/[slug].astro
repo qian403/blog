@@ -13,6 +13,7 @@ import siteConfig from '~/site.config'
 import Tags from '~/components/Tags.astro'
 import PostInfo from '~/components/PostInfo.astro'
 import ScrollUpButton from '~/components/ScrollUpButton.astro'
+import KatexStyles from '~/components/KatexStyles.astro'
 import type { Collation } from '~/types'
 import ChevronsRight from '~/icons/chevrons-right.svg'
 import { getPostSequenceContext } from '~/utils'
@@ -32,6 +33,7 @@ export const getStaticPaths = (async () => {
 const { post, prev, next } = Astro.props
 const postData = post.data
 const { headings, Content: PostContent, remarkPluginFrontmatter } = await render(post)
+const hasMath = remarkPluginFrontmatter.hasMath === true
 const postDescription =
   postData.description || remarkPluginFrontmatter.description || siteConfig.description
 const articleSummary = postData.description || remarkPluginFrontmatter.description
@@ -89,6 +91,7 @@ if (postData.tags && postData.tags.length > 0) {
   breadcrumbs={breadcrumbs}
   wide
 >
+  {hasMath && <KatexStyles />}
   <article class="max-w-full" data-pagefind-body aria-labelledby={post.id}>
     <header class="mx-auto max-w-[760px] py-12 sm:py-16">
       {

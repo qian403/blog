@@ -1,12 +1,17 @@
 ---
-import '@pagefind/default-ui/css/ui.css'
 import IconCircleX from '~/icons/circle-x.svg'
 import IconSearch from '~/icons/search.svg'
 
 const { trailingSlashes = false } = Astro.props
 ---
 
-<site-search class="ms-auto" id="search" data-trailing-slashes={trailingSlashes}>
+<site-search
+  class="ms-auto"
+  id="search"
+  data-trailing-slashes={trailingSlashes}
+  data-base-url={import.meta.env.BASE_URL}
+  data-dev={import.meta.env.DEV}
+>
   <button
     class="flex size-9 cursor-pointer items-center justify-center text-foreground/70 transition-colors hover:text-foreground"
     aria-keyshortcuts="Control+K Meta+K"
@@ -35,6 +40,9 @@ const { trailingSlashes = false } = Astro.props
           </div>
         ) : (
           <div class="search-container">
+            <div class="py-8 text-center text-sm text-foreground/60" data-search-loading>
+              載入搜尋…
+            </div>
             <div id="pagefind-search" class="max-w-full" />
           </div>
         )
@@ -81,30 +89,31 @@ const { trailingSlashes = false } = Astro.props
   }
 </style>
 
-<script>
+<script is:inline>
   class SiteSearch extends HTMLElement {
-    #closeBtn: HTMLButtonElement | null
-    #dialog: HTMLDialogElement | null
-    #dialogFrame: HTMLDivElement | null
-    #openBtn: HTMLButtonElement | null
-    #controller: AbortController
-    trailingSlashes: boolean
-    stripTrailingSlash: (path: string) => string
-    formatURL: (path: string) => string
+    #closeBtn
+    #dialog
+    #dialogFrame
+    #openBtn
+    #controller
+    #searchReady
+    #baseUrl
+    #isDev
 
     constructor() {
       super()
-      this.#openBtn = this.querySelector<HTMLButtonElement>('button[data-open-modal]')
-      this.#closeBtn = this.querySelector<HTMLButtonElement>('button[data-close-modal]')
-      this.#dialog = this.querySelector<HTMLDialogElement>('dialog')
+      this.#openBtn = this.querySelector('button[data-open-modal]')
+      this.#closeBtn = this.querySelector('button[data-close-modal]')
+      this.#dialog = this.querySelector('dialog')
       this.#dialogFrame = this.querySelector('.dialog-frame')
       this.#controller = new AbortController()
+      this.#searchReady = null
+      this.#baseUrl = this.dataset.baseUrl || '/'
+      this.#isDev = this.dataset.dev === 'true'
 
-      this.trailingSlashes = this.dataset.trailingSlashes === 'true' ? true : false
-      this.stripTrailingSlash = (path: string) => path.replace(/(.)\/(#.*)?$/, '$1$2')
-      this.formatURL = !this.trailingSlashes
-        ? this.stripTrailingSlash
-        : (path: string) => path
+      this.trailingSlashes = this.dataset.trailingSlashes === 'true'
+      this.stripTrailingSlash = (path) => path.replace(/(.)\/(#.*)?$/, '$1$2')
+      this.formatURL = !this.trailingSlashes ? this.stripTrailingSlash : (path) => path
 
       // Set up events
       if (this.#openBtn) {
@@ -129,23 +138,75 @@ const { trailingSlashes = false } = Astro.props
       } else {
         console.warn('Dialog not found')
       }
+    }
 
-      // only add pagefind in production
-      if (import.meta.env.DEV) return
-      const onIdle = window.requestIdleCallback || ((cb) => setTimeout(cb, 1))
-      onIdle(async () => {
-        const { PagefindUI } = await import('@pagefind/default-ui')
+    #loadPagefindStyles = () =>
+      new Promise((resolve, reject) => {
+        const existing = document.querySelector('link[data-pagefind-styles]')
+        if (existing?.sheet) {
+          resolve()
+          return
+        }
+
+        const stylesheet = existing ?? document.createElement('link')
+        stylesheet.rel = 'stylesheet'
+        stylesheet.href = this.#baseUrl.replace(/\/$/, '') + '/pagefind/pagefind-ui.css'
+        stylesheet.dataset.pagefindStyles = ''
+        stylesheet.addEventListener('load', () => resolve(), { once: true })
+        stylesheet.addEventListener(
+          'error',
+          () => reject(new Error('Pagefind styles failed')),
+          {
+            once: true,
+          },
+        )
+        if (!existing) document.head.appendChild(stylesheet)
+      })
+
+    #loadPagefindScript = () =>
+      new Promise((resolve, reject) => {
+        if (window.PagefindUI) {
+          resolve()
+          return
+        }
+
+        const existing = document.querySelector('script[data-pagefind-script]')
+        const script = existing ?? document.createElement('script')
+        script.src = this.#baseUrl.replace(/\/$/, '') + '/pagefind/pagefind-ui.js'
+        script.dataset.pagefindScript = ''
+        script.async = true
+        script.addEventListener(
+          'load',
+          () =>
+            window.PagefindUI
+              ? resolve()
+              : reject(new Error('Pagefind UI failed to initialize')),
+          { once: true },
+        )
+        script.addEventListener(
+          'error',
+          () => reject(new Error('Pagefind UI failed to load')),
+          { once: true },
+        )
+        if (!existing) document.head.appendChild(script)
+      })
+
+    #initializeSearch = () => {
+      if (this.#isDev) return Promise.resolve()
+      if (this.#searchReady) return this.#searchReady
+
+      this.#searchReady = (async () => {
+        await Promise.all([this.#loadPagefindStyles(), this.#loadPagefindScript()])
+        const PagefindUI = window.PagefindUI
+        if (!PagefindUI) throw new Error('Pagefind UI is unavailable')
 
         new PagefindUI({
-          baseUrl: import.meta.env.BASE_URL,
-          bundlePath: import.meta.env.BASE_URL.replace(/\/$/, '') + '/pagefind/',
+          baseUrl: this.#baseUrl,
+          bundlePath: this.#baseUrl.replace(/\/$/, '') + '/pagefind/',
           element: '#pagefind-search',
           showImages: false,
           showSubResults: true,
-          processResult: (result: {
-            url: string
-            sub_results: Array<{ url: string }>
-          }) => {
+          processResult: (result) => {
             // Ensure links in search results match the trailing slashes setting
             result.url = this.formatURL(result.url)
 
@@ -157,7 +218,10 @@ const { trailingSlashes = false } = Astro.props
             return result
           },
         })
-      })
+        this.querySelector('[data-search-loading]')?.remove()
+      })()
+
+      return this.#searchReady
     }
 
     connectedCallback() {
@@ -171,7 +235,7 @@ const { trailingSlashes = false } = Astro.props
       this.#controller.abort()
     }
 
-    openModal = (event?: MouseEvent) => {
+    openModal = async (event) => {
       if (!this.#dialog) {
         console.warn('Dialog not found')
         return
@@ -181,42 +245,51 @@ const { trailingSlashes = false } = Astro.props
       body?.classList.add('overflow-hidden')
 
       this.#dialog.showModal()
-      this.querySelector('input')?.focus()
       event?.stopPropagation()
       window.addEventListener('click', this.onWindowClick, {
         signal: this.#controller.signal,
       })
+
+      try {
+        await this.#initializeSearch()
+        this.querySelector('input')?.focus()
+      } catch (error) {
+        console.error('Search failed to load', error)
+        const loadingMessage = this.querySelector('[data-search-loading]')
+        if (loadingMessage)
+          loadingMessage.textContent = '搜尋載入失敗，請重新整理後再試。'
+      }
     }
 
     closeModal = () => {
       this.#dialog?.close()
     }
 
-    onWindowClick = (event: MouseEvent) => {
+    onWindowClick = (event) => {
       // check if it's a link
       const isLink = 'href' in (event.target || {})
       // make sure the click is either a link or outside of the dialog
       if (
         isLink ||
-        (document.body.contains(event.target as Node) &&
-          !this.#dialogFrame?.contains(event.target as Node))
+        (document.body.contains(event.target) &&
+          !this.#dialogFrame?.contains(event.target))
       ) {
         this.closeModal()
       }
     }
 
-    onWindowKeydown = (e: KeyboardEvent) => {
+    onWindowKeydown = (e) => {
       if (!this.#dialog) {
         console.warn('Dialog not found')
         return
       }
       // check if it's the Control+K or ⌘+K shortcut
       if ((e.metaKey === true || e.ctrlKey === true) && e.key === 'k') {
-        this.#dialog.open ? this.closeModal() : this.openModal()
+        this.#dialog.open ? this.closeModal() : void this.openModal(e)
         e.preventDefault()
       }
     }
   }
 
-  customElements.define('site-search', SiteSearch)
+  if (!customElements.get('site-search')) customElements.define('site-search', SiteSearch)
 </script>

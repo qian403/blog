@@ -1,5 +1,6 @@
 ---
 import Layout from '~/layouts/Layout.astro'
+import KatexStyles from '~/components/KatexStyles.astro'
 import type { MarkdownLayoutProps } from 'astro'
 
 type Props = MarkdownLayoutProps<{
@@ -22,6 +23,7 @@ const { frontmatter } = Astro.props
   noindex={frontmatter.noindex}
   wide
 >
+  <KatexStyles />
   <article class="mx-auto w-full max-w-[760px] py-12 sm:py-16">
     <header class="mb-12 border-b border-foreground/10 pb-10">
       <p class="mb-5 font-mono text-xs font-semibold uppercase text-accent">

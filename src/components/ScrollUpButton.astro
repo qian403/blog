@@ -25,9 +25,7 @@ import IconChevronUp from '~/icons/chevron-up.svg'
       show() {
         element.removeEventListener('transitionend', listener)
         element.removeAttribute('hidden')
-        // Force a browser re-paint
-        const _reflow = element.offsetHeight
-        element.classList.add(transitionClass)
+        requestAnimationFrame(() => element.classList.add(transitionClass))
       },
       hide() {
         element.addEventListener('transitionend', listener)
@@ -38,14 +36,12 @@ import IconChevronUp from '~/icons/chevron-up.svg'
 
   function init() {
     const button = document.querySelector('button.scroll-up') as HTMLButtonElement
-    const topHeading = document.querySelector('h1')
-    const topOffset = topHeading ? topHeading.offsetTop : 0
     if (!button) {
       console.warn('Scroll up button not found in the document.')
       return
     }
     button.addEventListener('click', () => {
-      window.scrollTo({ top: topOffset, behavior: 'smooth' })
+      window.scrollTo({ top: 0, behavior: 'smooth' })
     })
     // Use IntersectionObserver to show/hide the button
     const prose = document.querySelector('article div.prose')

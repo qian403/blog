@@ -1,7 +1,8 @@
 ---
 title: MTR 網路診斷工具完整教學：Linux 網路追蹤與監控指南
 published: 2023-11-01
-description: '學習如何使用 MTR  進行 Linux 網路診斷與故障排除。完整介紹 MTR 安裝、基礎用法、進階參數設定，包含 TCP/UDP 測試、結果匯出等實用技巧。'
+lastUpdated: 2026-07-16
+description: '學習如何使用 MTR 進行 Linux 網路診斷與故障排除。完整介紹 MTR 安裝、基礎用法、進階參數設定，包含 TCP/UDP 測試、結果匯出等實用技巧。'
 image: ''
 tags: [network, tools, mtr, traceroute, ping, 網路診斷, 故障排除, linux命令]
 category: 'Linux'

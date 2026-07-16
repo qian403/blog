@@ -144,18 +144,7 @@ const filteredHeadings = headings.filter(({ depth }) => depth >= 2 && depth <= 3
     }
   }
 
-  const updateActiveHeading = () => {
-    const scrollTop = window.scrollY
-    let activeSlug = ''
-
-    for (let index = anchors.length - 1; index >= 0; index--) {
-      const anchor = anchors[index]
-      if (scrollTop >= anchor.offsetTop - 112) {
-        activeSlug = anchor.id
-        break
-      }
-    }
-
+  const setActiveHeading = (activeSlug: string) => {
     allTocItems.forEach((item) => {
       const active = item.dataset.headingSlug === activeSlug
       const link = item.querySelector('a')
@@ -170,6 +159,52 @@ const filteredHeadings = headings.filter(({ depth }) => depth >= 2 && depth <= 3
     if (currentHeading) {
       currentHeading.textContent =
         anchors.find((anchor) => anchor.id === activeSlug)?.textContent ?? '選擇段落'
+    }
+  }
+
+  const visibleHeadings = new Set<HTMLElement>()
+  const passedHeadings = new Set<HTMLElement>()
+  const headingOrder = new Map(anchors.map((anchor, index) => [anchor, index]))
+
+  const headingObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        const heading = entry.target as HTMLElement
+        if (entry.isIntersecting) visibleHeadings.add(heading)
+        else visibleHeadings.delete(heading)
+
+        if (entry.boundingClientRect.top < 80) passedHeadings.add(heading)
+        else passedHeadings.delete(heading)
+      })
+
+      const visibleHeading = [...visibleHeadings].sort(
+        (first, second) =>
+          (headingOrder.get(first) ?? 0) - (headingOrder.get(second) ?? 0),
+      )[0]
+
+      if (visibleHeading) {
+        setActiveHeading(visibleHeading.id)
+        return
+      }
+
+      const latestHeadingAbove = [...passedHeadings].sort(
+        (first, second) =>
+          (headingOrder.get(second) ?? 0) - (headingOrder.get(first) ?? 0),
+      )[0]
+
+      if (latestHeadingAbove) {
+        setActiveHeading(latestHeadingAbove.id)
+      }
+    },
+    { rootMargin: '-80px 0px -70% 0px' },
+  )
+
+  anchors.forEach((anchor) => headingObserver.observe(anchor))
+
+  const updateActiveHeadingFromHash = () => {
+    const activeSlug = decodeURIComponent(window.location.hash.slice(1))
+    if (activeSlug && anchors.some((anchor) => anchor.id === activeSlug)) {
+      setActiveHeading(activeSlug)
     }
   }
 
@@ -228,10 +263,8 @@ const filteredHeadings = headings.filter(({ depth }) => depth >= 2 && depth <= 3
     }
   })
 
-  updateActiveHeading()
-  window.addEventListener('load', updateActiveHeading, { once: true })
-  window.addEventListener('hashchange', updateActiveHeading)
-  window.addEventListener('scroll', updateActiveHeading, { passive: true })
+  updateActiveHeadingFromHash()
+  window.addEventListener('hashchange', updateActiveHeadingFromHash)
 </script>
 
 <style>
@@ -244,7 +277,12 @@ const filteredHeadings = headings.filter(({ depth }) => depth >= 2 && depth <= 3
   }
 
   [data-responsive-toc][data-open='true'] .toc-mobile-panel {
+    content-visibility: visible;
     translate: 0 0;
+  }
+
+  .toc-mobile-panel {
+    content-visibility: hidden;
   }
 
   [data-responsive-toc][data-open='true'] .toc-mobile-trigger {

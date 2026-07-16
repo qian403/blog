@@ -1,7 +1,8 @@
 ---
-title: Markdown 完整教學指南:語法、範例與實用技巧一次掌握
+title: Markdown 完整教學指南：語法、範例與實用技巧一次掌握
 published: 2025-07-23
-description: '從基礎到進階的 Markdown 完整教學!包含標題、列表、表格、程式碼區塊、數學公式等等的語法範例。適合部落格撰寫、README 文件、筆記軟體使用者學習,讓你 10 分鐘快速上手 Markdown 輕量級標記語言。'
+lastUpdated: 2026-07-16
+description: '從基礎到進階整理 Markdown 標題、列表、表格、程式碼區塊與數學公式語法，適合部落格、README 與筆記使用者快速上手。'
 image: ''
 tags: [Markdown, 教學, 語法]
 category: 'Markdown'

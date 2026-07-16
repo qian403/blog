@@ -1,0 +1,117 @@
+<script is:inline>
+  ;(() => {
+    const copyFallback = (text) => {
+      const container = document.createElement('pre')
+      Object.assign(container.style, {
+        height: '1px',
+        left: '0',
+        opacity: '0',
+        overflow: 'hidden',
+        pointerEvents: 'none',
+        position: 'fixed',
+        top: '0',
+        width: '1px',
+      })
+      container.setAttribute('aria-hidden', 'true')
+      container.textContent = text
+      document.body.appendChild(container)
+
+      const range = document.createRange()
+      range.selectNode(container)
+      const selection = document.getSelection()
+      if (!selection) {
+        container.remove()
+        return false
+      }
+      selection.removeAllRanges()
+      selection.addRange(range)
+      const copied = document.execCommand('copy')
+      selection.removeAllRanges()
+      container.remove()
+      return copied
+    }
+
+    const showCopyFeedback = (button) => {
+      if (button.parentElement?.querySelector('.feedback')) return
+
+      const feedback = document.createElement('div')
+      feedback.className = 'feedback'
+      feedback.textContent = button.dataset.copied || 'Copied!'
+      button.before(feedback)
+      requestAnimationFrame(() => feedback.classList.add('show'))
+      window.setTimeout(() => feedback.classList.remove('show'), 1500)
+      window.setTimeout(() => feedback.remove(), 1800)
+    }
+
+    document.addEventListener('click', async (event) => {
+      const button = event.target.closest?.('.expressive-code .copy button')
+      if (!button) return
+
+      const text = (button.dataset.code || '').replaceAll('\u007f', '\n')
+      let copied = false
+      try {
+        await navigator.clipboard.writeText(text)
+        copied = true
+      } catch {
+        copied = copyFallback(text)
+      }
+      if (copied) showCopyFeedback(button)
+    })
+
+    const initializeScrollableCodeBlocks = () => {
+      const codeBlocks = document.querySelectorAll('.expressive-code pre')
+      if (!codeBlocks.length) return
+
+      const update = (codeBlock) => {
+        const scrollable = codeBlock.scrollWidth > codeBlock.clientWidth
+        if (scrollable) {
+          codeBlock.tabIndex = 0
+          codeBlock.setAttribute('role', 'region')
+          codeBlock.setAttribute('aria-label', '可水平捲動的程式碼區塊')
+        } else {
+          codeBlock.removeAttribute('tabindex')
+          codeBlock.removeAttribute('role')
+          codeBlock.removeAttribute('aria-label')
+        }
+      }
+
+      const resizeObserver =
+        'ResizeObserver' in window
+          ? new ResizeObserver((entries) => {
+              entries.forEach((entry) => update(entry.target))
+            })
+          : null
+
+      const activate = (codeBlock) => {
+        update(codeBlock)
+        resizeObserver?.observe(codeBlock)
+      }
+
+      if (!('IntersectionObserver' in window)) {
+        codeBlocks.forEach(activate)
+        return
+      }
+
+      const visibilityObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return
+            visibilityObserver.unobserve(entry.target)
+            activate(entry.target)
+          })
+        },
+        { rootMargin: '600px 0px' },
+      )
+      codeBlocks.forEach((codeBlock) => visibilityObserver.observe(codeBlock))
+    }
+
+    const scheduleInitialization = () => {
+      const schedule =
+        window.requestIdleCallback || ((callback) => window.setTimeout(callback, 1))
+      schedule(initializeScrollableCodeBlocks)
+    }
+
+    if (document.readyState === 'complete') scheduleInitialization()
+    else window.addEventListener('load', scheduleInitialization, { once: true })
+  })()
+</script>

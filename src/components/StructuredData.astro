@@ -49,68 +49,65 @@ const {
 const socialProfiles = Object.values(siteConfig.socialLinks).filter(
   (value): value is string => typeof value === 'string',
 )
+const normalizedSite = siteConfig.site.replace(/\/$/, '')
+const personId = `${normalizedSite}/#person`
+const websiteId = `${normalizedSite}/#website`
+const blogId = `${normalizedSite}/#blog`
+const breadcrumbId = `${url}#breadcrumb`
+const itemListId = `${url}#item-list`
 
 const personSchema = {
-  '@context': 'https://schema.org',
+  '@id': personId,
   '@type': 'Person',
   name: siteConfig.author,
-  url: siteConfig.site,
+  url: `${normalizedSite}/about/`,
   sameAs: socialProfiles.length > 0 ? socialProfiles : undefined,
 }
 
 const websiteSchema = {
-  '@context': 'https://schema.org',
+  '@id': websiteId,
   '@type': 'WebSite',
   name: siteConfig.title,
   description: siteConfig.description,
-  url: siteConfig.site,
+  url: `${normalizedSite}/`,
   inLanguage: 'zh-TW',
-  potentialAction: {
-    '@type': 'SearchAction',
-    target: `${siteConfig.site}/?q={search_term_string}`,
-    'query-input': 'required name=search_term_string',
-  },
+  publisher: { '@id': personId },
 }
 
 const blogSchema = {
-  '@context': 'https://schema.org',
+  '@id': blogId,
   '@type': 'Blog',
   name: siteConfig.title,
   description: siteConfig.description,
-  url: siteConfig.site,
-  author: {
-    '@type': 'Person',
-    name: siteConfig.author,
-  },
+  url: `${normalizedSite}/`,
+  isPartOf: { '@id': websiteId },
+  author: { '@id': personId },
+  publisher: { '@id': personId },
   inLanguage: 'zh-TW',
 }
+
+const articleAuthor =
+  !author || author === siteConfig.author
+    ? { '@id': personId }
+    : { '@type': 'Person', name: author }
 
 const articleSchema =
   pageType === 'article'
     ? {
-        '@context': 'https://schema.org',
+        '@id': `${url}#article`,
         '@type': 'BlogPosting',
         headline: title,
         description: description || siteConfig.description,
         image: image || `${siteConfig.site}/social-cards/__default.png`,
         datePublished: publishDate?.toISOString(),
         dateModified: (modifiedDate || publishDate)?.toISOString(),
-        author: {
-          '@type': 'Person',
-          name: author || siteConfig.author,
-        },
-        publisher: {
-          '@type': 'Organization',
-          name: siteConfig.title,
-          logo: {
-            '@type': 'ImageObject',
-            url: `${siteConfig.site}/favicon.ico`,
-          },
-        },
+        author: articleAuthor,
+        publisher: { '@id': personId },
+        isPartOf: { '@id': blogId },
         mainEntityOfPage: {
-          '@type': 'WebPage',
           '@id': url,
         },
+        breadcrumb: breadcrumbs?.length ? { '@id': breadcrumbId } : undefined,
         url,
         inLanguage: 'zh-TW',
         keywords: tags?.join(', ') || siteConfig.tags.join(', '),
@@ -120,24 +117,22 @@ const articleSchema =
 const collectionSchema =
   pageType === 'collection'
     ? {
-        '@context': 'https://schema.org',
+        '@id': url,
         '@type': 'CollectionPage',
         name: title || siteConfig.title,
         description: description || siteConfig.description,
         url,
         inLanguage: 'zh-TW',
-        isPartOf: {
-          '@type': 'WebSite',
-          name: siteConfig.title,
-          url: siteConfig.site,
-        },
+        isPartOf: { '@id': websiteId },
+        mainEntity: itemList?.length ? { '@id': itemListId } : undefined,
+        breadcrumb: breadcrumbs?.length ? { '@id': breadcrumbId } : undefined,
       }
     : null
 
 const itemListSchema =
   pageType === 'collection' && itemList && itemList.length > 0
     ? {
-        '@context': 'https://schema.org',
+        '@id': itemListId,
         '@type': 'ItemList',
         itemListElement: itemList.map((item, index) => ({
           '@type': 'ListItem',
@@ -151,37 +146,36 @@ const itemListSchema =
 const profileSchema =
   pageType === 'profile'
     ? {
-        '@context': 'https://schema.org',
+        '@id': url,
         '@type': 'ProfilePage',
         name: title || siteConfig.author,
         description: description || siteConfig.description,
         url,
         inLanguage: 'zh-TW',
-        mainEntity: {
-          '@type': 'Person',
-          name: siteConfig.author,
-          url: siteConfig.site,
-          sameAs: socialProfiles.length > 0 ? socialProfiles : undefined,
-        },
+        isPartOf: { '@id': websiteId },
+        mainEntity: { '@id': personId },
+        breadcrumb: breadcrumbs?.length ? { '@id': breadcrumbId } : undefined,
       }
     : null
 
 const webPageSchema =
   pageType === 'page'
     ? {
-        '@context': 'https://schema.org',
+        '@id': url,
         '@type': 'WebPage',
         name: title || siteConfig.title,
         description: description || siteConfig.description,
         url,
         inLanguage: 'zh-TW',
+        isPartOf: { '@id': websiteId },
+        breadcrumb: breadcrumbs?.length ? { '@id': breadcrumbId } : undefined,
       }
     : null
 
 const breadcrumbSchema =
   breadcrumbs && breadcrumbs.length > 0
     ? {
-        '@context': 'https://schema.org',
+        '@id': breadcrumbId,
         '@type': 'BreadcrumbList',
         itemListElement: breadcrumbs.map((breadcrumb, index) => ({
           '@type': 'ListItem',
@@ -192,20 +186,22 @@ const breadcrumbSchema =
       }
     : null
 
-const schemas = [
-  pageType === 'website' ? websiteSchema : null,
-  pageType === 'website' ? blogSchema : null,
-  pageType === 'website' ? personSchema : null,
+const graph = [
+  personSchema,
+  websiteSchema,
+  blogSchema,
   articleSchema,
   collectionSchema,
   itemListSchema,
   profileSchema,
-  pageType === 'profile' ? personSchema : null,
   webPageSchema,
   breadcrumbSchema,
 ].filter(Boolean)
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@graph': graph,
+}
 ---
 
-{schemas.map((schema) => (
-  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
-))}
+<script type="application/ld+json" set:html={JSON.stringify(structuredData)} />

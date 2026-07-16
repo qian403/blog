@@ -5,6 +5,7 @@ import Footer from '~/components/Footer.astro'
 import LightDarkAutoThemeLoader from '~/components/LightDarkAutoThemeLoader.astro'
 import SelectThemeLoader from '~/components/SelectThemeLoader.astro'
 import StructuredData from '~/components/StructuredData.astro'
+import ExpressiveCodeClient from '~/components/ExpressiveCodeClient.astro'
 import siteConfig from '~/site.config'
 import { pick, resolveThemeColorStyles } from '~/utils'
 import crypto from 'crypto'
@@ -68,9 +69,6 @@ const articleSocialCard =
 const pageImage =
   image || articleSocialCard || `${normalizedSite}/social-cards/__default.png`
 const pageImageAlt = title || siteConfig.title
-const pageKeywords = [
-  ...new Set(siteConfig.tags.concat(tags || []).map((word) => word.toLowerCase())),
-].join(', ')
 const robotsContent = noindex
   ? 'noindex, follow'
   : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'
@@ -214,15 +212,12 @@ let generatedCss: string = cssLines.join('\n')
     {pageImage && <meta name="twitter:image:alt" content={pageImageAlt} />}
     {twitterHandle && <meta name="twitter:creator" content={twitterHandle} />}
     {twitterHandle && <meta name="twitter:site" content={twitterHandle} />}
-    <meta name="keywords" content={pageKeywords} />
     <link rel="canonical" href={pageUrl} />
     <link rel="alternate" hreflang="zh-TW" href={pageUrl} />
     <link rel="alternate" hreflang="x-default" href={pageUrl} />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="apple-touch-icon" href="/favicon.ico" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="dns-prefetch" href="https://umami.chien.dev" />
     <slot name="head" />
     <link
       rel="alternate"
@@ -235,6 +230,7 @@ let generatedCss: string = cssLines.join('\n')
     <style is:inline set:html={generatedCss}></style>
     {themeMode === 'light-dark-auto' && <LightDarkAutoThemeLoader />}
     {themeMode === 'select' && <SelectThemeLoader />}
+    <ExpressiveCodeClient />
     <script src="~/scripts/spoiler.ts"></script>
 
     <!-- SEO: Structured Data -->
@@ -252,41 +248,71 @@ let generatedCss: string = cssLines.join('\n')
       itemList={itemList}
     />
 
-    <!-- Analytics: Umami -->
-    <script
-      defer
-      src="https://cloud.umami.is/script.js"
-      data-website-id="6a2b071d-cea3-4ec1-beb9-e35481368db3"></script>
-    <!-- Cloudflare Web Analytics -->
-    <script
-      defer
-      src="https://static.cloudflareinsights.com/beacon.min.js"
-      data-cf-beacon='{"token": "7e46670659f24e5cb216d53924298421"}'
-    ></script><!-- End Cloudflare Web Analytics -->
-    <!-- Analytics: Google Analytics -->
-    <!-- 請將 G-XXXXXXXXXX 替換為您的 GA4 Measurement ID -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-7KC0HFNDJ4"></script>
     <script is:inline>
-      window.dataLayer = window.dataLayer || []
-      function gtag() {
-        dataLayer.push(arguments)
-      }
-      gtag('js', new Date())
-      gtag('config', 'G-7KC0HFNDJ4')
-    </script>
-    <script is:inline type="text/javascript">
-      ;(function (c, l, a, r, i, t, y) {
-        c[a] =
-          c[a] ||
-          function () {
-            ;(c[a].q = c[a].q || []).push(arguments)
+      ;(function deferAnalytics() {
+        let loaded = false
+        let timer
+
+        function appendScript(src, attributes) {
+          const script = document.createElement('script')
+          script.src = src
+          script.async = true
+          Object.entries(attributes || {}).forEach(([name, value]) => {
+            script.setAttribute(name, value)
+          })
+          document.head.appendChild(script)
+        }
+
+        function cleanup() {
+          if (timer) window.clearTimeout(timer)
+          ;['pointerdown', 'keydown', 'scroll'].forEach((eventName) => {
+            window.removeEventListener(eventName, loadAnalytics)
+          })
+        }
+
+        function loadAnalytics() {
+          if (loaded) return
+          loaded = true
+          cleanup()
+
+          appendScript('https://cloud.umami.is/script.js', {
+            'data-website-id': '6a2b071d-cea3-4ec1-beb9-e35481368db3',
+          })
+          appendScript('https://static.cloudflareinsights.com/beacon.min.js', {
+            'data-cf-beacon': '{"token":"7e46670659f24e5cb216d53924298421"}',
+          })
+
+          window.dataLayer = window.dataLayer || []
+          window.gtag = function () {
+            window.dataLayer.push(arguments)
           }
-        t = l.createElement(r)
-        t.async = 1
-        t.src = 'https://www.clarity.ms/tag/' + i
-        y = l.getElementsByTagName(r)[0]
-        y.parentNode.insertBefore(t, y)
-      })(window, document, 'clarity', 'script', 'vy2cgyvzak')
+          window.gtag('js', new Date())
+          window.gtag('config', 'G-7KC0HFNDJ4')
+          appendScript('https://www.googletagmanager.com/gtag/js?id=G-7KC0HFNDJ4')
+          ;(function (c, l, a, r, i, t, y) {
+            c[a] =
+              c[a] ||
+              function () {
+                ;(c[a].q = c[a].q || []).push(arguments)
+              }
+            t = l.createElement(r)
+            t.async = 1
+            t.src = 'https://www.clarity.ms/tag/' + i
+            y = l.getElementsByTagName(r)[0]
+            y.parentNode.insertBefore(t, y)
+          })(window, document, 'clarity', 'script', 'vy2cgyvzak')
+        }
+
+        function scheduleAnalytics() {
+          timer = window.setTimeout(loadAnalytics, 5000)
+        }
+
+        if (document.readyState === 'complete') scheduleAnalytics()
+        else window.addEventListener('load', scheduleAnalytics, { once: true })
+        ;['pointerdown', 'keydown', 'scroll'].forEach((eventName) => {
+          window.addEventListener(eventName, loadAnalytics, { once: true, passive: true })
+        })
+      })()
     </script>
   </head>
   <body

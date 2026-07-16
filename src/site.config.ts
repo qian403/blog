@@ -10,7 +10,7 @@ const config: SiteConfig = {
     'CHIEN (qian) 的個人技術部落格，專注於網路技術、資訊安全、BGP 路由、系統運維及 Linux 相關主題。分享實戰經驗與深度技術文章。',
   // The author of the site, used in the footer, SEO, and RSS feed.
   author: 'CHIEN (qian)',
-  // Keywords for SEO, used in the meta tags.
+  // Default topics used for article structured data and content classification.
   tags: [
     'Astro',
     'Blog',
@@ -34,8 +34,8 @@ const config: SiteConfig = {
   // Needs to be a square JPEG file due to limitations of the social card generator.
   // Try https://squoosh.app/ to easily convert images to JPEG.
   socialCardAvatarImage: './src/content/avatar.jpg',
-  // Monospace font used by code blocks and technical labels.
-  font: 'JetBrains Mono Variable',
+  // System monospace stack avoids a render-blocking font download and late font swap.
+  font: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New'",
   // For pagination, the number of posts to display per page.
   // The homepage will display half this number in the "Latest Posts" section.
   pageSize: 6,

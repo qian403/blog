@@ -15,12 +15,14 @@ const reactionsEnabled = giscusConfig.reactionsEnabled ? '1' : '0'
 
 <div
   class="giscus"
+  role="region"
   data-origin={origin}
   data-repo={repo}
   data-repo-id={repoId}
   data-category={category}
   data-category-id={categoryId}
   data-reactions-enabled={reactionsEnabled}
+  aria-label="留言"
 >
 </div>
 <script>
@@ -36,9 +38,7 @@ const reactionsEnabled = giscusConfig.reactionsEnabled ? '1' : '0'
     const categoryId = giscusDiv.getAttribute('data-category-id')
     const reactionsEnabled = giscusDiv.getAttribute('data-reactions-enabled')
     const theme = document.documentElement.getAttribute('data-theme')
-    
-    console.log('Giscus config:', { origin, repo, repoId, category, categoryId, theme })
-    
+
     if (
       !origin ||
       !repo ||
@@ -48,9 +48,11 @@ const reactionsEnabled = giscusConfig.reactionsEnabled ? '1' : '0'
       !reactionsEnabled ||
       !theme
     ) {
-      console.error('Missing config:', { origin, repo, repoId, category, categoryId, reactionsEnabled, theme })
       throw new Error('Giscus configuration missing in the Giscus div.')
     }
+    if (giscusDiv.dataset.loaded === 'true') return
+    giscusDiv.dataset.loaded = 'true'
+
     const script = document.createElement('script')
     script.src = 'https://giscus.app/client.js'
     script.setAttribute('data-repo', repo)
@@ -68,29 +70,13 @@ const reactionsEnabled = giscusConfig.reactionsEnabled ? '1' : '0'
     script.setAttribute('loading', 'lazy')
     script.crossOrigin = 'anonymous'
     script.async = true
-    
-    console.log('Loading Giscus with theme:', `${origin}/giscus/${theme}.css`)
-    console.log('Mapping path:', window.location.pathname)
-    
+
     // Append script to the giscus div, not to document.body
     giscusDiv.appendChild(script)
   }
-  async function updateTheme(theme: string) {
-    console.log('Updating Giscus theme to:', theme)
-    let giscusFrame
-    // Try to find the Giscus iframe 3 times, in case it takes a moment to load
-    for (let i = 0; i < 3; i++) {
-      giscusFrame = document.querySelector<HTMLIFrameElement>('iframe.giscus-frame')
-      if (giscusFrame) break
-      console.log('Giscus iframe not found, retrying...')
-      // Wait a moment before trying again
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-    }
-    // If the iframe is still not found, log an error and return
-    if (!giscusFrame) {
-      console.error('Giscus iframe not found after retries')
-      return
-    }
+  function updateTheme(theme: string) {
+    const giscusFrame = document.querySelector<HTMLIFrameElement>('iframe.giscus-frame')
+    if (!giscusFrame) return
     giscusFrame.contentWindow?.postMessage(
       { giscus: { setConfig: { theme: `${origin}/giscus/${theme}.css` } } },
       'https://giscus.app',
@@ -103,7 +89,7 @@ const reactionsEnabled = giscusConfig.reactionsEnabled ? '1' : '0'
         if (mutation.type === 'attributes' && mutation.attributeName === 'data-theme') {
           const newTheme = document.documentElement.getAttribute('data-theme')
           if (newTheme) {
-            await updateTheme(newTheme)
+            updateTheme(newTheme)
           }
         }
       })
@@ -113,13 +99,30 @@ const reactionsEnabled = giscusConfig.reactionsEnabled ? '1' : '0'
       attributeFilter: ['data-theme'],
     })
   }
-  // Load Giscus script with correct theme and listen for theme changes
-  loadGiscus()
+  const giscusDiv = document.querySelector('.giscus')
+  if (giscusDiv && 'IntersectionObserver' in window) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return
+        observer.disconnect()
+        loadGiscus()
+      },
+      { rootMargin: '800px 0px' },
+    )
+    observer.observe(giscusDiv)
+  } else {
+    window.addEventListener('load', loadGiscus, { once: true })
+  }
+
   listenForThemeChange()
 </script>
 
 <style is:global>
   iframe.giscus-frame {
     margin-block: 32px;
+  }
+
+  .giscus {
+    min-height: 220px;
   }
 </style>

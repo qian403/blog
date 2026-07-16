@@ -7,7 +7,7 @@ import path from 'path'
 import mdx from '@astrojs/mdx'
 import { rehypeHeadingIds } from '@astrojs/markdown-remark'
 import rehypeAutolinkHeadings from 'rehype-autolink-headings'
-import expressiveCode from 'astro-expressive-code'
+import expressiveCode, { createAstroRenderer } from 'astro-expressive-code'
 import siteConfig from './src/site.config'
 import { pluginLineNumbers } from '@expressive-code/plugin-line-numbers'
 import remarkDescription from './src/plugins/remark-description' /* Add description to frontmatter */
@@ -22,6 +22,7 @@ import { remarkAdmonitions } from './src/plugins/remark-admonitions' /* Add admo
 import remarkCharacterDialogue from './src/plugins/remark-character-dialogue' /* Custom plugin to handle character admonitions */
 import remarkUnknownDirectives from './src/plugins/remark-unknown-directives' /* Custom plugin to handle unknown admonitions */
 import remarkMath from 'remark-math' /* for latex math support */
+import remarkMathFlag from './src/plugins/remark-math-flag' /* Load KaTeX styles only when needed */
 import rehypeKatex from 'rehype-katex' /* again, for latex math support */
 import remarkGemoji from './src/plugins/remark-gemoji' /* for shortcode emoji support */
 import rehypePixelated from './src/plugins/rehype-pixelated' /* Custom plugin to handle pixelated images */
@@ -30,6 +31,19 @@ import remarkSpoiler from './src/plugins/remark-spoiler' /* Custom plugin to han
 // 從文章 frontmatter 讀取日期，用於 sitemap lastmod
 /** @type {Map<string, string>} */
 const postLastmodMap = new Map()
+
+function normalizeSitemapDate(value) {
+  const date = new Date(value)
+  if (isNaN(date.getTime())) return undefined
+
+  const calendarDate = value.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/)
+  if (calendarDate) {
+    const [, year, month, day] = calendarDate
+    return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
+  }
+
+  return date.toISOString().split('T')[0]
+}
 
 function buildPostLastmodMap() {
   const postsDir = path.resolve('./src/content/posts')
@@ -41,8 +55,18 @@ function buildPostLastmodMap() {
       } else if (entry.name.endsWith('.md') || entry.name.endsWith('.mdx')) {
         const filePath = path.join(dir, entry.name)
         const content = fs.readFileSync(filePath, 'utf-8')
-        const lastUpdatedMatch = content.match(/^lastUpdated:\s*(.+)$/m)
-        const publishedMatch = content.match(/^published:\s*(.+)$/m)
+        const frontmatter = content.match(/^---\s*\r?\n([\s\S]*?)\r?\n---/)?.[1]
+        if (!frontmatter) continue
+
+        const draftMatch = frontmatter.match(/^draft:\s*(.+)$/m)
+        const isDraft = draftMatch?.[1]
+          ?.trim()
+          .replace(/^['"]|['"]$/g, '')
+          .toLowerCase()
+        if (isDraft === 'true') continue
+
+        const lastUpdatedMatch = frontmatter.match(/^lastUpdated:\s*(.+)$/m)
+        const publishedMatch = frontmatter.match(/^published:\s*(.+)$/m)
         const dateStr = (
           lastUpdatedMatch?.[1]?.trim() || publishedMatch?.[1]?.trim()
         )?.replace(/^['"]|['"]$/g, '')
@@ -53,10 +77,8 @@ function buildPostLastmodMap() {
             .replace(/\/index$/, '')
             .toLowerCase()
             .replace(/ /g, '-')
-          const date = new Date(dateStr)
-          if (!isNaN(date.getTime())) {
-            postLastmodMap.set(slug, date.toISOString().split('T')[0])
-          }
+          const sitemapDate = normalizeSitemapDate(dateStr)
+          if (sitemapDate) postLastmodMap.set(slug, sitemapDate)
         }
       }
     }
@@ -65,12 +87,23 @@ function buildPostLastmodMap() {
 }
 
 buildPostLastmodMap()
+const homepageLastmod = [...postLastmodMap.values()].sort().at(-1)
+
+async function createStaticExpressiveCodeRenderer(args) {
+  const renderer = await createAstroRenderer(args)
+  renderer.hashedScripts.length = 0
+  return renderer
+}
 
 // https://astro.build/config
 export default defineConfig({
   site: siteConfig.site,
   trailingSlash: siteConfig.trailingSlashes ? 'always' : 'never',
-  prefetch: true,
+  build: {
+    // Prioritize first-visit LCP by removing the extra render-blocking CSS request.
+    inlineStylesheets: 'always',
+  },
+  prefetch: false,
   markdown: {
     remarkPlugins: [
       [remarkDescription, { maxChars: 200 }],
@@ -81,6 +114,7 @@ export default defineConfig({
       [remarkCharacterDialogue, { characters: siteConfig.characters }],
       remarkUnknownDirectives,
       remarkMath,
+      remarkMathFlag,
       remarkGemoji,
       remarkSpoiler,
     ],
@@ -125,27 +159,10 @@ export default defineConfig({
         const pathname = new URL(item.url).pathname.replace(/\/$/, '') || '/'
 
         if (pathname === '/') {
-          item.lastmod = new Date().toISOString().split('T')[0]
-          item.priority = 1.0
-          item.changefreq = 'daily'
+          item.lastmod = homepageLastmod
         } else if (pathname.startsWith('/posts/')) {
           const slug = pathname.replace('/posts/', '')
           item.lastmod = postLastmodMap.get(slug) ?? undefined
-          item.priority = 0.8
-          item.changefreq = 'weekly'
-        } else if (pathname.startsWith('/tags/')) {
-          item.priority = 0.6
-          item.changefreq = 'weekly'
-        } else if (pathname.startsWith('/series/')) {
-          item.priority = 0.7
-          item.changefreq = 'weekly'
-        } else if (
-          pathname.startsWith('/about') ||
-          pathname.startsWith('/cv') ||
-          pathname.startsWith('/links')
-        ) {
-          item.priority = 0.7
-          item.changefreq = 'monthly'
         }
 
         return item
@@ -155,6 +172,9 @@ export default defineConfig({
       // Keep code-block styles in the document so cross-document navigation
       // cannot reveal partially styled blocks while the shared CSS is loading.
       emitExternalStylesheet: false,
+      // The small default client bundle is replaced by an inline, idle-safe
+      // implementation so code blocks do not extend the initial request chain.
+      customCreateAstroRenderer: createStaticExpressiveCodeRenderer,
       themes: siteConfig.themes.include,
       useDarkModeMediaQuery: false,
       defaultProps: {
