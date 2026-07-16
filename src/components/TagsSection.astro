@@ -10,16 +10,20 @@ const { posts } = Astro.props
 const tagsGroup = await TagsGroup.build(posts)
 ---
 
-<ul class="flex flex-wrap gap-x-3 gap-y-4 my-5">
+<ul
+  class="grid gap-px overflow-hidden rounded-lg border border-foreground/10 bg-foreground/10 sm:grid-cols-2 lg:grid-cols-3"
+>
   {
     tagsGroup.sortCollationsLargest().map((tag) => (
-      <li>
+      <li class="bg-background" data-tag-item data-tag-name={tag.title}>
         <a
           href={tag.url}
-          class="flex items-start gap-2.5 py-2 pl-4 pr-3 bg-accent/7 rounded-3xl border-transparent hover:border-accent/20 border-1 text-foreground/90"
+          class="group flex min-h-20 items-center justify-between gap-4 p-5 no-underline transition-colors hover:bg-accent/5"
         >
-          {tag.title}
-          <span class="rounded-full bg-foreground/7 text-foreground/90 px-2 py-1 text-xs font-semibold">
+          <span class="min-w-0 font-semibold text-foreground transition-colors before:mr-0.5 before:text-accent before:content-['#'] group-hover:text-accent">
+            {tag.title}
+          </span>
+          <span class="shrink-0 font-mono text-xs text-foreground/65">
             {tag.entries.length}
           </span>
         </a>

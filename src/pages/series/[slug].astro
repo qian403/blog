@@ -2,7 +2,7 @@
 import type { GetStaticPaths } from 'astro'
 import Layout from '~/layouts/Layout.astro'
 import { SeriesGroup } from '~/utils'
-import PageHeader from '~/components/PageHeader.astro'
+import PageIntro from '~/components/PageIntro.astro'
 import PostPreview from '~/components/PostPreview.astro'
 import siteConfig from '~/site.config'
 
@@ -29,9 +29,17 @@ const breadcrumbs = [
   description={`「${seriesTitle}」系列的所有文章，共 ${posts.length} 篇，收錄完整系列內容。`}
   pageType="collection"
   breadcrumbs={breadcrumbs}
+  wide
 >
-  <div class="mt-2 sm:mt-0">
-    <PageHeader titlePieces={['series', seriesTitle]} />
-    {posts.map((post) => <PostPreview post={post} />)}
+  <div>
+    <PageIntro
+      eyebrow="Series"
+      title={seriesTitle}
+      description={`完整收錄「${seriesTitle}」系列文章，依序閱讀相關概念、實作與延伸內容。`}
+      meta={`${posts.length} 篇文章`}
+    />
+    <div class="mt-5">
+      {posts.map((post) => <PostPreview post={post} variant="compact" />)}
+    </div>
   </div>
 </Layout>

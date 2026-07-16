@@ -43,9 +43,12 @@ function buildPostLastmodMap() {
         const content = fs.readFileSync(filePath, 'utf-8')
         const lastUpdatedMatch = content.match(/^lastUpdated:\s*(.+)$/m)
         const publishedMatch = content.match(/^published:\s*(.+)$/m)
-        const dateStr = (lastUpdatedMatch?.[1]?.trim() || publishedMatch?.[1]?.trim())?.replace(/^['"]|['"]$/g, '')
+        const dateStr = (
+          lastUpdatedMatch?.[1]?.trim() || publishedMatch?.[1]?.trim()
+        )?.replace(/^['"]|['"]$/g, '')
         if (dateStr) {
-          const slug = path.relative(postsDir, filePath)
+          const slug = path
+            .relative(postsDir, filePath)
             .replace(/\.(md|mdx)$/, '')
             .replace(/\/index$/, '')
             .toLowerCase()
@@ -110,6 +113,7 @@ export default defineConfig({
 
         if (pathname === '/friend') return false
         if (pathname === '/links') return false
+        if (pathname === '/markdown-preview') return false
         if (/^\/posts\/\d+$/.test(pathname)) return false
         // Tag archives are crawlable through article links, but most contain only
         // one article and add a large number of low-value URLs to the sitemap.
@@ -135,7 +139,11 @@ export default defineConfig({
         } else if (pathname.startsWith('/series/')) {
           item.priority = 0.7
           item.changefreq = 'weekly'
-        } else if (pathname.startsWith('/about') || pathname.startsWith('/cv') || pathname.startsWith('/links')) {
+        } else if (
+          pathname.startsWith('/about') ||
+          pathname.startsWith('/cv') ||
+          pathname.startsWith('/links')
+        ) {
           item.priority = 0.7
           item.changefreq = 'monthly'
         }
@@ -144,6 +152,9 @@ export default defineConfig({
       },
     }),
     expressiveCode({
+      // Keep code-block styles in the document so cross-document navigation
+      // cannot reveal partially styled blocks while the shared CSS is loading.
+      emitExternalStylesheet: false,
       themes: siteConfig.themes.include,
       useDarkModeMediaQuery: false,
       defaultProps: {

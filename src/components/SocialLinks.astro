@@ -15,7 +15,7 @@ interface Props {
 const { socialLinks } = Astro.props
 ---
 
-<div class="flex w-full max-w-md items-center justify-between">
+<div class="flex items-center gap-5">
   {
     socialLinks.github && (
       <a
@@ -25,7 +25,7 @@ const { socialLinks } = Astro.props
         class="social-link"
       >
         <span class="sr-only">GitHub</span>
-        <IconGithub class="size-7" />
+        <IconGithub class="size-5" />
       </a>
     )
   }
@@ -38,7 +38,7 @@ const { socialLinks } = Astro.props
         class="social-link"
       >
         <span class="sr-only">Mastodon</span>
-        <IconMastodon class="size-7" />
+        <IconMastodon class="size-5" />
       </a>
     )
   }
@@ -51,7 +51,7 @@ const { socialLinks } = Astro.props
         class="social-link"
       >
         <span class="sr-only">Twitter</span>
-        <IconTwitter class="size-7" />
+        <IconTwitter class="size-5" />
       </a>
     )
   }
@@ -64,7 +64,7 @@ const { socialLinks } = Astro.props
         class="social-link"
       >
         <span class="sr-only">LinkedIn</span>
-        <IconLinkedin class="size-7" />
+        <IconLinkedin class="size-5" />
       </a>
     )
   }
@@ -77,7 +77,7 @@ const { socialLinks } = Astro.props
         class="social-link"
       >
         <span class="sr-only">Bluesky</span>
-        <IconBluesky class="size-7" />
+        <IconBluesky class="size-5" />
       </a>
     )
   }
@@ -90,7 +90,7 @@ const { socialLinks } = Astro.props
         class="social-link"
       >
         <span class="sr-only">Email</span>
-        <IconEmail class="size-7" />
+        <IconEmail class="size-5" />
       </a>
     )
   }
@@ -98,7 +98,7 @@ const { socialLinks } = Astro.props
     socialLinks.rss && (
       <a href="/rss.xml" class="social-link">
         <span class="sr-only">RSS</span>
-        <IconRss class="size-7" />
+        <IconRss class="size-5" />
       </a>
     )
   }

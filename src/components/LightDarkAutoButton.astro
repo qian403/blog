@@ -1,7 +1,6 @@
 ---
 import IconSun from '~/icons/sun.svg'
 import IconMoon from '~/icons/moon.svg'
-import IconSunMoon from '~/icons/sun-moon.svg'
 import siteConfig from '~/site.config'
 let lightTheme = siteConfig.themes.include[0]
 let darkTheme = siteConfig.themes.include[1]
@@ -9,13 +8,15 @@ let darkTheme = siteConfig.themes.include[1]
 
 <button
   id="theme-change-button"
-  class="block ml-auto"
+  class="flex size-9 items-center justify-center text-foreground/70 transition-colors hover:text-foreground"
   data-light={lightTheme}
   data-dark={darkTheme}
+  type="button"
+  aria-label="切換為白色模式"
+  title="切換為白色模式"
 >
-  <IconSun id="icon-light" class="hidden size-6 text-accent" />
-  <IconMoon id="icon-dark" class="hidden size-6 text-accent" />
-  <IconSunMoon id="icon-auto" class="hidden size-6 text-accent" />
+  <IconSun id="icon-light" class="hidden size-5" />
+  <IconMoon id="icon-dark" class="hidden size-5" />
 </button>
 
 <script>
@@ -24,48 +25,28 @@ let darkTheme = siteConfig.themes.include[1]
   const darkThemeId = themeButton?.getAttribute('data-dark')
   const sunIcon = themeButton?.querySelector('#icon-light')
   const moonIcon = themeButton?.querySelector('#icon-dark')
-  const sunMoonIcon = themeButton?.querySelector('#icon-auto')
   const updateIcons = (theme: string) => {
     if (theme === lightThemeId) {
       sunIcon?.classList.remove('hidden')
       moonIcon?.classList.add('hidden')
-      sunMoonIcon?.classList.add('hidden')
+      themeButton?.setAttribute('aria-label', '切換為黑暗模式')
+      themeButton?.setAttribute('title', '切換為黑暗模式')
     } else if (theme === darkThemeId) {
       sunIcon?.classList.add('hidden')
       moonIcon?.classList.remove('hidden')
-      sunMoonIcon?.classList.add('hidden')
-    } else {
-      sunIcon?.classList.add('hidden')
-      moonIcon?.classList.add('hidden')
-      sunMoonIcon?.classList.remove('hidden')
+      themeButton?.setAttribute('aria-label', '切換為白色模式')
+      themeButton?.setAttribute('title', '切換為白色模式')
     }
   }
-  let currentTheme = localStorage.getItem('data-theme') || 'auto'
+  let currentTheme = localStorage.getItem('data-theme') || darkThemeId || ''
   updateIcons(currentTheme)
   themeButton?.addEventListener('click', () => {
-    // Toggle between light, dark, and auto themes
-    // Only need to update localStorage because there should be a listener in Layout.astro
     const currentTheme = localStorage.getItem('data-theme') || darkThemeId
-    let newTheme
-    if (currentTheme === lightThemeId) {
-      newTheme = darkThemeId
-    } else if (currentTheme === darkThemeId) {
-      newTheme = 'auto'
-    } else {
-      newTheme = lightThemeId
-    }
+    const newTheme = currentTheme === darkThemeId ? lightThemeId : darkThemeId
     if (newTheme) {
       updateIcons(newTheme)
       localStorage.setItem('data-theme', newTheme)
-      if (newTheme === 'auto') {
-        const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)')
-        document.documentElement.setAttribute(
-          'data-theme',
-          prefersDarkScheme.matches ? darkThemeId || 'auto' : lightThemeId || 'auto',
-        )
-      } else {
-        document.documentElement.setAttribute('data-theme', newTheme)
-      }
+      document.documentElement.setAttribute('data-theme', newTheme)
     }
   })
 </script>

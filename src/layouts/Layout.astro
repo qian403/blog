@@ -35,6 +35,7 @@ interface Props {
   breadcrumbs?: BreadcrumbItem[]
   itemList?: ItemListEntry[]
   wide?: boolean
+  legacy?: boolean
 }
 
 const {
@@ -51,7 +52,9 @@ const {
   breadcrumbs,
   itemList,
   wide = false,
+  legacy = false,
 } = Astro.props
+const legacyLayout = legacy
 const normalizedSite = siteConfig.site.replace(/\/$/, '')
 const pageUrl = canonical || new URL(Astro.url.pathname, Astro.site).href
 const metadataType = pageType === 'article' ? 'article' : 'website'
@@ -185,16 +188,25 @@ let generatedCss: string = cssLines.join('\n')
     {pageImage && <meta property="og:image:width" content="1200" />}
     {pageImage && <meta property="og:image:height" content="630" />}
     {pageImage && <meta property="og:image:alt" content={pageImageAlt} />}
-    {pageType === 'article' && published && (
-      <meta property="article:published_time" content={published.toISOString()} />
-    )}
-    {pageType === 'article' && updated && (
-      <meta property="article:modified_time" content={updated.toISOString()} />
-    )}
-    {pageType === 'article' && !updated && published && (
-      <meta property="article:modified_time" content={published.toISOString()} />
-    )}
-    {pageType === 'article' && tags?.map((tag) => <meta property="article:tag" content={tag} />)}
+    {
+      pageType === 'article' && published && (
+        <meta property="article:published_time" content={published.toISOString()} />
+      )
+    }
+    {
+      pageType === 'article' && updated && (
+        <meta property="article:modified_time" content={updated.toISOString()} />
+      )
+    }
+    {
+      pageType === 'article' && !updated && published && (
+        <meta property="article:modified_time" content={published.toISOString()} />
+      )
+    }
+    {
+      pageType === 'article' &&
+        tags?.map((tag) => <meta property="article:tag" content={tag} />)
+    }
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={pageDescription} />
@@ -211,7 +223,6 @@ let generatedCss: string = cssLines.join('\n')
     <link rel="apple-touch-icon" href="/favicon.ico" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="dns-prefetch" href="https://umami.chien.dev" />
-    <link rel="preload" as="font" type="font/woff2" crossorigin href={`/fonts/${siteConfig.font.replace(/\s+/g, '-')}.woff2`} />
     <slot name="head" />
     <link
       rel="alternate"
@@ -225,7 +236,7 @@ let generatedCss: string = cssLines.join('\n')
     {themeMode === 'light-dark-auto' && <LightDarkAutoThemeLoader />}
     {themeMode === 'select' && <SelectThemeLoader />}
     <script src="~/scripts/spoiler.ts"></script>
-    
+
     <!-- SEO: Structured Data -->
     <StructuredData
       pageType={pageType}
@@ -240,36 +251,69 @@ let generatedCss: string = cssLines.join('\n')
       breadcrumbs={breadcrumbs}
       itemList={itemList}
     />
-    
+
     <!-- Analytics: Umami -->
-    <script defer src="https://cloud.umami.is/script.js" data-website-id="6a2b071d-cea3-4ec1-beb9-e35481368db3"></script>
-    <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "7e46670659f24e5cb216d53924298421"}'></script><!-- End Cloudflare Web Analytics -->
+    <script
+      defer
+      src="https://cloud.umami.is/script.js"
+      data-website-id="6a2b071d-cea3-4ec1-beb9-e35481368db3"></script>
+    <!-- Cloudflare Web Analytics -->
+    <script
+      defer
+      src="https://static.cloudflareinsights.com/beacon.min.js"
+      data-cf-beacon='{"token": "7e46670659f24e5cb216d53924298421"}'
+    ></script><!-- End Cloudflare Web Analytics -->
     <!-- Analytics: Google Analytics -->
     <!-- 請將 G-XXXXXXXXXX 替換為您的 GA4 Measurement ID -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-7KC0HFNDJ4"></script>
     <script is:inline>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-7KC0HFNDJ4');
+      window.dataLayer = window.dataLayer || []
+      function gtag() {
+        dataLayer.push(arguments)
+      }
+      gtag('js', new Date())
+      gtag('config', 'G-7KC0HFNDJ4')
     </script>
     <script is:inline type="text/javascript">
-      (function(c,l,a,r,i,t,y){
-        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-      })(window, document, "clarity", "script", "vy2cgyvzak");
+      ;(function (c, l, a, r, i, t, y) {
+        c[a] =
+          c[a] ||
+          function () {
+            ;(c[a].q = c[a].q || []).push(arguments)
+          }
+        t = l.createElement(r)
+        t.async = 1
+        t.src = 'https://www.clarity.ms/tag/' + i
+        y = l.getElementsByTagName(r)[0]
+        y.parentNode.insertBefore(t, y)
+      })(window, document, 'clarity', 'script', 'vy2cgyvzak')
     </script>
   </head>
-  <body class="w-full h-full m-0 bg-background text-foreground">
+  <body
+    class:list={[
+      'w-full h-full m-0 bg-background text-foreground',
+      legacyLayout ? 'legacy-layout' : 'editorial-layout antialiased',
+    ]}
+  >
     <div
       class:list={[
-        'flex flex-col min-h-screen border-accent/10 m-auto p-3 sm:py-5 sm:px-6 md:py-10',
-        wide ? 'max-w-3xl lg:max-w-5xl' : 'max-w-3xl',
+        legacyLayout
+          ? 'flex flex-col min-h-screen border-accent/10 m-auto p-3 sm:py-5 sm:px-6 md:py-10'
+          : 'site-shell flex min-h-screen flex-col mx-auto px-5 sm:px-8',
+        legacyLayout
+          ? wide
+            ? 'max-w-3xl lg:max-w-5xl'
+            : 'max-w-3xl'
+          : wide
+            ? 'max-w-[1180px]'
+            : 'max-w-[960px]',
       ]}
     >
       <Header />
-      <main id="main-content" class="flex flex-col py-1">
+      <main
+        id="main-content"
+        class:list={['flex flex-col', legacyLayout ? 'py-1' : 'flex-1']}
+      >
         <slot />
       </main>
       <Footer />

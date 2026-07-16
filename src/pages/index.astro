@@ -12,47 +12,51 @@ import SeriesSection from '~/components/SeriesSection.astro'
 const home = await getCollection('home')
 let HomeContent
 let homeAvatarImage
-let homeGithubCalendar
 if (home.length > 0) {
   const homeEntry = home[0]
   const { Content } = await render(homeEntry)
   HomeContent = Content
   homeAvatarImage = homeEntry.data.avatarImage
-  homeGithubCalendar = homeEntry.data.githubCalendar
 }
 const sortedPosts = await getSortedPosts()
+const recentPosts = [...sortedPosts].reverse()
+const latestPosts = recentPosts.slice(0, 5)
 
 const postsHaveSeries = sortedPosts.some((post) => post.data.series)
 ---
 
-<Layout description={siteConfig.description} pageType="website">
-  <h1 class="sr-only">CHIEN 的技術筆記｜網路技術、資訊安全、BGP 與 Linux 實戰文章</h1>
+<Layout description={siteConfig.description} pageType="website" wide>
   {
     HomeContent && (
-      <HomeBanner avatarImage={homeAvatarImage} githubCalendar={homeGithubCalendar}>
+      <HomeBanner avatarImage={homeAvatarImage}>
         <HomeContent />
       </HomeBanner>
     )
   }
   {
-    postsHaveSeries && (
-      <section>
-        <BlockHeader>Series</BlockHeader>
-        <SeriesSection posts={sortedPosts} />
+    latestPosts.length > 0 && (
+      <section aria-labelledby="latest-heading">
+        <BlockHeader>
+          <span id="latest-heading">文章</span>
+        </BlockHeader>
+        <div class="mt-4">
+          {latestPosts.map((post) => (
+            <PostPreview post={post} variant="compact" />
+          ))}
+        </div>
+        <div class="mt-8 flex justify-end">
+          <Pagination nextLink="/posts/" nextText="查看全部文章" />
+        </div>
       </section>
     )
   }
   {
-    sortedPosts.length > 0 && (
-      <section>
-        <BlockHeader>Latest Posts</BlockHeader>
-        {sortedPosts
-          .reverse()
-          .slice(0, Math.floor(siteConfig.pageSize / 2))
-          .map((post) => (
-            <PostPreview post={post} />
-          ))}
-        <Pagination nextLink="/posts/" nextText="Archive" />
+    postsHaveSeries && (
+      <section aria-labelledby="series-heading">
+        <BlockHeader>
+          <span id="series-heading">系列文章</span>
+        </BlockHeader>
+        <SeriesSection posts={sortedPosts} />
       </section>
     )
   }

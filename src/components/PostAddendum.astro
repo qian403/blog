@@ -9,23 +9,29 @@ const { avatarImage } = Astro.props
 ---
 
 <div
-  class="flex flex-col sm:flex-row items-center justify-around sm:gap-5 max-w-full mb-6 py-10 bg-accent/8 p-4 rounded-xl"
+  class="mx-auto mt-14 flex max-w-[760px] flex-col items-center gap-6 border-y border-foreground/10 py-9 text-center sm:flex-row sm:text-left"
 >
   {
     avatarImage && (
       <Image
         src={avatarImage.src}
         alt={avatarImage.alt}
-        class="rounded-full border-8 border-accent/15 size-36 aspect-square box-content shrink-0"
-        widths={[288]}
-        height={144}
-        width={144}
+        class="size-20 shrink-0 rounded-full border border-foreground/10 object-cover"
+        widths={[80, 160]}
+        height={80}
+        width={80}
       />
     )
   }
-  <div>
-    <div class:list={['m-4 max-w-full prose']}>
+  <div class="min-w-0">
+    <div class="prose text-base/7 text-foreground/68">
       <slot />
     </div>
   </div>
 </div>
+
+<style>
+  .prose :global(p) {
+    margin: 0;
+  }
+</style>

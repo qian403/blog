@@ -6,10 +6,18 @@ interface Props {
 }
 
 const { link } = Astro.props
+const currentPath = Astro.url.pathname
+const linkPath = new URL(link.url, Astro.url).pathname
+const isActive =
+  !link.external &&
+  (linkPath === '/'
+    ? currentPath === '/'
+    : currentPath === linkPath || currentPath.startsWith(linkPath))
 ---
 
 <a
-  class="underline"
+  class="nav-link no-underline transition-colors hover:text-foreground"
+  aria-current={isActive ? 'page' : undefined}
   rel={link.external ? 'noopener noreferrer' : undefined}
   target={link.external ? '_blank' : undefined}
   href={link.url}

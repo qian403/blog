@@ -32,7 +32,9 @@ export const getStaticPaths = (async () => {
 const { post, prev, next } = Astro.props
 const postData = post.data
 const { headings, Content: PostContent, remarkPluginFrontmatter } = await render(post)
-const postDescription = postData.description || remarkPluginFrontmatter.description || siteConfig.description
+const postDescription =
+  postData.description || remarkPluginFrontmatter.description || siteConfig.description
+const articleSummary = postData.description || remarkPluginFrontmatter.description
 const postImage = postData.coverImage
   ? new URL(postData.coverImage.src.src, Astro.site).href
   : undefined
@@ -87,7 +89,25 @@ if (postData.tags && postData.tags.length > 0) {
   breadcrumbs={breadcrumbs}
   wide
 >
-  <article class="max-w-full py-7.5" data-pagefind-body>
+  <article class="max-w-full" data-pagefind-body aria-labelledby={post.id}>
+    <header class="mx-auto max-w-[760px] py-12 sm:py-16">
+      {
+        tags && (
+          <div class="mb-6">
+            <Tags tags={tags} />
+          </div>
+        )
+      }
+      <h1 id={post.id} class="text-4xl font-bold leading-tight text-heading1 sm:text-5xl">
+        {postData.title}
+      </h1>
+      {
+        articleSummary && (
+          <p class="mt-6 text-lg/8 text-foreground/65">{articleSummary}</p>
+        )
+      }
+      <PostInfo post={post} detailed class="mt-7 text-sm" />
+    </header>
     {
       postData.coverImage && (
         <Image
@@ -95,35 +115,19 @@ if (postData.tags && postData.tags.length > 0) {
           layout="constrained"
           src={postData.coverImage.src}
           alt={postData.coverImage.alt}
-          class="w-full rounded-xl mb-5"
+          class="mb-12 w-full rounded-lg"
         />
       )
     }
-    <div class="md:mx-2">
-      <h1 id={post.id} class="mb-4 text-[1.75rem] text-heading1 font-semibold">
-        # {postData.title}
-      </h1>
-      <div class="my-2 border-l-2 border-accent/80 pl-4 py-2">
-        <PostInfo post={post} detailed class="mb-1" />
-        {
-          tags && (
-            <div class="mt-4">
-              <Tags tags={tags} />
-            </div>
-          )
-        }
-      </div>
-    </div>
-    <!-- <hr class="border-accent/10 border-2 rounded-xl hidden lg:block" /> -->
     <div
-      class="flex flex-col lg:grid lg:grid-cols-[minmax(0,1fr)_14.5rem] lg:items-start lg:gap-6"
+      class="mx-auto flex max-w-[1000px] flex-col lg:grid lg:grid-cols-[minmax(0,46rem)_13.5rem] lg:items-start lg:justify-center lg:gap-12"
     >
       {
-        postData.toc && headings.length > 0 && (
+        postData.toc && headings.some(({ depth }) => depth >= 2 && depth <= 3) && (
           <TableOfContents headings={headings} variant="responsive" />
         )
       }
-      <div class="prose mb-5 min-w-0 lg:col-start-1 lg:row-start-1">
+      <div class="prose min-w-0 lg:col-start-1 lg:row-start-1">
         <PostContent />
       </div>
     </div>
@@ -132,7 +136,7 @@ if (postData.tags && postData.tags.length > 0) {
     nextPostInSeries && (
       <a
         href={`/posts/${nextPostInSeries.id}/`}
-        class="button justify-center -mt-8 mb-8 !whitespace-normal text-center flex gap-2 sm:gap-3 items-center"
+        class="button mx-auto mt-12 flex max-w-[760px] items-center justify-center gap-2 text-center !whitespace-normal sm:gap-3"
       >
         <span>Next: {nextPostInSeries.data.title}</span>
         <ChevronsRight class="size-5 hidden sm:block" />

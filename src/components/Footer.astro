@@ -4,27 +4,14 @@ import SocialLinks from '~/components/SocialLinks.astro'
 ---
 
 <footer
-  class="mt-auto pt-9 md:pt-11 grow-0 flex flex-col gap-6 items-center justify-between max-w-full text-foreground/80"
+  class="mt-20 flex max-w-full grow-0 flex-col gap-7 border-t border-foreground/10 py-10 text-sm text-foreground/65 md:mt-28 md:flex-row md:items-end md:justify-between"
 >
-  {siteConfig.socialLinks && <SocialLinks socialLinks={siteConfig.socialLinks} />}
-  <div class="flex flex-col md:flex-row flex-wrap flex-1 items-center justify-center">
-    <span class="my-1">
-      {siteConfig.author} © 2026
-    </span>
-    <span class="mx-5 hidden md:block"> :: </span>
-    <span class="my-1">
-      Powered by <a
-        class="underline"
-        target="_blank"
-        rel="noopener noreferrer"
-        href="https://astro.build">Astro</a
-      >
-      & <a
-        class="underline"
-        target="_blank"
-        rel="noopener noreferrer"
-        href="https://github.com/stelcodes/multiterm-astro">MultiTerm</a
-      >
-    </span>
+  <div>
+    <p class="font-semibold text-foreground">CHIEN 的技術筆記</p>
+    <p class="mt-2">Network, security and systems in practice.</p>
+  </div>
+  <div class="flex flex-col gap-5 md:items-end">
+    {siteConfig.socialLinks && <SocialLinks socialLinks={siteConfig.socialLinks} />}
+    <p>{siteConfig.author} © 2026 · Built with Astro</p>
   </div>
 </footer>

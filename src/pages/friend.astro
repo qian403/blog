@@ -1,9 +1,10 @@
 ---
 import Layout from '~/layouts/Layout.astro'
-import PageHeader from '~/components/PageHeader.astro'
+import PageIntro from '~/components/PageIntro.astro'
 import GiscusLoader from '~/components/GiscusLoader.astro'
 import DividerText from '~/components/DividerText.astro'
 import siteConfig from '~/site.config'
+import ChevronsRight from '~/icons/chevrons-right.svg'
 
 // 友站連結資料
 const friendLinks = [
@@ -53,20 +54,21 @@ const friendLinks = [
     name: 'sangege',
     avatar: 'https://www.gravatar.com/avatar/f6d0a62624d1d82d90ea3232e3663561?s=512',
     description: '三哥',
-    url: 'https://sange.ge'
+    url: 'https://sange.ge',
   },
   {
     name: 'bc',
     avatar: '/friends/bc.png',
     description: '直升機',
-    url: 'https://bcxy.me/'
+    url: 'https://bcxy.me/',
   },
   {
     name: 'nelson',
-    avatar: 'https://github.com/nelsonGX/Nelson-Website/blob/main/public/assets/images/nelsongx.png?raw=true',
+    avatar:
+      'https://github.com/nelsonGX/Nelson-Website/blob/main/public/assets/images/nelsongx.png?raw=true',
     description: '介紹：大帥哥(他自己打的)',
-    url: 'https://nelsongx.com/'
-  }
+    url: 'https://nelsongx.com/',
+  },
 ]
 ---
 
@@ -75,81 +77,78 @@ const friendLinks = [
   description="整理 CHIEN 推薦的友站連結與交流資訊。"
   pageType="page"
   noindex
+  wide
 >
-  <PageHeader>Friend Links</PageHeader>
-  <section class="max-w-2xl">
-    <div class="space-y-4 mb-8">
-      <p class="opacity-70">
-        這裡是我推薦的友站連結，歡迎交流！
-      </p>
-    </div>
+  <PageIntro
+    eyebrow="Community"
+    title="友站連結"
+    description="一些值得追蹤的個人網站與技術部落格。網路不只有平台，也由彼此連結的獨立網站組成。"
+    meta={`${friendLinks.length} 個友站`}
+  />
 
+  <section class="py-10 sm:py-14" aria-label="友站列表">
     <!-- 友站連結列表 -->
-    <div class="grid gap-4 md:grid-cols-2">
+    <div class="grid gap-3 sm:grid-cols-2">
       {
-        friendLinks.map((friend) => (
+        friendLinks.map((friend, index) => (
           <a
             href={friend.url}
             target="_blank"
             rel="noopener noreferrer"
-            class="flex items-center gap-4 p-4 rounded-lg border border-separator hover:bg-accent/10 transition-colors group"
+            class="group flex min-h-24 items-center gap-4 rounded-lg border border-foreground/10 p-5 no-underline transition-colors hover:border-accent/35"
           >
             {friend.avatar && (
-              <img
-                src={friend.avatar}
-                alt={friend.name}
-                loading="lazy"
-                class="w-12 h-12 rounded-full object-cover"
-              />
+              <div class="relative flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-full border border-foreground/10 bg-foreground/5 font-mono text-sm font-semibold text-foreground/65">
+                <span aria-hidden="true">{friend.name.charAt(0).toUpperCase()}</span>
+                <img
+                  src={friend.avatar}
+                  alt={friend.name}
+                  loading={index < 4 ? 'eager' : 'lazy'}
+                  class="absolute inset-0 size-full object-cover"
+                  onerror="this.style.display='none'"
+                />
+              </div>
             )}
             <div class="flex-1 min-w-0">
-              <div class="font-medium group-hover:text-accent transition-colors">
+              <div class="font-semibold text-foreground transition-colors group-hover:text-accent">
                 {friend.name}
               </div>
               {friend.description && (
-                <div class="text-sm opacity-70 truncate">
+                <div class="mt-1 truncate text-sm text-foreground/65">
                   {friend.description}
                 </div>
               )}
             </div>
-            <svg
-              class="w-5 h-5 opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M13 7l5 5m0 0l-5 5m5-5H6"
-              />
-            </svg>
+            <ChevronsRight class="size-5 shrink-0 text-foreground/45 transition-all group-hover:translate-x-1 group-hover:text-accent" />
           </a>
         ))
       }
     </div>
 
     <!-- 友站申請說明 -->
-    <div class="mt-8 p-4 rounded-lg bg-accent/5 border border-separator">
-      <h3 class="font-semibold mb-2">友站申請</h3>
-      <p class="text-sm opacity-70">
-        如果你想出現在上面，歡迎在下方留言區留下你的網站資訊，我需要標題、描述、圖片連結、連結！
-        這是我的圖片連結<br />
-        <a class="text-accent underline" href="https://blog.chien.dev/avatar.jpg">
-          https://blog.chien.dev/avatar.jpg
-        </a>
-        <br />
-        如果沒有描述的話，我就會依照我對你了解還有去翻你的 Blog 之後幫你加上去喔！
-      </p>
+    <div
+      class="mt-12 grid gap-6 border-t border-foreground/10 pt-10 md:grid-cols-[14rem_minmax(0,1fr)] md:gap-12"
+    >
+      <div>
+        <p class="mb-3 font-mono text-xs font-semibold uppercase text-accent">Exchange</p>
+        <h2 class="text-xl font-bold text-foreground">友站申請</h2>
+      </div>
+      <div class="max-w-2xl space-y-4 text-foreground/68">
+        <p>想出現在上面的話，請在下方留言區留下網站標題、描述、圖片連結與網站網址。</p>
+        <p>
+          本站頭像可以使用 <a href="https://blog.chien.dev/avatar.jpg"
+            >blog.chien.dev/avatar.jpg</a
+          >。如果沒有提供描述，我會瀏覽網站後協助補上。
+        </p>
+      </div>
     </div>
   </section>
 
   <!-- 留言區 -->
   {
     siteConfig.giscus && (
-      <section class="max-w-2xl mt-12">
-        <DividerText text="Comments" />
+      <section class="mx-auto mt-8 w-full max-w-3xl">
+        <DividerText text="留言與申請" />
         <GiscusLoader />
       </section>
     )

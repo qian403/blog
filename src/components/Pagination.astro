@@ -12,13 +12,16 @@ interface Props {
 const { prevLink, prevText, nextLink, nextText } = Astro.props
 ---
 
-<div class="my-5 flex flex-row flex-wrap gap-3 justify-center">
+<nav
+  class="mt-10 flex flex-row flex-wrap gap-3 border-t border-foreground/10 pt-8"
+  aria-label="文章分頁"
+>
   {
     prevLink && (
       <a
         href={prevLink}
         aria-label="Previous Page"
-        class="button flex-row items-center justify-center w-full !pr-3.5 sm:w-min"
+        class="button flex-row items-center justify-center w-full !pr-3.5 sm:w-auto"
       >
         <IconChevronsLeft class="mr-2 text-xl size-5" />
         {prevText || 'Previous'}
@@ -31,7 +34,7 @@ const { prevLink, prevText, nextLink, nextText } = Astro.props
         href={nextLink}
         aria-label="Next Page"
         class:list={[
-          'button flex-row items-center justify-center w-full !pl-3.5 sm:w-min',
+          'button flex-row items-center justify-center w-full !pl-3.5 sm:w-auto',
           prevLink && 'ml-auto',
         ]}
       >
@@ -40,4 +43,4 @@ const { prevLink, prevText, nextLink, nextText } = Astro.props
       </a>
     )
   }
-</div>
+</nav>

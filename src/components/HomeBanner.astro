@@ -1,47 +1,52 @@
 ---
 import { Image } from 'astro:assets'
-import GitHubActivityCalendar from '~/components/GitHubActivityCalendar.astro'
 import type { FrontmatterImage } from '~/types'
 
 interface Props {
   avatarImage?: FrontmatterImage
-  githubCalendar?: string
 }
-const { avatarImage, githubCalendar } = Astro.props
+const { avatarImage } = Astro.props
 ---
 
-<div class="my-6 md:mx-2">
-  <div
-    class="flex flex-col sm:flex-row items-center justify-around sm:gap-5 max-w-full mb-6"
-  >
+<section class="home-intro border-b border-foreground/10 py-14 sm:py-20">
+  <div class="grid items-center gap-8 md:grid-cols-[1fr_auto] md:gap-14">
+    <div class="max-w-2xl">
+      <p class="mb-5 font-mono text-xs font-semibold uppercase text-accent">
+        Network · Security · Systems
+      </p>
+      <h1 class="mb-6 text-4xl font-bold leading-tight text-foreground sm:text-5xl">
+        CHIEN 的技術筆記
+      </h1>
+      <div class="home-copy prose max-w-xl text-lg text-foreground/68">
+        <slot />
+      </div>
+    </div>
     {
       avatarImage && (
-        <div class="avatar-container">
+        <div class="avatar-container order-first md:order-last">
           <Image
             priority
             src={avatarImage.src}
             alt={avatarImage.alt}
-            class="rounded-full border-8 border-accent/15 size-36 aspect-square box-content shrink-0"
-            widths={[288]}
-            height={144}
-            width={144}
+            class="size-24 shrink-0 rounded-full border border-foreground/10 object-cover sm:size-32"
+            widths={[128, 256]}
+            height={128}
+            width={128}
           />
         </div>
       )
     }
-    <div>
-      <div class:list={['m-4 max-w-full prose']}>
-        <slot />
-      </div>
-    </div>
   </div>
-  {githubCalendar && <GitHubActivityCalendar username={githubCalendar} />}
-</div>
+</section>
 
 <style>
   .avatar-container {
     position: relative;
     display: inline-block;
     flex-shrink: 0;
+  }
+
+  .home-copy :global(p) {
+    margin: 0;
   }
 </style>

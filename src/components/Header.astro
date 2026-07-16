@@ -2,44 +2,53 @@
 import siteConfig from '~/site.config'
 import LightDarkAutoButton from '~/components/LightDarkAutoButton.astro'
 import Search from '~/components/Search.astro'
-import SelectTheme from '~/components/SelectTheme.astro'
 import NavLink from '~/components/NavLink.astro'
 
-const lightDarkAutoTheme = siteConfig.themes.mode === 'light-dark-auto'
-const selectTheme =
-  siteConfig.themes.mode === 'select' && siteConfig.themes.include.length > 1
+const binaryTheme = siteConfig.themes.include.length === 2
 ---
 
-<header>
-  <div class="relative flex items-center justify-between bg-accent/10 rounded-xl">
-    <a
-      id="logo"
-      href="/"
-      class="block px-4 py-1.5 max-w-full no-underline items-center bg-accent text-background font-bold rounded-xl"
-    >
-      {siteConfig.title}
+<header
+  class="site-header sticky top-0 z-40 border-b border-foreground/10 bg-background/92 backdrop-blur-md"
+>
+  <div class="relative flex h-16 items-center justify-between gap-4">
+    <a id="logo" href="/" class="flex min-w-0 items-baseline gap-2 no-underline">
+      <span class="text-lg font-bold text-foreground">CHIEN</span>
+      <span class="hidden text-xs font-semibold uppercase text-foreground/65 sm:inline"
+        >Tech Notes</span
+      >
     </a>
-    <div class="flex items-center gap-3 sm:mr-3">
+    <div class="flex items-center gap-3">
+      <nav aria-label="主要導覽" class="hidden md:block">
+        <ul class="flex items-center gap-6 text-sm text-foreground/70">
+          {
+            siteConfig.navLinks.map((link) => (
+              <li>
+                <NavLink link={link} />
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
       <Search trailingSlashes={siteConfig.trailingSlashes} />
-      {lightDarkAutoTheme && <LightDarkAutoButton />}
-      {selectTheme && <SelectTheme />}
-      <nav id="nav-mobile" aria-label="Menu" class="p-0 text-accent sm:hidden">
+      {binaryTheme && <LightDarkAutoButton />}
+      <nav id="nav-mobile" aria-label="行動版導覽" class="p-0 md:hidden">
         <button
           id="nav-mobile-button"
-          class="px-3 py-1 h-full cursor-pointer border-2 rounded-xl bg-background"
+          class="flex size-9 items-center justify-center text-xl text-foreground/75"
           type="button"
           aria-expanded="false"
-          aria-controls="nav-menu-list"
+          aria-controls="nav-mobile-list"
+          aria-label="開啟選單"
         >
-          ▾
+          ☰
         </button>
         <ul
           id="nav-mobile-list"
-          class="invisible absolute flex flex-col bg-background shadow text-accent border-2 m-0 p-2.5 top-11.5 left-auto right-0 z-50 rounded-xl"
+          class="invisible absolute right-0 top-14 z-50 flex min-w-44 flex-col gap-1 rounded-lg border border-foreground/10 bg-background p-2 shadow-xl"
         >
           {
             siteConfig.navLinks.map((link) => (
-              <li class="p-1" aria-expanded="false">
+              <li class="px-3 py-2" aria-expanded="false">
                 <NavLink link={link} />
               </li>
             ))
@@ -48,17 +57,6 @@ const selectTheme =
       </nav>
     </div>
   </div>
-  <nav aria-label="Menu" class="p-0 mt-4 ml-0.5 text-accent hidden sm:block">
-    <ul class="flex flex-row text-accent">
-      {
-        siteConfig.navLinks.map((link) => (
-          <li class="mr-5" aria-expanded="true">
-            <NavLink link={link} />
-          </li>
-        ))
-      }
-    </ul>
-  </nav>
 </header>
 
 <script>
@@ -77,6 +75,7 @@ const selectTheme =
       isNowOpen = !navMobileList?.classList.toggle('invisible')
     }
     navMobileButton?.setAttribute('aria-expanded', isNowOpen ? 'true' : 'false')
+    navMobileButton?.setAttribute('aria-label', isNowOpen ? '關閉選單' : '開啟選單')
     navMobileListItems?.forEach((listItem) => {
       listItem.setAttribute('aria-expanded', isNowOpen ? 'true' : 'false')
     })

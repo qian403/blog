@@ -305,7 +305,7 @@ article img {
   b,
   strong,
   th,
-  button {
+  button:not(.expressive-code button) {
     @apply font-semibold;
   }
 
@@ -322,7 +322,7 @@ article img {
     }
   }
 
-  button {
+  button:not(.expressive-code button) {
     @apply font-bold text-center text-accent py-1 px-4.5 border-4 border-accent rounded-xl cursor-pointer hover:bg-accent/15 transition-colors;
   }
 
@@ -628,7 +628,7 @@ article img {
   background: color-mix(in oklab, var(--theme-accent) 20%, transparent);
 }
 
-.spoiler[data-spoiler="revealed"],
+.spoiler[data-spoiler='revealed'],
 .spoiler:active {
   filter: blur(0);
   background: transparent;
@@ -646,5 +646,209 @@ article img {
   100% {
     filter: blur(0);
     opacity: 1;
+  }
+}
+
+/* Editorial design layer */
+body.editorial-layout {
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang TC', 'Noto Sans TC',
+    'Microsoft JhengHei', sans-serif;
+  letter-spacing: 0;
+  line-height: 1.65;
+}
+
+:root[data-theme='github-light'] {
+  color-scheme: light;
+}
+
+:root[data-theme='github-dark'] {
+  color-scheme: dark;
+}
+
+.editorial-layout .site-shell {
+  width: 100%;
+}
+
+.editorial-layout .site-header {
+  margin-inline: calc(var(--spacing) * -1);
+  padding-inline: calc(var(--spacing) * 1);
+}
+
+.editorial-layout .nav-link[aria-current='page'] {
+  color: var(--theme-foreground);
+  font-weight: 600;
+}
+
+.editorial-layout a.button {
+  @apply rounded-md border border-foreground/15 px-4 py-2 text-sm font-semibold text-foreground no-underline transition-colors hover:border-accent/45 hover:bg-accent/6 hover:text-accent;
+}
+
+.editorial-layout article img {
+  @apply max-w-full rounded-lg border-0;
+}
+
+.editorial-layout .prose {
+  @apply max-w-none text-[1.0625rem] leading-8 text-foreground/82;
+
+  & > *:not(div.expressive-code, img, figure, video, hr, blockquote, aside),
+  figcaption {
+    @apply mx-0;
+  }
+
+  p,
+  ul,
+  ol,
+  img,
+  figure,
+  video,
+  table,
+  blockquote,
+  aside,
+  .github-card {
+    @apply my-7;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    letter-spacing: 0;
+    text-wrap: balance;
+
+    &::before {
+      display: none;
+    }
+  }
+
+  h1 {
+    @apply mt-12 mb-6 text-4xl leading-tight font-bold text-heading1;
+  }
+
+  h2 {
+    @apply mt-16 mb-6 border-b border-foreground/10 pb-3 text-3xl leading-tight font-bold text-heading2;
+  }
+
+  h3 {
+    @apply mt-12 mb-5 text-2xl leading-snug font-bold text-heading3;
+  }
+
+  h4 {
+    @apply mt-10 mb-4 text-xl leading-snug font-semibold text-heading4;
+  }
+
+  h5,
+  h6 {
+    @apply mt-8 mb-4 text-lg leading-snug font-semibold;
+  }
+
+  a:not(.heading-anchor) {
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+
+  code:not(.expressive-code code) {
+    @apply rounded-sm bg-foreground/7 px-1.5 py-0.5 font-mono text-[0.875em] text-foreground;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  ul,
+  ol {
+    @apply pl-6 sm:pl-7;
+  }
+
+  li {
+    @apply my-2 pl-1 marker:text-accent;
+  }
+
+  ul li {
+    list-style-type: disc;
+  }
+
+  ul ul li {
+    list-style-type: circle;
+  }
+
+  blockquote {
+    @apply rounded-none border-l-2 border-accent bg-transparent px-6 py-1 text-foreground/70;
+
+    &::before {
+      display: none;
+    }
+  }
+
+  aside:not(.character-dialogue) {
+    @apply rounded-lg border border-foreground/10 px-5 py-5 sm:px-6;
+  }
+
+  div.expressive-code {
+    @apply my-9 min-w-0 max-w-full;
+
+    figure {
+      @apply min-w-0 max-w-full overflow-hidden rounded-lg! border border-foreground/10!;
+
+      & > pre {
+        max-width: 100%;
+        overflow-x: auto !important;
+        overflow-y: hidden;
+      }
+    }
+  }
+
+  figure:not(.expressive-code figure) {
+    @apply rounded-lg p-0;
+
+    figcaption {
+      @apply mt-3 text-sm not-italic text-foreground/65;
+    }
+  }
+
+  table {
+    display: block;
+    width: max-content;
+    max-width: 100%;
+    overflow-x: auto;
+    border-collapse: collapse;
+    font-size: 0.9375rem;
+    scrollbar-width: thin;
+  }
+
+  th,
+  td {
+    @apply border border-foreground/15 px-4 py-3;
+  }
+
+  th {
+    @apply bg-foreground/5 text-left font-semibold;
+    text-transform: none;
+  }
+
+  hr {
+    @apply my-16 h-px rounded-none bg-foreground/15;
+  }
+
+  .katex-display {
+    @apply my-8 py-3;
+  }
+}
+
+@media (max-width: 639px) {
+  .editorial-layout .prose {
+    @apply text-base leading-7;
+
+    h1 {
+      @apply text-3xl;
+    }
+
+    h2 {
+      @apply mt-12 text-2xl;
+    }
+
+    h3 {
+      @apply mt-10 text-xl;
+    }
   }
 }

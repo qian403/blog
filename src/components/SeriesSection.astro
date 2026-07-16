@@ -11,17 +11,19 @@ const { posts } = Astro.props
 const seriesGroup = await SeriesGroup.build(posts)
 ---
 
-<ul class="flex flex-wrap gap-x-3 gap-y-4 my-5">
+<ul class="grid gap-3 py-5 sm:grid-cols-2">
   {
     seriesGroup.sortCollationsMostRecent().map((series) => (
       <li>
         <a
           href={series.url}
-          class="flex items-start gap-2.5 py-2 pl-4 pr-3 bg-accent/7 rounded-3xl border-transparent hover:border-accent/20 border-1 text-foreground/90"
+          class="group flex items-center justify-between gap-4 rounded-lg border border-foreground/10 p-5 no-underline transition-colors hover:border-accent/35"
         >
-          {series.title}
-          <span class="rounded-full bg-foreground/7 text-foreground/90 px-2 py-1 text-xs font-semibold">
-            {series.entries.length}
+          <span class="font-semibold text-foreground group-hover:text-accent">
+            {series.title}
+          </span>
+          <span class="font-mono text-xs text-foreground/65">
+            {series.entries.length} 篇
           </span>
         </a>
       </li>

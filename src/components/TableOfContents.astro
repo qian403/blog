@@ -1,6 +1,9 @@
 ---
 import type { MarkdownHeading } from 'astro'
 import TOCHeading from '~/components/TableOfContentsHeading.astro'
+import ChevronsLeft from '~/icons/chevrons-left.svg'
+import ChevronsRight from '~/icons/chevrons-right.svg'
+import CircleX from '~/icons/circle-x.svg'
 
 interface Props {
   headings: MarkdownHeading[]
@@ -9,113 +12,257 @@ interface Props {
 
 const { headings, variant = 'legacy' } = Astro.props
 const isResponsive = variant === 'responsive'
-
 const filteredHeadings = headings.filter(({ depth }) => depth >= 2 && depth <= 3)
 ---
 
-<details
-  open={!isResponsive}
-  data-variant={variant}
-  class:list={[
-    'toc relative text-sm text-foreground/90',
-    isResponsive
-      ? 'z-20 mt-5 rounded-lg border-2 border-accent/10 bg-background md:sticky md:top-3 md:mx-2 md:shadow-sm lg:top-10 lg:col-start-2 lg:row-start-1 lg:mx-0 lg:mt-0 lg:max-h-[calc(100vh-2.5rem)] lg:w-full lg:overflow-hidden lg:border-none lg:bg-transparent lg:opacity-90 lg:shadow-none'
-      : 'md:mx-2 xl:mx-0 bg-foreground/5 xl:bg-transparent px-8 xl:pr-0 py-6 mt-5 xl:mt-0 xl:w-full rounded-xl border-3 xl:border-none border-accent/10 xl:sticky xl:top-10 xl:max-h-[calc(100vh-2.5rem)] xl:overflow-hidden xl:basis-[274px] 2xl:basis-[320px] xl:order-2 xl:shrink-0 xl:opacity-90',
-  ]}
->
-  <summary
-    class:list={[
-      "cursor-pointer list-none marker:hidden marker:content-[''] before:font-semibold before:text-accent before:content-['>']",
-      isResponsive
-        ? 'flex min-h-11 items-center gap-3 px-4 focus-visible:outline-1 focus-visible:outline-accent focus-visible:outline-offset-2 lg:min-h-0 lg:px-0'
-        : 'before:absolute before:left-3',
-    ]}
-  >
-    {
-      isResponsive ? (
-        <>
-          <span class="shrink-0 font-semibold">文章目錄</span>
-          <span class="toc-current ml-auto truncate text-foreground/65 lg:hidden">
-            選擇段落
-          </span>
-        </>
-      ) : (
-        'Table of Contents'
-      )
-    }
-  </summary>
-  <nav
-    class:list={[
-      'w-full text-sm',
-      isResponsive
-        ? 'px-4 pb-4 md:absolute md:top-[calc(100%+0.5rem)] md:left-0 md:max-h-[60vh] md:overflow-y-auto md:rounded-lg md:border-2 md:border-accent/10 md:bg-background md:pt-2 md:shadow-lg lg:static lg:mt-4 lg:-ml-1 lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto lg:rounded-none lg:border-0 lg:bg-transparent lg:px-0 lg:pt-0 lg:pr-3 lg:pb-0 lg:shadow-none'
-        : 'xl:-ml-1 xl:mt-4 xl:max-h-[calc(100vh-7rem)] xl:overflow-y-auto xl:pr-3',
-    ]}
-  >
-    <ul
-      class:list={[
-        'flex max-w-full flex-col',
-        isResponsive ? 'mt-2 md:mt-0' : 'mt-4 xl:mt-0',
-      ]}
+{
+  isResponsive ? (
+    <div class="toc-responsive contents" data-responsive-toc data-open="false">
+      <button
+        type="button"
+        data-toc-open
+        class="toc-mobile-trigger fixed right-0 bottom-[24%] z-40 flex size-11 items-center justify-center rounded-l-md border border-r-0 border-accent/35 bg-background text-accent shadow-lg transition-[opacity,transform,background-color] hover:bg-accent/8 motion-reduce:transition-none lg:hidden"
+        aria-controls="article-toc-panel"
+        aria-expanded="false"
+        title="文章目錄"
+      >
+        <ChevronsLeft class="size-5" />
+        <span class="sr-only">開啟文章目錄</span>
+      </button>
+
+      <div
+        class="toc-mobile-shell pointer-events-none fixed inset-0 z-50 lg:hidden"
+        data-toc-mobile-shell
+        aria-hidden="true"
+      >
+        <div
+          class="toc-mobile-backdrop absolute inset-0 bg-background/72 opacity-0 backdrop-blur-sm transition-opacity motion-reduce:transition-none"
+          data-toc-backdrop
+        />
+        <aside
+          id="article-toc-panel"
+          class="toc-mobile-panel absolute right-0 bottom-[calc(0.75rem+env(safe-area-inset-bottom))] flex max-h-[min(64dvh,32rem)] w-[min(82vw,20rem)] translate-x-full flex-col overflow-hidden rounded-l-lg border border-r-0 border-foreground/12 bg-background shadow-2xl transition-transform duration-200 motion-reduce:transition-none"
+          data-toc-panel
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="article-toc-title"
+          inert
+        >
+          <div class="flex min-h-18 items-center gap-3 border-b border-foreground/10 px-4 py-3">
+            <div class="min-w-0 flex-1">
+              <h2 id="article-toc-title" class="text-base font-bold text-foreground">
+                文章目錄
+              </h2>
+              <p class="toc-current mt-1 truncate text-xs text-foreground/60">選擇段落</p>
+            </div>
+            <button
+              type="button"
+              data-toc-close
+              class="flex size-10 shrink-0 items-center justify-center rounded-md border border-foreground/10 bg-foreground/4 text-foreground/65 transition-colors hover:text-foreground"
+              aria-label="關閉文章目錄"
+              title="關閉文章目錄"
+            >
+              <CircleX class="size-5" />
+            </button>
+          </div>
+          <nav class="min-h-0 flex-1 overflow-y-auto px-3 py-3" aria-label="文章目錄">
+            <ul class="flex max-w-full flex-col" data-mobile-toc>
+              {filteredHeadings.map((heading) => (
+                <TOCHeading heading={heading} responsive />
+              ))}
+            </ul>
+          </nav>
+        </aside>
+      </div>
+
+      <aside class="toc-desktop hidden text-sm text-foreground/90 lg:sticky lg:top-20 lg:col-start-2 lg:row-start-1 lg:block lg:max-h-[calc(100vh-6rem)] lg:self-start lg:overflow-hidden">
+        <p class="font-mono text-xs font-semibold uppercase text-accent">文章目錄</p>
+        <nav
+          class="mt-5 max-h-[calc(100vh-9rem)] overflow-y-auto pr-3"
+          aria-label="文章目錄"
+        >
+          <ul class="flex max-w-full flex-col">
+            {filteredHeadings.map((heading) => (
+              <TOCHeading heading={heading} responsive />
+            ))}
+          </ul>
+        </nav>
+      </aside>
+    </div>
+  ) : (
+    <details
+      open
+      data-variant="legacy"
+      class="toc relative mt-5 rounded-xl border-3 border-accent/10 bg-foreground/5 px-8 py-6 text-sm text-foreground/90 md:mx-2 xl:sticky xl:top-10 xl:order-2 xl:mx-0 xl:max-h-[calc(100vh-2.5rem)] xl:w-full xl:basis-[274px] xl:shrink-0 xl:overflow-hidden xl:border-none xl:bg-transparent xl:pr-0 xl:opacity-90 2xl:basis-[320px]"
     >
-      {
-        filteredHeadings.map((heading) => (
-          <TOCHeading heading={heading} responsive={isResponsive} />
-        ))
-      }
-    </ul>
-  </nav>
-</details>
+      <summary class="cursor-pointer list-none marker:hidden before:absolute before:left-3 before:font-semibold before:text-accent before:content-['>'] marker:content-['']">
+        Table of Contents
+        <ChevronsRight class="hidden" />
+      </summary>
+      <nav class="w-full xl:-ml-1 xl:mt-4 xl:max-h-[calc(100vh-7rem)] xl:overflow-y-auto xl:pr-3">
+        <ul class="mt-4 flex max-w-full flex-col xl:mt-0">
+          {filteredHeadings.map((heading) => (
+            <TOCHeading heading={heading} />
+          ))}
+        </ul>
+      </nav>
+    </details>
+  )
+}
 
 <script>
-  const toc = document.querySelector<HTMLDetailsElement>('details.toc')
-  const isResponsive = toc?.dataset.variant === 'responsive'
-  const anchorSelector = isResponsive ? '.prose h2[id], .prose h3[id]' : 'h2[id], h3[id]'
-  const anchors = document.querySelectorAll<HTMLElement>(anchorSelector)
-  const links = document.querySelectorAll<HTMLLIElement>('details.toc > nav > ul > li')
-  const currentHeading = toc?.querySelector<HTMLElement>('.toc-current')
+  const responsiveToc = document.querySelector<HTMLElement>('[data-responsive-toc]')
+  const allTocItems = Array.from(
+    document.querySelectorAll<HTMLLIElement>('[data-toc-item]'),
+  )
+  const anchors = Array.from(
+    document.querySelectorAll<HTMLElement>('.prose h2[id], .prose h3[id]'),
+  )
+  const currentHeading = responsiveToc?.querySelector<HTMLElement>('.toc-current')
+  const openButton = responsiveToc?.querySelector<HTMLButtonElement>('[data-toc-open]')
+  const closeButton = responsiveToc?.querySelector<HTMLButtonElement>('[data-toc-close]')
+  const mobileShell = responsiveToc?.querySelector<HTMLElement>('[data-toc-mobile-shell]')
+  const mobilePanel = responsiveToc?.querySelector<HTMLElement>('[data-toc-panel]')
+  const mobileBackdrop = responsiveToc?.querySelector<HTMLElement>('[data-toc-backdrop]')
+  const mobileLinks = Array.from(
+    responsiveToc?.querySelectorAll<HTMLAnchorElement>('[data-mobile-toc] a') ?? [],
+  )
   const desktopQuery = window.matchMedia('(min-width: 1024px)')
 
-  const syncTocMode = (isDesktop: boolean) => {
-    if (toc) toc.open = isDesktop
+  const setMobileTocOpen = (open: boolean, restoreFocus = true) => {
+    if (!responsiveToc || !openButton || !mobileShell || !mobilePanel) return
+    responsiveToc.dataset.open = String(open)
+    openButton.setAttribute('aria-expanded', String(open))
+    mobileShell.setAttribute('aria-hidden', String(!open))
+    mobilePanel.inert = !open
+    document.documentElement.classList.toggle('toc-scroll-lock', open)
+
+    if (open) {
+      closeButton?.focus()
+    } else if (restoreFocus) {
+      openButton.focus()
+    }
   }
 
-  if (isResponsive) {
-    syncTocMode(desktopQuery.matches)
-    desktopQuery.addEventListener('change', (event) => syncTocMode(event.matches))
-  }
+  const updateActiveHeading = () => {
+    const scrollTop = window.scrollY
+    let activeSlug = ''
 
-  if (anchors.length === links.length && anchors.length > 0) {
-    const updateActiveHeading = () => {
-      const scrollTop = window.scrollY
-      let highlighted = false
-      for (let i = anchors.length - 1; i >= 0; i--) {
-        const anchor = anchors[i]
-        if (!highlighted && scrollTop >= anchor.offsetTop - 96) {
-          links[i].classList.add('active-heading')
-          if (currentHeading) currentHeading.textContent = anchor.textContent
-          highlighted = true
-        } else {
-          links[i].classList.remove('active-heading')
-        }
+    for (let index = anchors.length - 1; index >= 0; index--) {
+      const anchor = anchors[index]
+      if (scrollTop >= anchor.offsetTop - 112) {
+        activeSlug = anchor.id
+        break
       }
-
-      if (!highlighted && currentHeading) currentHeading.textContent = '選擇段落'
     }
 
-    links.forEach((item) => {
-      item.querySelector('a')?.addEventListener('click', () => {
-        if (toc && isResponsive && !desktopQuery.matches) toc.open = false
-      })
+    allTocItems.forEach((item) => {
+      const active = item.dataset.headingSlug === activeSlug
+      const link = item.querySelector('a')
+      item.classList.toggle('active-heading', active)
+      if (active) {
+        link?.setAttribute('aria-current', 'location')
+      } else {
+        link?.removeAttribute('aria-current')
+      }
     })
 
-    updateActiveHeading()
-    window.addEventListener('scroll', updateActiveHeading, { passive: true })
+    if (currentHeading) {
+      currentHeading.textContent =
+        anchors.find((anchor) => anchor.id === activeSlug)?.textContent ?? '選擇段落'
+    }
   }
+
+  openButton?.addEventListener('click', () => setMobileTocOpen(true))
+  closeButton?.addEventListener('click', () => setMobileTocOpen(false))
+  mobileBackdrop?.addEventListener('click', () => setMobileTocOpen(false))
+  mobileLinks.forEach((link) => {
+    link.addEventListener('click', () => {
+      const targetId = decodeURIComponent(link.hash.slice(1))
+      setMobileTocOpen(false, false)
+      requestAnimationFrame(() => {
+        const target = document.getElementById(targetId)
+        if (!target) return
+        target.setAttribute('tabindex', '-1')
+        target.focus({ preventScroll: true })
+        target.addEventListener('blur', () => target.removeAttribute('tabindex'), {
+          once: true,
+        })
+      })
+    })
+  })
+
+  document.addEventListener('keydown', (event) => {
+    if (responsiveToc?.dataset.open !== 'true') return
+
+    if (event.key === 'Escape') {
+      event.preventDefault()
+      setMobileTocOpen(false)
+      return
+    }
+
+    if (event.key === 'Tab' && mobilePanel) {
+      const focusable = Array.from(
+        mobilePanel.querySelectorAll<HTMLElement>('button, a[href]'),
+      ).filter((element) => !element.hasAttribute('disabled'))
+      const first = focusable[0]
+      const last = focusable[focusable.length - 1]
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault()
+        last?.focus()
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault()
+        first?.focus()
+      }
+    }
+  })
+
+  desktopQuery.addEventListener('change', (event) => {
+    if (event.matches && responsiveToc?.dataset.open === 'true') {
+      setMobileTocOpen(false, false)
+      const desktopTarget = responsiveToc.querySelector<HTMLAnchorElement>(
+        '.toc-desktop a[aria-current="location"], .toc-desktop a',
+      )
+      desktopTarget?.focus()
+    }
+  })
+
+  updateActiveHeading()
+  window.addEventListener('load', updateActiveHeading, { once: true })
+  window.addEventListener('hashchange', updateActiveHeading)
+  window.addEventListener('scroll', updateActiveHeading, { passive: true })
 </script>
 
 <style>
-  details[open] summary:before {
+  [data-responsive-toc][data-open='true'] .toc-mobile-shell {
+    pointer-events: auto;
+  }
+
+  [data-responsive-toc][data-open='true'] .toc-mobile-backdrop {
+    opacity: 1;
+  }
+
+  [data-responsive-toc][data-open='true'] .toc-mobile-panel {
+    translate: 0 0;
+  }
+
+  [data-responsive-toc][data-open='true'] .toc-mobile-trigger {
+    pointer-events: none;
+    opacity: 0;
+    transform: translateX(100%);
+  }
+
+  :global(html.toc-scroll-lock) {
+    overflow: hidden;
+  }
+
+  :global(html.toc-scroll-lock button.scroll-up) {
+    pointer-events: none;
+    visibility: hidden;
+  }
+
+  details[data-variant='legacy'][open] summary:before {
     transform: rotate(90deg);
   }
 

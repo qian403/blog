@@ -8,17 +8,18 @@ const { trailingSlashes = false } = Astro.props
 
 <site-search class="ms-auto" id="search" data-trailing-slashes={trailingSlashes}>
   <button
-    class="hover:text-accent flex cursor-pointer items-center justify-center rounded-md"
+    class="flex size-9 cursor-pointer items-center justify-center text-foreground/70 transition-colors hover:text-foreground"
     aria-keyshortcuts="Control+K Meta+K"
+    title="搜尋文章"
     data-open-modal
     disabled
   >
-    <IconSearch class="size-6 text-accent" />
+    <IconSearch class="size-5" />
     <span class="sr-only">Open Search</span>
   </button>
   <dialog
     aria-label="search"
-    class="text-foreground! bg-background max-h-5/6 min-h-48 w-7/8 sm:w-5/6 max-w-xl border-double! border-4 border-accent/30 shadow-sm backdrop:backdrop-blur-sm open:flex mx-auto mt-10 sm:mt-16 mb-auto rounded-xl"
+    class="text-foreground! bg-background max-h-5/6 min-h-48 w-7/8 sm:w-5/6 max-w-xl border! border-foreground/15 shadow-xl backdrop:backdrop-blur-sm open:flex mx-auto mt-10 sm:mt-16 mb-auto rounded-lg"
   >
     <div class="dialog-frame flex grow flex-col gap-4 p-6 pt-6 max-w-full">
       <button class="cursor-pointer fixed top-2 right-2 rounded-full" data-close-modal>

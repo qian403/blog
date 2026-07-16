@@ -9,9 +9,10 @@ import { TagsGroup } from '~/utils'
 
 interface Props {
   post: CollectionEntry<'posts'>
+  variant?: 'default' | 'featured' | 'compact'
 }
 
-const { post } = Astro.props
+const { post, variant = 'default' } = Astro.props
 
 const { remarkPluginFrontmatter } = await render(post)
 const description = remarkPluginFrontmatter.description || post.data.description
@@ -25,22 +26,81 @@ const articleLink = samePage ? `#${post.id}` : `/posts/${post.id}/`
 ---
 
 <article class="w-full py-5 my-1 md:my-4 border-accent/10">
-  <h2 class="mb-3 text-2xl text-heading1 font-semibold">
-    <a href={articleLink}># {post.data.title}</a>
-  </h2>
-  <PostInfo post={post} class="mb-3 mt-4" />
-  {description && <p class="pl-0.5 my-4 text-base/7 text-foreground">{description}</p>}
   {
-    tags && (
-      <div class="mb-6">
-        <Tags tags={tags} />
+    variant === 'featured' ? (
+      <div class="group rounded-lg border border-foreground/10 bg-foreground/[0.025] p-6 transition-colors hover:border-accent/35 sm:p-8">
+        <p class="mb-5 font-mono text-xs font-semibold uppercase text-accent">
+          Featured article
+        </p>
+        <h2 class="max-w-3xl text-2xl font-bold leading-snug text-heading1 sm:text-3xl">
+          <a class="no-underline" href={articleLink}>
+            {post.data.title}
+          </a>
+        </h2>
+        <PostInfo post={post} class="mt-4 text-sm" />
+        {description && (
+          <p class="mt-5 max-w-3xl text-base/7 text-foreground/68">{description}</p>
+        )}
+        <a
+          class="mt-7 inline-flex items-center gap-2 font-semibold text-accent no-underline"
+          href={articleLink}
+        >
+          閱讀文章{' '}
+          <IconChevronsRight class="size-5 transition-transform group-hover:translate-x-1" />
+        </a>
+      </div>
+    ) : variant === 'compact' ? (
+      <div class="group grid gap-3 border-b border-foreground/10 py-7 sm:grid-cols-[8rem_minmax(0,1fr)_auto] sm:items-start sm:gap-6">
+        <time
+          class="font-mono text-sm text-foreground/65"
+          datetime={post.data.published.toISOString()}
+        >
+          {post.data.published.toISOString().slice(0, 10)}
+        </time>
+        <div class="min-w-0">
+          <h2 class="text-xl font-semibold leading-snug text-heading1 sm:text-2xl">
+            <a class="no-underline" href={articleLink}>
+              {post.data.title}
+            </a>
+          </h2>
+          {description && (
+            <p class="mt-3 line-clamp-2 text-sm/6 text-foreground/68">{description}</p>
+          )}
+          {tags && (
+            <div class="mt-4">
+              <Tags tags={tags} />
+            </div>
+          )}
+        </div>
+        <a
+          class="hidden size-10 items-center justify-center text-foreground/45 transition-colors group-hover:text-accent sm:flex"
+          href={articleLink}
+          aria-label={`閱讀 ${post.data.title}`}
+        >
+          <IconChevronsRight class="size-5" />
+        </a>
+      </div>
+    ) : (
+      <div class="border-b border-foreground/10 py-4">
+        <h2 class="mb-3 text-2xl font-semibold leading-snug text-heading1">
+          <a class="no-underline" href={articleLink}>
+            {post.data.title}
+          </a>
+        </h2>
+        <PostInfo post={post} class="mb-3 mt-4 text-sm" />
+        {description && <p class="my-4 text-base/7 text-foreground/68">{description}</p>}
+        {tags && (
+          <div class="mb-5">
+            <Tags tags={tags} />
+          </div>
+        )}
+        <a
+          class="inline-flex items-center gap-2 font-semibold text-accent no-underline"
+          href={articleLink}
+        >
+          {samePage ? '繼續閱讀' : '閱讀文章'} <IconChevronsRight class="size-5" />
+        </a>
       </div>
     )
   }
-  <div>
-    <a class="button flex items-center !pl-3.5" href={articleLink}>
-      {samePage ? 'Continue' : 'Read'}
-      <IconChevronsRight class="size-5 ml-2" />
-    </a>
-  </div>
 </article>

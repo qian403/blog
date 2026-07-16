@@ -12,39 +12,43 @@ const {
 } = Astro.props
 ---
 
-<li class="flex items-stretch border-foreground/20">
-  <div class="flex items-stretch">
-    {
-      Array.from({ length: depth - 1 }, (_v, _k) => (
-        <div class="toc-lines flex flex-col items-stretch">
-          <span
-            class:list={[
-              'top-box w-4 basis-4 border-b-1 border-foreground/20',
-              responsive
-                ? 'lg:w-3 lg:border-foreground/15'
-                : 'xl:w-3 xl:border-foreground/15',
-            ]}
-          />
-          <span
-            class:list={[
-              'bottom-box w-4 min-h-1/2 flex-1 border-t-1 border-foreground/20',
-              responsive
-                ? 'lg:w-3 lg:border-foreground/15'
-                : 'xl:w-3 xl:border-foreground/15',
-            ]}
-          />
-        </div>
-      ))
-    }
-  </div>
-  <a
-    class:list={[
-      'ml-3 block py-1 ps-1 line-clamp-2 hover:text-accent',
-      responsive ? 'min-h-11 py-2 lg:ml-2 lg:min-h-0 lg:py-1' : 'xl:ml-2',
-    ]}
-    href={`#${slug}`}>{text}</a
-  >
-</li>
+{
+  responsive ? (
+    <li
+      data-toc-item
+      data-heading-slug={slug}
+      class:list={['border-l border-foreground/12', depth === 3 && 'pl-3']}
+    >
+      <a
+        class="block min-h-11 line-clamp-2 border-l-2 border-transparent px-3 py-2 text-foreground/65 transition-colors hover:text-foreground lg:min-h-0 lg:py-1.5"
+        href={`#${slug}`}
+      >
+        {text}
+      </a>
+    </li>
+  ) : (
+    <li
+      data-toc-item
+      data-heading-slug={slug}
+      class="flex items-stretch border-foreground/20"
+    >
+      <div class="flex items-stretch">
+        {Array.from({ length: depth - 1 }, (_v, _k) => (
+          <div class="toc-lines flex flex-col items-stretch">
+            <span class="top-box w-4 basis-4 border-b-1 border-foreground/20 xl:w-3 xl:border-foreground/15" />
+            <span class="bottom-box min-h-1/2 w-4 flex-1 border-t-1 border-foreground/20 xl:w-3 xl:border-foreground/15" />
+          </div>
+        ))}
+      </div>
+      <a
+        class="ml-3 block line-clamp-2 py-1 ps-1 hover:text-accent xl:ml-2"
+        href={`#${slug}`}
+      >
+        {text}
+      </a>
+    </li>
+  )
+}
 
 <style>
   .toc-lines:first-child span {
@@ -56,5 +60,8 @@ const {
   li.active-heading a {
     color: var(--theme-accent);
     font-weight: 600;
+  }
+  li.border-l.active-heading a {
+    border-left-color: var(--theme-accent);
   }
 </style>

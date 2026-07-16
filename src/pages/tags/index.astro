@@ -1,10 +1,11 @@
 ---
 import Layout from '~/layouts/Layout.astro'
 import { getSortedPosts } from '~/utils'
-import BlockHeader from '~/components/BlockHeader.astro'
 import TagsSection from '~/components/TagsSection.astro'
-import PageHeader from '~/components/PageHeader.astro'
+import PageIntro from '~/components/PageIntro.astro'
 import siteConfig from '~/site.config'
+import SearchIcon from '~/icons/search.svg'
+import CircleX from '~/icons/circle-x.svg'
 
 const sortedPosts = await getSortedPosts()
 ---
@@ -17,9 +18,93 @@ const sortedPosts = await getSortedPosts()
     { name: '首頁', item: siteConfig.site },
     { name: '標籤', item: `${siteConfig.site}/tags/` },
   ]}
+  wide
 >
-  <PageHeader>Tags</PageHeader>
-  <section>
+  <PageIntro
+    eyebrow="Topics"
+    title="文章標籤"
+    description="從網路技術、資訊安全、Linux 到系統維運，依照主題快速找到相關文章與實作紀錄。"
+    meta={`${sortedPosts.length} 篇文章`}
+  />
+  <section class="mt-10 sm:mt-14" aria-label="所有文章標籤">
+    <div class="mb-5 flex flex-wrap items-center justify-between gap-3">
+      <form
+        id="tag-search-form"
+        role="search"
+        class="flex h-10 w-full max-w-sm items-center gap-2 rounded-md border border-foreground/15 bg-background px-3 focus-within:border-accent/55"
+      >
+        <SearchIcon class="size-4 shrink-0 text-foreground/45" aria-hidden="true" />
+        <label class="sr-only" for="tag-search-input">搜尋標籤</label>
+        <input
+          id="tag-search-input"
+          type="search"
+          autocomplete="off"
+          placeholder="搜尋標籤"
+          class="min-w-0 flex-1 border-0 bg-transparent p-0 text-sm text-foreground outline-none placeholder:text-foreground/40"
+        />
+        <button
+          id="tag-search-clear"
+          type="button"
+          class="hidden size-7 shrink-0 items-center justify-center text-foreground/45 transition-colors hover:text-foreground"
+          aria-label="清除標籤搜尋"
+          title="清除搜尋"
+        >
+          <CircleX class="size-4" />
+        </button>
+      </form>
+      <span
+        id="tag-search-status"
+        class="font-mono text-xs text-foreground/55"
+        aria-live="polite"></span>
+    </div>
     <TagsSection posts={sortedPosts} />
+    <p
+      id="tag-search-empty"
+      class="hidden border-y border-foreground/10 py-12 text-center text-sm text-foreground/60"
+    >
+      找不到符合的標籤
+    </p>
   </section>
 </Layout>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('#tag-search-form')
+  const input = document.querySelector<HTMLInputElement>('#tag-search-input')
+  const clearButton = document.querySelector<HTMLButtonElement>('#tag-search-clear')
+  const status = document.querySelector<HTMLElement>('#tag-search-status')
+  const emptyState = document.querySelector<HTMLElement>('#tag-search-empty')
+  const tagItems = Array.from(document.querySelectorAll<HTMLElement>('[data-tag-item]'))
+
+  const normalize = (value: string) => value.normalize('NFKC').toLocaleLowerCase().trim()
+
+  const filterTags = () => {
+    const query = normalize(input?.value || '')
+    let visibleCount = 0
+
+    tagItems.forEach((item) => {
+      const matches = normalize(item.dataset.tagName || '').includes(query)
+      item.hidden = !matches
+      if (matches) visibleCount += 1
+    })
+
+    clearButton?.classList.toggle('hidden', query.length === 0)
+    clearButton?.classList.toggle('flex', query.length > 0)
+    if (status) status.textContent = query ? `${visibleCount} 個標籤` : ''
+    emptyState?.classList.toggle('hidden', visibleCount > 0)
+  }
+
+  form?.addEventListener('submit', (event) => event.preventDefault())
+  input?.addEventListener('input', filterTags)
+  input?.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && input.value) {
+      input.value = ''
+      filterTags()
+    }
+  })
+  clearButton?.addEventListener('click', () => {
+    if (!input) return
+    input.value = ''
+    filterTags()
+    input.focus()
+  })
+</script>

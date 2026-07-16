@@ -5,7 +5,7 @@ import { getSortedPosts } from '~/utils'
 import Pagination from '~/components/Pagination.astro'
 import siteConfig from '~/site.config'
 import PostPreview from '~/components/PostPreview.astro'
-import PageHeader from '~/components/PageHeader.astro'
+import PageIntro from '~/components/PageIntro.astro'
 
 // Note: Pagination like '/', '/2', '/3' only works with spread param like [...page]
 export const getStaticPaths = (async ({ paginate }) => {
@@ -14,7 +14,8 @@ export const getStaticPaths = (async ({ paginate }) => {
 }) satisfies GetStaticPaths
 
 const { page } = Astro.props
-const pageTitle = page.currentPage > 1 ? `文章彙整（第 ${page.currentPage} 頁）` : '文章彙整'
+const pageTitle =
+  page.currentPage > 1 ? `文章彙整（第 ${page.currentPage} 頁）` : '文章彙整'
 const pageDescription =
   page.currentPage > 1
     ? `第 ${page.currentPage} 頁的技術文章彙整，收錄網路技術、資訊安全、BGP、DevOps 與 Linux 主題文章。`
@@ -43,17 +44,25 @@ const itemList = page.data.map((post, index) => ({
   noindex={page.currentPage > 1}
   breadcrumbs={breadcrumbs}
   itemList={itemList}
+  wide
 >
   {page.url.prev && <link rel="prev" href={page.url.prev} slot="head" />}
   {page.url.next && <link rel="next" href={page.url.next} slot="head" />}
-  <div class="mt-2 sm:mt-0">
-    <PageHeader />
-    {page.data.map((post) => <PostPreview post={post} />)}
+  <div>
+    <PageIntro
+      eyebrow="Journal"
+      title={pageTitle}
+      description={pageDescription}
+      meta={`${page.total} 篇文章 · 第 ${page.currentPage} / ${page.lastPage} 頁`}
+    />
+    <div class="mt-5">
+      {page.data.map((post) => <PostPreview post={post} variant="compact" />)}
+    </div>
     <Pagination
       prevLink={page.url.prev ? page.url.prev : undefined}
-      prevText="Newer Posts"
+      prevText="較新文章"
       nextLink={page.url.next ? page.url.next : undefined}
-      nextText="Older Posts"
+      nextText="較舊文章"
     />
   </div>
 </Layout>
