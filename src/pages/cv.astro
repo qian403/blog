@@ -182,7 +182,7 @@ function formatDate(date: string | null): string {
     <div
       class="cv-columns mt-4 grid gap-7 sm:grid-cols-[minmax(0,0.82fr)_minmax(0,1.9fr)]"
     >
-      <aside class="space-y-5 sm:border-r sm:border-[#e4e4e7] sm:pr-6">
+      <aside class="cv-sidebar space-y-5 sm:border-r sm:border-[#e4e4e7] sm:pr-6">
         <section class="cv-section" aria-labelledby="education-heading">
           <h2 id="education-heading" class="cv-heading">Education</h2>
           <div class="mt-3 space-y-4">
@@ -249,7 +249,7 @@ function formatDate(date: string | null): string {
         </section>
       </aside>
 
-      <div class="min-w-0 space-y-4">
+      <div class="cv-main min-w-0 space-y-4">
         <section class="cv-section" aria-labelledby="experience-heading">
           <h2 id="experience-heading" class="cv-heading">Work Experience</h2>
           <div class="mt-3 space-y-4">
@@ -422,7 +422,7 @@ function formatDate(date: string | null): string {
   @media print {
     @page {
       size: A4;
-      margin: 8mm 12mm;
+      margin: 6mm 9mm;
     }
 
     :global(.site-header),
@@ -450,7 +450,7 @@ function formatDate(date: string | null): string {
     }
 
     .cv-paper {
-      width: auto;
+      width: 100%;
       min-height: 0;
       margin: 0;
       padding: 0;
@@ -459,13 +459,75 @@ function formatDate(date: string | null): string {
       -webkit-print-color-adjust: exact;
     }
 
-    .cv-columns {
-      grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.9fr) !important;
+    .cv-header {
+      padding-bottom: 3mm !important;
+      break-after: avoid-page;
     }
 
-    .cv-section,
+    .cv-header > div {
+      gap: 4mm !important;
+    }
+
+    .cv-header > p {
+      margin-top: 3mm !important;
+      padding-left: 3mm !important;
+    }
+
+    .cv-columns {
+      margin-top: 3mm !important;
+      gap: 5mm !important;
+      grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.9fr) !important;
+      break-inside: auto;
+    }
+
+    .cv-sidebar {
+      padding-right: 4mm !important;
+    }
+
+    .cv-sidebar,
+    .cv-main {
+      display: block;
+    }
+
+    .cv-sidebar > *,
+    .cv-main > * {
+      margin-block: 0 !important;
+    }
+
+    .cv-sidebar > * + *,
+    .cv-main > * + * {
+      margin-top: 3mm !important;
+    }
+
+    .cv-heading {
+      padding-bottom: 1mm;
+      line-height: 4.5mm;
+      break-after: avoid-page;
+    }
+
+    .cv-section {
+      break-inside: auto;
+    }
+
     .cv-entry {
-      break-inside: avoid;
+      break-inside: avoid-page;
+      page-break-inside: avoid;
+    }
+
+    .cv-section > :not(.cv-heading) {
+      margin-top: 2mm !important;
+    }
+
+    .cv-section :is(.space-y-4, .space-y-3\.5, .space-y-2\.5) > :not(:first-child) {
+      margin-top: 2mm !important;
+    }
+
+    .cv-section > .grid {
+      row-gap: 2mm !important;
+    }
+
+    .cv-section .border-t {
+      padding-top: 1.5mm !important;
     }
 
     .cv-paper a {
