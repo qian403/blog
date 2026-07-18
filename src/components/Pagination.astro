@@ -7,13 +7,17 @@ interface Props {
   prevText?: string
   nextLink?: string
   nextText?: string
+  bare?: boolean
 }
 
-const { prevLink, prevText, nextLink, nextText } = Astro.props
+const { prevLink, prevText, nextLink, nextText, bare = false } = Astro.props
 ---
 
 <nav
-  class="mt-10 flex flex-row flex-wrap gap-3 border-t border-foreground/10 pt-8"
+  class:list={[
+    'flex flex-row flex-wrap gap-3',
+    bare ? 'mt-4' : 'mt-10 border-t border-foreground/10 pt-8',
+  ]}
   aria-label="文章分頁"
 >
   {
@@ -33,10 +37,7 @@ const { prevLink, prevText, nextLink, nextText } = Astro.props
       <a
         href={nextLink}
         aria-label="Next Page"
-        class:list={[
-          'button flex-row items-center justify-center w-full !pl-3.5 sm:w-auto',
-          prevLink && 'ml-auto',
-        ]}
+        class="button flex-row items-center justify-center w-full !pl-3.5 sm:w-auto ml-auto"
       >
         {nextText || 'Next'}
         <IconChevronsRight class="ml-2 text-xl size-5" />

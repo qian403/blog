@@ -44,8 +44,8 @@ const postsHaveSeries = sortedPosts.some((post) => post.data.series)
             <PostPreview post={post} variant="compact" />
           ))}
         </div>
-        <div class="mt-8 flex justify-end">
-          <Pagination nextLink="/posts/" nextText="查看全部文章" />
+        <div class="flex justify-end">
+          <Pagination nextLink="/posts/" nextText="查看全部文章" bare />
         </div>
       </section>
     )
