@@ -34,7 +34,6 @@ DNS 也常被用作**網路審查**工具。透過 **DNS 污染**、**RPZ (Respo
 | **Cloudflare** | `1.1.1.1` | `1.0.0.1` | 注重隱私、速度最快 |
 | **Quad9** | `9.9.9.9` | `149.112.112.112` | 主打安全性 |
 
----
 
 ## 電腦端設定
 
@@ -63,7 +62,6 @@ DNS 也常被用作**網路審查**工具。透過 **DNS 污染**、**RPZ (Respo
 **限制**：其他應用程式仍使用系統 DNS
 :::
 
----
 
 ### 方法二：Windows 系統設定
 
@@ -84,7 +82,6 @@ DNS 也常被用作**網路審查**工具。透過 **DNS 污染**、**RPZ (Respo
 Set-DnsClientServerAddress -InterfaceAlias "Wi-Fi" -ServerAddresses ("8.8.8.8","8.8.4.4")
 ```
 
----
 
 ### 方法三：macOS 系統設定
 
@@ -98,7 +95,6 @@ Set-DnsClientServerAddress -InterfaceAlias "Wi-Fi" -ServerAddresses ("8.8.8.8","
 sudo networksetup -setdnsservers Wi-Fi 8.8.8.8 8.8.4.4
 ```
 
----
 
 
 ## 手機端設定
@@ -135,7 +131,6 @@ sudo networksetup -setdnsservers Wi-Fi 8.8.8.8 8.8.4.4
 2. IP 設定改為「靜態」
 3. DNS 1：`8.8.8.8`，DNS 2：`8.8.4.4`
 
----
 
 ## 如何測試 DNS 是否生效？
 
@@ -150,7 +145,6 @@ nslookup google.com
 ```
 查看輸出中的「Server」欄位，應顯示你設定的 DNS。
 
----
 
 ## 常見問題 FAQ
 
@@ -190,7 +184,6 @@ nslookup google.com
 
 中國的 GFW 同時使用三種技術，單純更改 DNS 無法突破。但台灣目前僅 DNS 層級封鎖，更改 DNS 就足夠。
 
----
 
 ## 結語
 

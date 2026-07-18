@@ -61,7 +61,7 @@ const certifications = [
 const skillGroups = [
   {
     name: 'Programming',
-    skills: ['Python', 'JavaScript', 'TypeScript', 'C++', 'C#', 'Go', 'Swift'],
+    skills: ['Python', 'JavaScript', 'C++', 'C#', 'Go', 'Swift'],
   },
   {
     name: 'Web',
@@ -116,9 +116,9 @@ const leadership = [
 ]
 
 const additionalExperience = [
-  { name: 'AWS STEM Summer Camp on The Cloud', year: '2023' },
-  { name: '教育部先進資通安全實務人才培育計畫', year: '2023' },
-  { name: 'AIS3 Junior', year: '2022' },
+  { name: 'AWS STEM Summer Camp on The Cloud', role: '學員', year: '2023' },
+  { name: '教育部先進資通安全實務人才培育計畫', role: '學員', year: '2023' },
+  { name: 'AIS3 Junior', role: '學員', year: '2022' },
   { name: '一日資安體驗營', role: '助教', year: '2023' },
   { name: '羅東高工資訊研究社', role: '副社長', year: '2021-2023' },
 ]
@@ -285,7 +285,7 @@ function formatDate(date: string | null): string {
           <div class="mt-3 grid gap-x-6 gap-y-3 sm:grid-cols-2">
             {
               projects.map((project) => (
-                <div class="cv-entry border-t border-[#e4e4e7] pt-2.5">
+                <div class="cv-entry">
                   <div class="flex items-start justify-between gap-3">
                     <h3 class="text-[0.75rem] font-bold text-[#111827]">
                       {project.name}
@@ -333,23 +333,23 @@ function formatDate(date: string | null): string {
           <h2 id="training-heading" class="cv-heading">
             Additional Training & Activities
           </h2>
-          <div class="mt-3 grid gap-x-6 gap-y-2 sm:grid-cols-2">
+          <ul class="mt-3 divide-y divide-foreground/10">
             {
               additionalExperience.map((item) => (
-                <div class="cv-entry grid grid-cols-[minmax(0,1fr)_auto] gap-3 border-t border-[#e4e4e7] pt-2">
+                <li class="cv-entry flex items-baseline justify-between gap-4 py-2">
                   <p class="text-[0.6875rem]/5 text-[#374151]">
                     <strong class="font-semibold text-[#111827]">{item.name}</strong>
                     {item.role && (
                       <span class="ml-1.5 text-[#2563eb]">/ {item.role}</span>
                     )}
                   </p>
-                  <time class="text-[0.625rem] font-semibold text-[#6b7280]">
+                  <time class="shrink-0 text-[0.625rem] font-semibold text-[#6b7280]">
                     {item.year}
                   </time>
-                </div>
+                </li>
               ))
             }
-          </div>
+          </ul>
         </section>
       </div>
     </div>
@@ -524,10 +524,6 @@ function formatDate(date: string | null): string {
 
     .cv-section > .grid {
       row-gap: 2mm !important;
-    }
-
-    .cv-section .border-t {
-      padding-top: 1.5mm !important;
     }
 
     .cv-paper a {
