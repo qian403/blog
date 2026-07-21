@@ -24,15 +24,54 @@ const { avatarImage } = Astro.props
     {
       avatarImage && (
         <div class="avatar-container order-first md:order-last">
+          {/* Mobile: plain static avatar */}
           <Image
             priority
             src={avatarImage.src}
             alt={avatarImage.alt}
-            class="size-24 shrink-0 rounded-full border border-foreground/10 object-cover sm:size-32"
+            class="coin-avatar-static size-24 shrink-0 rounded-full border border-foreground/10 object-cover sm:size-32 md:hidden"
             widths={[128, 256]}
             height={128}
             width={128}
           />
+          {/* Desktop: 3D draggable coin. The coin faces the viewer (normal +Z,
+              face in the XY plane), thickness runs along Z. Edge = cylinder
+              with axis = Z, built from N panels injected by the script below.
+              User rotation: drag X → rotateY (spin left/right), with inertia
+              and snap to nearest face (0° / 180°). Vertical drag is ignored. */}
+          <div
+            class="coin-stage hidden md:block"
+            role="img"
+            aria-label={avatarImage.alt}
+            tabindex="0"
+          >
+            <div class="coin" data-coin>
+              <div class="coin-face coin-front">
+                <Image
+                  priority
+                  src={avatarImage.src}
+                  alt={avatarImage.alt}
+                  class="coin-img"
+                  widths={[128, 256]}
+                  height={128}
+                  width={128}
+                  draggable={false}
+                />
+              </div>
+              <div class="coin-face coin-back" aria-hidden="true">
+                <Image
+                  src={avatarImage.src}
+                  alt=""
+                  class="coin-img"
+                  widths={[128, 256]}
+                  height={128}
+                  width={128}
+                  draggable={false}
+                />
+              </div>
+              {/* edge panels injected by script */}
+            </div>
+          </div>
         </div>
       )
     }
@@ -49,4 +88,270 @@ const { avatarImage } = Astro.props
   .home-copy :global(p) {
     margin: 0;
   }
+
+  /* ===== 3D Coin (desktop only) =====
+     The coin faces the viewer (normal +Z, face in the XY plane), thickness
+     runs along Z. Edge = cylinder with axis = Z, built as N panels around Z.
+     Each panel: rotateZ(θ+90) rotateX(90) puts its normal pointing radially
+     outward (cosθ, sinθ, 0), its CSS-width along the tangent (arc), and its
+     CSS-height along Z (thickness). translateZ(R) pushes it to the surface. */
+  .coin-stage {
+    width: 160px;
+    height: 160px;
+    perspective: 1000px;
+    cursor: grab;
+    user-select: none;
+    touch-action: none;
+    outline: none;
+  }
+  .coin-stage:active {
+    cursor: grabbing;
+  }
+  .coin-stage:focus-visible {
+    outline: 2px solid var(--accent, #4f8cff);
+    outline-offset: 6px;
+    border-radius: 9999px;
+  }
+
+  .coin {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transform: rotateX(-12deg) rotateY(0deg);
+    will-change: transform;
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .coin.is-dragging {
+    transition: none !important;
+  }
+
+  .coin-face {
+    position: absolute;
+    inset: 0;
+    border-radius: 9999px;
+    overflow: hidden;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    border: 2px solid color-mix(in oklab, var(--foreground, #111) 22%, transparent);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.25),
+      0 14px 36px rgba(0, 0, 0, 0.32),
+      0 3px 8px rgba(0, 0, 0, 0.22);
+    background: var(--background, #fff);
+  }
+  .coin-front {
+    transform: translateZ(11px);
+  }
+  .coin-back {
+    transform: rotateY(180deg) translateZ(11px);
+  }
+  .coin-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    padding: 4px;
+    border-radius: 9999px;
+    pointer-events: none;
+    -webkit-user-drag: none;
+    user-select: none;
+  }
+
+  /* Edge panel: centred on coin centre via top/left:50% + negative margins,
+     default transform-origin (center), then rotated into place. No backface
+     culling → visible from every angle. */
+  .coin-panel {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    pointer-events: none;
+    background: linear-gradient(
+      to right,
+      color-mix(in oklab, var(--foreground, #111) 60%, transparent),
+      color-mix(in oklab, var(--foreground, #111) 22%, transparent) 50%,
+      color-mix(in oklab, var(--foreground, #111) 60%, transparent)
+    );
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .coin {
+      transition: none !important;
+    }
+  }
 </style>
+
+<script>
+  const stages = document.querySelectorAll<HTMLElement>('.coin-stage')
+  for (const stage of stages) {
+    const coin = stage.querySelector<HTMLElement>('[data-coin]')
+    if (!coin) continue
+
+    // Build the coin's cylindrical edge: N thin panels around the Z axis.
+    // Panel CSS-width  = tangent arc length (around the coin's circumference)
+    // Panel CSS-height = coin thickness (along Z)
+    // Transform: rotateZ(θ+90) rotateX(90) translateZ(R)
+    const PANELS = 72
+    const THICKNESS = 22 // total coin thickness in px (faces at ±11px)
+    const RADIUS = 80 // coin radius in px (stage = 160px)
+    const panelW = (2 * Math.PI * RADIUS) / PANELS + 1.5 // +overlap to avoid seams
+    const frag = document.createDocumentFragment()
+    for (let i = 0; i < PANELS; i++) {
+      const angle = (360 / PANELS) * i
+      const panel = document.createElement('div')
+      panel.className = 'coin-panel'
+      panel.style.width = `${panelW}px`
+      panel.style.height = `${THICKNESS}px`
+      panel.style.marginLeft = `${-panelW / 2}px`
+      panel.style.marginTop = `${-THICKNESS / 2}px`
+      panel.style.transform = `rotateZ(${angle + 90}deg) rotateX(90deg) translateZ(${RADIUS}px)`
+      frag.appendChild(panel)
+    }
+    coin.appendChild(frag)
+
+    // Rotation state. rotateY spins the coin (around vertical axis) only.
+    // Drag X → spin. Vertical drag ignored (no tilt) so it only turns left/right.
+    let rotY = 0
+    let velY = 0 // current spin velocity (deg per frame) for inertia
+    let dragging = false
+    let lastX = 0
+    let lastT = 0
+    let rafId = 0
+
+    const apply = () => {
+      coin.style.transform = `rotateX(-12deg) rotateY(${rotY}deg)`
+    }
+    apply()
+
+    // Snap a rotation value to the nearest face (0 or 180, mod 360).
+    const snapTarget = (r) => {
+      const m = ((r % 360) + 360) % 360
+      const candidates = [0, 180, 360]
+      let best = 0
+      let bestDist = Infinity
+      for (const c of candidates) {
+        const d = Math.abs(m - c)
+        if (d < bestDist) {
+          bestDist = d
+          best = c
+        }
+      }
+      // return target in the same revolution as r
+      const base = r - m
+      return base + best
+    }
+
+    // Inertia loop: after release, keep spinning with decaying velocity.
+    // When velocity drops below threshold, snap to nearest face (0/180°).
+    const SNAP_VEL = 0.4 // below this velocity → start snapping
+    let snapping = false
+    let snapFrom = 0
+    let snapTo = 0
+    let snapStart = 0
+    const SNAP_DUR = 350
+    const inertia = () => {
+      rafId = 0
+      if (snapping) return // handled by snap loop
+      if (Math.abs(velY) < SNAP_VEL) {
+        // begin snap animation to nearest face
+        snapping = true
+        snapFrom = rotY
+        snapTo = snapTarget(rotY)
+        snapStart = performance.now()
+        coin.classList.remove('is-dragging')
+        const snapLoop = () => {
+          const t = (performance.now() - snapStart) / SNAP_DUR
+          if (t >= 1) {
+            rotY = snapTo
+            velY = 0
+            snapping = false
+            apply()
+            rafId = 0
+            return
+          }
+          // easeOutCubic
+          const e = 1 - Math.pow(1 - t, 3)
+          rotY = snapFrom + (snapTo - snapFrom) * e
+          apply()
+          rafId = requestAnimationFrame(snapLoop)
+        }
+        rafId = requestAnimationFrame(snapLoop)
+        return
+      }
+      rotY += velY
+      velY *= 0.94
+      apply()
+      rafId = requestAnimationFrame(inertia)
+    }
+
+    const onDown = (e: PointerEvent) => {
+      if (rafId) cancelAnimationFrame(rafId)
+      rafId = 0
+      velY = 0
+      dragging = true
+      coin.classList.add('is-dragging')
+      lastX = e.clientX
+      lastT = performance.now()
+      stage.setPointerCapture(e.pointerId)
+    }
+    const onMove = (e: PointerEvent) => {
+      if (!dragging) return
+      const dx = e.clientX - lastX
+      const now = performance.now()
+      const dt = Math.max(1, now - lastT)
+      rotY += dx * 0.5
+      velY = ((dx * 0.5) / dt) * 16
+      lastX = e.clientX
+      lastT = now
+      apply()
+    }
+    const onUp = (e: PointerEvent) => {
+      if (!dragging) return
+      dragging = false
+      coin.classList.remove('is-dragging')
+      try {
+        stage.releasePointerCapture(e.pointerId)
+      } catch {}
+      if (Math.abs(velY) > 0.01) {
+        rafId = requestAnimationFrame(inertia)
+      }
+    }
+
+    stage.addEventListener('pointerdown', onDown)
+    stage.addEventListener('pointermove', onMove)
+    stage.addEventListener('pointerup', onUp)
+    stage.addEventListener('pointercancel', onUp)
+    stage.addEventListener('lostpointercapture', onUp)
+
+    // Keyboard: left/right arrows to spin, with snap to nearest face.
+    const animateTo = (target) => {
+      if (rafId) cancelAnimationFrame(rafId)
+      const from = rotY
+      const start = performance.now()
+      const dur = 350
+      const step = () => {
+        const t = (performance.now() - start) / dur
+        if (t >= 1) {
+          rotY = target
+          apply()
+          rafId = 0
+          return
+        }
+        const e = 1 - Math.pow(1 - t, 3)
+        rotY = from + (target - from) * e
+        apply()
+        rafId = requestAnimationFrame(step)
+      }
+      rafId = requestAnimationFrame(step)
+    }
+    stage.addEventListener('keydown', (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') {
+        animateTo(snapTarget(rotY - 180))
+        e.preventDefault()
+      } else if (e.key === 'ArrowRight') {
+        animateTo(snapTarget(rotY + 180))
+        e.preventDefault()
+      }
+    })
+  }
+</script>
