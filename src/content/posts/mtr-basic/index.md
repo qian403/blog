@@ -6,7 +6,7 @@ description: '學習如何使用 MTR 進行 Linux 網路診斷與故障排除。
 image: ''
 tags: [network, tools, mtr, traceroute, ping, 網路診斷, 故障排除, linux命令]
 category: 'Linux'
-draft: false 
+draft: false
 lang: ''
 ---
 
@@ -104,6 +104,7 @@ mtr 1.1.1.1 -r > owo.txt -c 6
 ```
 
 上述指令的意思是：
+
 - 追蹤到 `1.1.1.1` 的路由
 - 使用報告模式 (`-r`)
 - 輸出到當前目錄下的 `owo.txt` 檔案

@@ -3,9 +3,20 @@ title: Fail2ban SSH 防護完整使用教學：安裝、設定與參數詳解
 published: 2025-12-10
 description: '完整的 Fail2ban SSH 防護教學指南。從安裝到進階設定，詳細說明 Fail2ban 如何自動封鎖暴力破解攻擊，包含 jail 設定、參數調整與實戰測試，保護你的 Linux 伺服器安全。'
 image: ''
-tags: [fail2ban, ssh, linux, cybersecurity, server-security, network-security, iptables, ubuntu, debian]
+tags:
+  [
+    fail2ban,
+    ssh,
+    linux,
+    cybersecurity,
+    server-security,
+    network-security,
+    iptables,
+    ubuntu,
+    debian,
+  ]
 category: 'Linux'
-draft: false 
+draft: false
 lang: ''
 ---
 
@@ -104,6 +115,7 @@ Dec 10 13:14:12 owo fail2ban-server[4002]: Server ready
 ### 什麼是 Jail？
 
 `jail.conf` 是 Fail2ban 的核心封禁規則設定檔。Jail（監獄）定義了：
+
 - **誰應該被抓**：哪些行為屬於可疑或惡意？
 - **怎麼處罰**：封鎖多久？封鎖哪些端口？
 
@@ -134,6 +146,7 @@ backend = %(sshd_backend)s        # 日誌讀取後端
 ```
 
 **設定說明**：
+
 - `enabled = true`：啟用 SSH 監獄
 - `filter = sshd`：使用預定義的 sshd 過濾規則
 - `maxretry = 3`：允許失敗 3 次後封鎖
@@ -188,21 +201,22 @@ Status for the jail: sshd
 
 以下是 Fail2ban 最常用的參數說明，幫助你進行更精細的調整：
 
-| 參數 | 說明 | 範例值 | 備註與建議 |
-| :--- | :--- | :--- | :--- |
-| **`ignoreip`** | **IP 白名單**。Fail2ban 絕對不會封鎖這些 IP。請務必將管理用 IP、內部網路 IP 加入，避免誤鎖自己。 | `127.0.0.1/8 192.168.1.5` | 支援 CIDR 格式（如 `/24`），多個 IP 用**空白**分隔 |
-| **`bantime`** | **封鎖時長**。被偵測到的 IP 將被封鎖多久。 | `1h`（1小時）<br>`1d`（1天）<br>`-1`（永久） | 預設為 10 分鐘，建議至少設定為 `1h` 或更長 |
-| **`findtime`** | **觀察時間窗口**。在多久的時間內累積失敗次數。與 `maxretry` 配合使用。 | `10m`（10分鐘）<br>`1d`（24小時） | 設為 10m 表示攻擊者須在 10 分鐘內連續失敗才會被封鎖，超過時間則計數歸零 |
-| **`maxretry`** | **最大容忍失敗次數**。在 `findtime` 期間內允許失敗幾次。 | `3`（嚴格）<br>`5`（預設） | SSH 建議設為 `3`；網頁應用可能誤觸，建議設 `5` 或更多 |
-| **`enabled`** | **啟用開關**。是否啟用該 Jail。 | `true` 或 `false` | 除了 `[DEFAULT]` 外，所有 Jail 預設為 `false`，需手動啟用 |
-| **`port`** | **監控端口**。指定要封鎖哪個端口的連線。 | `ssh`<br>`http,https`<br>`8080` | 可使用服務名稱（由 `/etc/services` 解析）或直接使用端口號 |
-| **`logpath`** | **日誌檔案路徑**。Fail2ban 讀取哪個日誌檔案來偵測攻擊。 | `/var/log/auth.log`<br>`/var/log/nginx/error.log` | **最常設錯的地方**。必須指向服務實際寫入的日誌位置 |
-| **`backend`** | **日誌讀取模式**。指定如何讀取日誌。 | `systemd`<br>`auto` | 現代 Linux（Ubuntu 20+, CentOS 7+）建議 SSH 使用 `systemd`，傳統日誌檔使用 `auto` 或 `polling` |
-| **`banaction`** | **封鎖動作**。指定使用哪個防火牆工具執行封鎖。 | `iptables-multiport`<br>`ufw`<br>`nftables-multiport` | 必須配合系統安裝的防火牆工具 |
+| 參數            | 說明                                                                                             | 範例值                                                | 備註與建議                                                                                     |
+| :-------------- | :----------------------------------------------------------------------------------------------- | :---------------------------------------------------- | :--------------------------------------------------------------------------------------------- |
+| **`ignoreip`**  | **IP 白名單**。Fail2ban 絕對不會封鎖這些 IP。請務必將管理用 IP、內部網路 IP 加入，避免誤鎖自己。 | `127.0.0.1/8 192.168.1.5`                             | 支援 CIDR 格式（如 `/24`），多個 IP 用**空白**分隔                                             |
+| **`bantime`**   | **封鎖時長**。被偵測到的 IP 將被封鎖多久。                                                       | `1h`（1小時）<br>`1d`（1天）<br>`-1`（永久）          | 預設為 10 分鐘，建議至少設定為 `1h` 或更長                                                     |
+| **`findtime`**  | **觀察時間窗口**。在多久的時間內累積失敗次數。與 `maxretry` 配合使用。                           | `10m`（10分鐘）<br>`1d`（24小時）                     | 設為 10m 表示攻擊者須在 10 分鐘內連續失敗才會被封鎖，超過時間則計數歸零                        |
+| **`maxretry`**  | **最大容忍失敗次數**。在 `findtime` 期間內允許失敗幾次。                                         | `3`（嚴格）<br>`5`（預設）                            | SSH 建議設為 `3`；網頁應用可能誤觸，建議設 `5` 或更多                                          |
+| **`enabled`**   | **啟用開關**。是否啟用該 Jail。                                                                  | `true` 或 `false`                                     | 除了 `[DEFAULT]` 外，所有 Jail 預設為 `false`，需手動啟用                                      |
+| **`port`**      | **監控端口**。指定要封鎖哪個端口的連線。                                                         | `ssh`<br>`http,https`<br>`8080`                       | 可使用服務名稱（由 `/etc/services` 解析）或直接使用端口號                                      |
+| **`logpath`**   | **日誌檔案路徑**。Fail2ban 讀取哪個日誌檔案來偵測攻擊。                                          | `/var/log/auth.log`<br>`/var/log/nginx/error.log`     | **最常設錯的地方**。必須指向服務實際寫入的日誌位置                                             |
+| **`backend`**   | **日誌讀取模式**。指定如何讀取日誌。                                                             | `systemd`<br>`auto`                                   | 現代 Linux（Ubuntu 20+, CentOS 7+）建議 SSH 使用 `systemd`，傳統日誌檔使用 `auto` 或 `polling` |
+| **`banaction`** | **封鎖動作**。指定使用哪個防火牆工具執行封鎖。                                                   | `iptables-multiport`<br>`ufw`<br>`nftables-multiport` | 必須配合系統安裝的防火牆工具                                                                   |
 
 ---
 
 ## 一些花式用法
+
 :::info
 之後補上
 :::

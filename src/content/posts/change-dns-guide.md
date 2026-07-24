@@ -3,7 +3,27 @@ title: '如何更改電腦與手機的 DNS 設定？完整教學指南'
 published: 2025-12-04
 description: '詳細教學如何在 Windows、macOS、Linux、iOS 和 Android 等各平台上更改 DNS 設定，提升網路速度與安全性。繞過小紅書封鎖、突破網路長城限制。'
 image: ''
-tags: [DNS, Network, Windows, macOS, Linux, iOS, Android, Tutorial, 小紅書, 封鎖, RPZ, 網路長城, GFW, DNS封鎖, 翻牆, 網路審查, 小紅書被封, DNS污染]
+tags:
+  [
+    DNS,
+    Network,
+    Windows,
+    macOS,
+    Linux,
+    iOS,
+    Android,
+    Tutorial,
+    小紅書,
+    封鎖,
+    RPZ,
+    網路長城,
+    GFW,
+    DNS封鎖,
+    翻牆,
+    網路審查,
+    小紅書被封,
+    DNS污染,
+  ]
 category: 'Network'
 draft: false
 lang: 'zh-TW'
@@ -28,12 +48,11 @@ DNS 也常被用作**網路審查**工具。透過 **DNS 污染**、**RPZ (Respo
 
 ### 推薦的公共 DNS
 
-| DNS 提供商 | 主要 DNS | 備用 DNS | 特色 |
-|-----------|---------|---------|------|
-| **Google** | `8.8.8.8` | `8.8.4.4` | 速度快、穩定性高、全球覆蓋 |
-| **Cloudflare** | `1.1.1.1` | `1.0.0.1` | 注重隱私、速度最快 |
-| **Quad9** | `9.9.9.9` | `149.112.112.112` | 主打安全性 |
-
+| DNS 提供商     | 主要 DNS  | 備用 DNS          | 特色                       |
+| -------------- | --------- | ----------------- | -------------------------- |
+| **Google**     | `8.8.8.8` | `8.8.4.4`         | 速度快、穩定性高、全球覆蓋 |
+| **Cloudflare** | `1.1.1.1` | `1.0.0.1`         | 注重隱私、速度最快         |
+| **Quad9**      | `9.9.9.9` | `149.112.112.112` | 主打安全性                 |
 
 ## 電腦端設定
 
@@ -62,7 +81,6 @@ DNS 也常被用作**網路審查**工具。透過 **DNS 污染**、**RPZ (Respo
 **限制**：其他應用程式仍使用系統 DNS
 :::
 
-
 ### 方法二：Windows 系統設定
 
 #### 圖形介面
@@ -82,7 +100,6 @@ DNS 也常被用作**網路審查**工具。透過 **DNS 污染**、**RPZ (Respo
 Set-DnsClientServerAddress -InterfaceAlias "Wi-Fi" -ServerAddresses ("8.8.8.8","8.8.4.4")
 ```
 
-
 ### 方法三：macOS 系統設定
 
 1. Apple 選單 > 「系統設定」> 「網路」
@@ -91,11 +108,10 @@ Set-DnsClientServerAddress -InterfaceAlias "Wi-Fi" -ServerAddresses ("8.8.8.8","
 4. 點選「好」> 「套用」
 
 **終端機方式**：
+
 ```bash
 sudo networksetup -setdnsservers Wi-Fi 8.8.8.8 8.8.4.4
 ```
-
-
 
 ## 手機端設定
 
@@ -131,20 +147,21 @@ sudo networksetup -setdnsservers Wi-Fi 8.8.8.8 8.8.4.4
 2. IP 設定改為「靜態」
 3. DNS 1：`8.8.8.8`，DNS 2：`8.8.4.4`
 
-
 ## 如何測試 DNS 是否生效？
 
 ### 線上檢測
+
 - [Cloudflare 檢測](https://1.1.1.1/help)
 - [DNS Leak Test](https://dnsleaktest.com/)
 
 ### 命令列
+
 ```bash
 # Windows/macOS/Linux
 nslookup google.com
 ```
-查看輸出中的「Server」欄位，應顯示你設定的 DNS。
 
+查看輸出中的「Server」欄位，應顯示你設定的 DNS。
 
 ## 常見問題 FAQ
 
@@ -184,13 +201,13 @@ nslookup google.com
 
 中國的 GFW 同時使用三種技術，單純更改 DNS 無法突破。但台灣目前僅 DNS 層級封鎖，更改 DNS 就足夠。
 
-
 ## 結語
 
 更改 DNS 是簡單有效的網路優化方式，幾分鐘就能完成。無論是提升速度、安全性或隱私保護，都值得一試！
 
 :::note
 **延伸閱讀**：
+
 - [Cloudflare 1.1.1.1 官方網站](https://1.1.1.1/)
 - [什麼是 DNS over HTTPS?](https://www.cloudflare.com/learning/dns/dns-over-tls/)
 :::

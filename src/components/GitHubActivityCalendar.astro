@@ -37,14 +37,10 @@ async function fetchData(
     }
     for (const { date, count } of activities) {
       if (!isValid(parseISO(date))) {
-        throw new Error(
-          `Activity date '${date}' is not a valid ISO 8601 date string.`,
-        )
+        throw new Error(`Activity date '${date}' is not a valid ISO 8601 date string.`)
       }
       if (count < 0) {
-        throw new RangeError(
-          `Activity count must not be negative, found ${count}.`,
-        )
+        throw new RangeError(`Activity count must not be negative, found ${count}.`)
       }
     }
   }
@@ -62,10 +58,7 @@ async function fetchData(
     validateActivities(data.contributions)
     return data
   } catch (e) {
-    console.warn(
-      `[GitHubActivityCalendar] Failed to fetch data for ${username}:`,
-      e,
-    )
+    console.warn(`[GitHubActivityCalendar] Failed to fetch data for ${username}:`, e)
     return {
       total: { [year]: 0, lastYear: 0 },
       contributions: [],
@@ -73,12 +66,8 @@ async function fetchData(
   }
 }
 
-function fillHoles(
-  activities: Array<GitHubActivityDay>,
-): Array<GitHubActivityDay> {
-  const calendar = new Map<string, GitHubActivityDay>(
-    activities.map((a) => [a.date, a]),
-  )
+function fillHoles(activities: Array<GitHubActivityDay>): Array<GitHubActivityDay> {
+  const calendar = new Map<string, GitHubActivityDay>(activities.map((a) => [a.date, a]))
   const firstActivity = activities[0] as GitHubActivityDay
   const lastActivity = activities[activities.length - 1] as GitHubActivityDay
 
@@ -129,13 +118,10 @@ function getMonthLabels(
       }
       const month = monthNames[getMonth(parseISO(firstActivity.date))]
       if (!month) {
-        const monthName = new Date(firstActivity.date).toLocaleString(
-          'en-US',
-          { month: 'short' },
-        )
-        throw new Error(
-          `Unexpected error: undefined month label for ${monthName}.`,
-        )
+        const monthName = new Date(firstActivity.date).toLocaleString('en-US', {
+          month: 'short',
+        })
+        throw new Error(`Unexpected error: undefined month label for ${monthName}.`)
       }
       const prevLabel = labels[labels.length - 1]
       if (weekIndex === 0 || !prevLabel || prevLabel.label !== month) {
@@ -161,8 +147,18 @@ const currentYear = new Date().getFullYear()
 const startYear = currentYear - 4 // fetch 5 years of data
 
 const monthNames = [
-  'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
 ]
 const maxLevel = 4
 const blockMargin = 4
@@ -191,8 +187,7 @@ for (const yk of yearKeys) {
   const labelHeight = fontSize + labelMargin
   const width = weeks.length * (blockSize + blockMargin) - blockMargin
   const height = labelHeight + (blockSize + blockMargin) * 7 - blockMargin
-  const totalCount =
-    yk === 'last' ? data.total.lastYear : data.total[yk as number]
+  const totalCount = yk === 'last' ? data.total.lastYear : data.total[yk as number]
   allYearData[String(yk)] = { totalCount, weeks, monthLabels, width, height }
 }
 
@@ -201,102 +196,108 @@ const defaultKey = 'last'
 const defaultData = allYearData[defaultKey]
 ---
 
-{defaultData && (
-<article
-  id="github-activity-calendar"
-  class="w-max max-w-full flex flex-col gap-2 text-sm"
-  data-block-size={blockSize}
-  data-block-margin={blockMargin}
-  data-block-radius={blockRadius}
-  data-label-height={labelHeight}
-  data-max-level={maxLevel}
->
-  <div class="flex items-center gap-3 mb-1">
-    <label for="gh-year-select" class="sr-only">Select year</label>
-    <select
-      id="gh-year-select"
-      class="bg-foreground/5 border border-foreground/16 rounded-lg px-2.5 py-1 text-sm cursor-pointer hover:border-foreground/30 transition-colors"
+{
+  defaultData && (
+    <article
+      id="github-activity-calendar"
+      class="w-max max-w-full flex flex-col gap-2 text-sm"
+      data-block-size={blockSize}
+      data-block-margin={blockMargin}
+      data-block-radius={blockRadius}
+      data-label-height={labelHeight}
+      data-max-level={maxLevel}
     >
-      <option value="last" selected>Last Year</option>
-      {Object.keys(allYearData)
-        .filter((k) => k !== 'last')
-        .sort((a, b) => Number(b) - Number(a))
-        .map((y) => (
-          <option value={y}>{y}</option>
-        ))}
-    </select>
-  </div>
-  <div
-    class="max-w-full overflow-x-auto pt-0.5"
-    style={{ scrollbarGutter: 'stable' }}
-  >
-    <svg
-      id="gh-calendar-svg"
-      class="block visible"
-      width={defaultData.width}
-      height={defaultData.height}
-      viewBox={`0 0 ${defaultData.width} ${defaultData.height}`}
-    >
-      <g id="gh-month-labels">
-        {defaultData.monthLabels.map(({ label, weekIndex }) => (
-          <text
-            x={(blockSize + blockMargin) * weekIndex}
-            y={0}
-            dominant-baseline="hanging"
-            fill="currentColor"
-          >
-            {label}
-          </text>
-        ))}
-      </g>
-      <g id="gh-weeks">
-        {defaultData.weeks.map((week, weekIndex) => (
-          <g transform={`translate(${(blockSize + blockMargin) * weekIndex}, 0)`}>
-            {week.map((activity, dayIndex) => {
-              if (!activity) return null
-              return (
-                <rect
-                  class="stroke-foreground/10"
-                  x={0}
-                  y={labelHeight + (blockSize + blockMargin) * dayIndex}
-                  width={blockSize}
-                  height={blockSize}
-                  rx={blockRadius}
-                  ry={blockRadius}
-                  fill={`var(--gh-level-${activity.level})`}
-                  data-date={activity.date}
-                  data-level={activity.level}
-                />
-              )
-            })}
+      <div class="flex items-center gap-3 mb-1">
+        <label for="gh-year-select" class="sr-only">
+          Select year
+        </label>
+        <select
+          id="gh-year-select"
+          class="bg-foreground/5 border border-foreground/16 rounded-lg px-2.5 py-1 text-sm cursor-pointer hover:border-foreground/30 transition-colors"
+        >
+          <option value="last" selected>
+            Last Year
+          </option>
+          {Object.keys(allYearData)
+            .filter((k) => k !== 'last')
+            .sort((a, b) => Number(b) - Number(a))
+            .map((y) => (
+              <option value={y}>{y}</option>
+            ))}
+        </select>
+      </div>
+      <div
+        class="max-w-full overflow-x-auto pt-0.5"
+        style={{ scrollbarGutter: 'stable' }}
+      >
+        <svg
+          id="gh-calendar-svg"
+          class="block visible"
+          width={defaultData.width}
+          height={defaultData.height}
+          viewBox={`0 0 ${defaultData.width} ${defaultData.height}`}
+        >
+          <g id="gh-month-labels">
+            {defaultData.monthLabels.map(({ label, weekIndex }) => (
+              <text
+                x={(blockSize + blockMargin) * weekIndex}
+                y={0}
+                dominant-baseline="hanging"
+                fill="currentColor"
+              >
+                {label}
+              </text>
+            ))}
           </g>
-        ))}
-      </g>
-    </svg>
-  </div>
-  <footer class="flex flex-col sm:flex-row sm:justify-between gap-x-1 gap-y-2">
-    <div id="gh-total-count">
-      {defaultData.totalCount} contributions in the last year
-    </div>
-    <div class="flex items-center gap-[3px]">
-      <span class="mr-1.5">Less</span>
-      {range(maxLevel + 1).map((level) => (
-        <svg width={blockSize} height={blockSize}>
-          <rect
-            class="stroke-foreground/10"
-            width={blockSize}
-            height={blockSize}
-            fill={`var(--gh-level-${level})`}
-            rx={blockRadius}
-            ry={blockRadius}
-          />
+          <g id="gh-weeks">
+            {defaultData.weeks.map((week, weekIndex) => (
+              <g transform={`translate(${(blockSize + blockMargin) * weekIndex}, 0)`}>
+                {week.map((activity, dayIndex) => {
+                  if (!activity) return null
+                  return (
+                    <rect
+                      class="stroke-foreground/10"
+                      x={0}
+                      y={labelHeight + (blockSize + blockMargin) * dayIndex}
+                      width={blockSize}
+                      height={blockSize}
+                      rx={blockRadius}
+                      ry={blockRadius}
+                      fill={`var(--gh-level-${activity.level})`}
+                      data-date={activity.date}
+                      data-level={activity.level}
+                    />
+                  )
+                })}
+              </g>
+            ))}
+          </g>
         </svg>
-      ))}
-      <span class="ml-1.5">More</span>
-    </div>
-  </footer>
-</article>
-)}
+      </div>
+      <footer class="flex flex-col sm:flex-row sm:justify-between gap-x-1 gap-y-2">
+        <div id="gh-total-count">
+          {defaultData.totalCount} contributions in the last year
+        </div>
+        <div class="flex items-center gap-[3px]">
+          <span class="mr-1.5">Less</span>
+          {range(maxLevel + 1).map((level) => (
+            <svg width={blockSize} height={blockSize}>
+              <rect
+                class="stroke-foreground/10"
+                width={blockSize}
+                height={blockSize}
+                fill={`var(--gh-level-${level})`}
+                rx={blockRadius}
+                ry={blockRadius}
+              />
+            </svg>
+          ))}
+          <span class="ml-1.5">More</span>
+        </div>
+      </footer>
+    </article>
+  )
+}
 
 <style>
   #github-activity-calendar {
@@ -308,7 +309,16 @@ const defaultData = allYearData[defaultKey]
   }
 </style>
 
-<script define:vars={{ allYearData, blockSize, blockMargin, blockRadius, labelHeight, maxLevel }}>
+<script
+  define:vars={{
+    allYearData,
+    blockSize,
+    blockMargin,
+    blockRadius,
+    labelHeight,
+    maxLevel,
+  }}
+>
   const select = document.getElementById('gh-year-select')
   const svg = document.getElementById('gh-calendar-svg')
   const monthLabelsG = document.getElementById('gh-month-labels')
@@ -342,13 +352,19 @@ const defaultData = allYearData[defaultKey]
       weeksG.innerHTML = ''
       data.weeks.forEach((week, weekIndex) => {
         const g = document.createElementNS('http://www.w3.org/2000/svg', 'g')
-        g.setAttribute('transform', `translate(${(blockSize + blockMargin) * weekIndex}, 0)`)
+        g.setAttribute(
+          'transform',
+          `translate(${(blockSize + blockMargin) * weekIndex}, 0)`,
+        )
         week.forEach((activity, dayIndex) => {
           if (!activity) return
           const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
           rect.setAttribute('class', 'stroke-foreground/10')
           rect.setAttribute('x', '0')
-          rect.setAttribute('y', String(labelHeight + (blockSize + blockMargin) * dayIndex))
+          rect.setAttribute(
+            'y',
+            String(labelHeight + (blockSize + blockMargin) * dayIndex),
+          )
           rect.setAttribute('width', String(blockSize))
           rect.setAttribute('height', String(blockSize))
           rect.setAttribute('rx', String(blockRadius))
@@ -362,9 +378,10 @@ const defaultData = allYearData[defaultKey]
       })
 
       // Update total count
-      const label = key === 'last'
-        ? `${data.totalCount} contributions in the last year`
-        : `${data.totalCount} contributions in ${key}`
+      const label =
+        key === 'last'
+          ? `${data.totalCount} contributions in the last year`
+          : `${data.totalCount} contributions in ${key}`
       totalCountEl.textContent = label
     })
   }

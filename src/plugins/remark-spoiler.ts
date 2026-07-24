@@ -12,7 +12,7 @@ export const remarkSpoiler: Plugin = () => {
 
       const text = node.value
       const spoilerRegex = /\|\|(.+?)\|\|/g
-      
+
       if (!spoilerRegex.test(text)) return
 
       const newNodes: any[] = []
