@@ -2,6 +2,9 @@
 import Layout from '~/layouts/Layout.astro'
 import { Image } from 'astro:assets'
 import portrait from '~/content/images/me.png'
+import IconEmail from '~/icons/email.svg'
+import IconGithub from '~/icons/github.svg'
+import IconSend from '~/icons/send.svg'
 
 const workExperience = [
   {
@@ -209,21 +212,37 @@ function formatDate(date: string | null): string {
             AS215934，持續投入 BGP 路由、可靠系統與資安領域。
           </p>
           <nav
-            class="mt-7 flex flex-wrap gap-x-5 gap-y-3 text-sm font-semibold"
+            class="cv-contact-links mt-7 flex items-center gap-2"
             aria-label="聯絡方式"
           >
-            <a href="mailto:hi@chien.dev">Email</a>
-            <a href="https://github.com/qian403" target="_blank" rel="noopener noreferrer"
-              >GitHub</a
-            >
-            <a href="https://t.me/qian50" target="_blank" rel="noopener noreferrer"
-              >Telegram</a
-            >
             <a
-              href="https://bgp.tools/as/215934"
-              target="_blank"
-              rel="noopener noreferrer">AS215934</a
+              href="mailto:hi@chien.dev"
+              class="cv-contact-link"
+              aria-label="Email"
+              title="Email"
             >
+              <IconEmail class="size-5" />
+            </a>
+            <a
+              href="https://github.com/qian403"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="cv-contact-link"
+              aria-label="GitHub"
+              title="GitHub"
+            >
+              <IconGithub class="size-5" />
+            </a>
+            <a
+              href="https://t.me/qian50"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="cv-contact-link"
+              aria-label="Telegram"
+              title="Telegram"
+            >
+              <IconSend class="size-5" />
+            </a>
           </nav>
         </div>
 
@@ -936,6 +955,25 @@ function formatDate(date: string | null): string {
 
   .cv-classic .cv-web-hero > div:last-child {
     order: 0 !important;
+  }
+
+  .cv-contact-link {
+    display: inline-flex;
+    width: 2.5rem;
+    height: 2.5rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.25rem;
+    color: color-mix(in oklab, var(--theme-foreground) 68%, transparent);
+    text-decoration: none;
+    transition:
+      background-color 150ms ease,
+      color 150ms ease;
+  }
+
+  .cv-contact-link:hover {
+    background: color-mix(in oklab, var(--theme-foreground) 7%, transparent);
+    color: var(--theme-accent);
   }
 
   .cv-classic-nav {
