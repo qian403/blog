@@ -1,5 +1,7 @@
 ---
 import Layout from '~/layouts/Layout.astro'
+import { Image } from 'astro:assets'
+import portrait from '~/content/images/me.png'
 
 const workExperience = [
   {
@@ -108,6 +110,31 @@ const projects = [
   },
 ]
 
+const vulnerabilityDisclosures = [
+  {
+    id: 'ZD-2026-00749',
+    organization: '中天新聞網',
+    title: '管理後台 API 的認證與授權機制存在缺陷',
+    description:
+      '管理後台 API 缺乏存取控制，未登入的攻擊者可取得 API token，並讀取逾 7,000 筆含個人資料的民眾投訴紀錄。',
+    type: 'Broken Access Control · CWE-284',
+    risk: '中風險',
+    year: '2026',
+    href: 'https://zeroday.hitcon.org/vulnerability/ZD-2026-00749',
+  },
+  {
+    id: 'ZD-2025-01331',
+    organization: '國立宜蘭大學',
+    title: '投稿系統前端加密授權繞過導致論文資料未授權存取',
+    description:
+      '投稿系統將授權檢查與加密金鑰置於前端，攻擊者可繞過存取控制，未經授權讀取投稿論文與作者個人資料。',
+    type: 'Broken Access Control · CWE-284',
+    risk: '高風險',
+    year: '2025',
+    href: 'https://zeroday.hitcon.org/vulnerability/ZD-2025-01331',
+  },
+]
+
 const leadership = [
   { name: 'SITCON 學生計算機年會 2026', role: '總召', year: '2026' },
   { name: 'SITCON Camp 2025', role: '副召', year: '2025' },
@@ -118,8 +145,8 @@ const leadership = [
 const additionalExperience = [
   { name: 'AWS STEM Summer Camp on The Cloud', role: '學員', year: '2023' },
   { name: '教育部先進資通安全實務人才培育計畫', role: '學員', year: '2023' },
-  { name: 'AIS3 Junior', role: '學員', year: '2022' },
   { name: '一日資安體驗營', role: '助教', year: '2023' },
+  { name: 'AIS3 Junior', role: '學員', year: '2022' },
   { name: '羅東高工資訊研究社', role: '副社長', year: '2021-2023' },
 ]
 
@@ -136,235 +163,988 @@ function formatDate(date: string | null): string {
   pageType="profile"
   wide
 >
-  <div
-    class="cv-toolbar mx-auto flex w-full max-w-[210mm] items-center justify-between gap-5 py-7"
-  >
-    <div>
-      <p class="font-mono text-xs font-semibold uppercase text-accent">
-        Curriculum Vitae
-      </p>
-      <p class="mt-1 text-xs text-foreground/55">Last updated / 2026.07</p>
-    </div>
-    <button
-      type="button"
-      data-print-cv
-      class="min-h-10 border border-foreground/18 px-4 py-2 text-sm font-semibold text-foreground transition-colors hover:border-accent/55 hover:text-accent"
-    >
-      列印 / 儲存 PDF
-    </button>
-  </div>
-
-  <article class="cv-paper">
-    <header class="cv-header border-b border-[#d4d4d8] pb-4">
-      <div class="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
-        <div>
-          <h1 class="text-[2rem] font-bold leading-none text-[#111827]">徐嘉謙</h1>
-          <p class="mt-2 text-lg font-semibold text-[#2563eb]">CHIEN</p>
-          <p class="mt-3 text-[0.6875rem] font-semibold uppercase text-[#4b5563]">
-            Network / Security / Systems Engineer
+  <div class="cv-root" data-cv-root data-view="web">
+    <div class="cv-toolbar py-5 sm:py-7">
+      <div class="flex min-w-0 items-center justify-between gap-4">
+        <div class="min-w-0">
+          <p class="font-mono text-xs font-semibold uppercase text-accent">
+            Curriculum Vitae
           </p>
+          <p class="mt-1 text-xs text-foreground/55">Last updated / 2026.07</p>
         </div>
 
-        <address class="not-italic text-[0.6875rem]/5 text-[#374151] sm:text-right">
-          <p>Yilan, Taiwan · GMT+8</p>
-          <p><a href="mailto:hi@chien.dev">hi@chien.dev</a></p>
-          <p><a href="https://github.com/qian403">github.com/qian403</a></p>
-          <p><a href="https://t.me/qian50">t.me/qian50</a></p>
-        </address>
-      </div>
-
-      <p class="mt-4 border-l-2 border-[#2563eb] pl-4 text-[0.75rem]/5 text-[#374151]">
-        資訊工程學生，具備企業系統維運、網路管理、資訊安全與全端開發實務經驗。運營個人自治系統
-        AS215934，持續投入 BGP 路由、可靠系統與資安領域。
-      </p>
-    </header>
-
-    <div
-      class="cv-columns mt-4 grid gap-7 sm:grid-cols-[minmax(0,0.82fr)_minmax(0,1.9fr)]"
-    >
-      <aside class="cv-sidebar space-y-5 sm:border-r sm:border-[#e4e4e7] sm:pr-6">
-        <section class="cv-section" aria-labelledby="education-heading">
-          <h2 id="education-heading" class="cv-heading">Education</h2>
-          <div class="mt-3 space-y-4">
-            {
-              education.map((item) => (
-                <div class="cv-entry">
-                  <h3 class="text-[0.75rem] font-bold text-[#111827]">{item.school}</h3>
-                  <p class="mt-0.5 text-[0.6875rem] font-semibold text-[#2563eb]">
-                    {item.department}
-                  </p>
-                  <p class="mt-1 text-[0.625rem] text-[#6b7280]">
-                    {formatDate(item.start)} - {formatDate(item.end)}
-                  </p>
-                </div>
-              ))
-            }
+        <div class="flex shrink-0 items-center gap-2 sm:gap-3">
+          <div class="cv-view-switch" role="group" aria-label="履歷顯示模式">
+            <button type="button" data-cv-view="web" aria-pressed="true">網頁版</button>
+            <button type="button" data-cv-view="print" aria-pressed="false">
+              列印預覽
+            </button>
           </div>
-        </section>
-
-        <section class="cv-section" aria-labelledby="certifications-heading">
-          <h2 id="certifications-heading" class="cv-heading">Certifications</h2>
-          <div class="mt-3 space-y-3.5">
-            {
-              certifications.map((certification) => (
-                <div class="cv-entry">
-                  <div class="flex items-start justify-between gap-3">
-                    <h3 class="text-[0.6875rem]/4 font-bold text-[#111827]">
-                      {certification.name}
-                    </h3>
-                    <span class="shrink-0 text-[0.625rem] font-semibold text-[#2563eb]">
-                      {certification.year}
-                    </span>
-                  </div>
-                  {certification.level && (
-                    <p class="mt-0.5 text-[0.625rem] font-semibold text-[#4b5563]">
-                      {certification.level}
-                    </p>
-                  )}
-                  <p class="mt-0.5 text-[0.625rem]/4 text-[#6b7280]">
-                    {certification.issuer}
-                  </p>
-                </div>
-              ))
-            }
-          </div>
-        </section>
-
-        <section class="cv-section" aria-labelledby="skills-heading">
-          <h2 id="skills-heading" class="cv-heading">Technical Skills</h2>
-          <dl class="mt-3 space-y-3.5">
-            {
-              skillGroups.map((group) => (
-                <div class="cv-entry">
-                  <dt class="text-[0.625rem] font-bold uppercase text-[#2563eb]">
-                    {group.name}
-                  </dt>
-                  <dd class="mt-1 text-[0.6875rem]/5 text-[#374151]">
-                    {group.skills.join(' · ')}
-                  </dd>
-                </div>
-              ))
-            }
-          </dl>
-        </section>
-      </aside>
-
-      <div class="cv-main min-w-0 space-y-4">
-        <section class="cv-section" aria-labelledby="experience-heading">
-          <h2 id="experience-heading" class="cv-heading">Work Experience</h2>
-          <div class="mt-3 space-y-4">
-            {
-              workExperience.map((job) => (
-                <div class="cv-entry">
-                  <div class="flex items-start justify-between gap-4">
-                    <div>
-                      <h3 class="text-[0.8125rem] font-bold text-[#111827]">
-                        {job.title}
-                      </h3>
-                      <p class="mt-0.5 text-[0.6875rem] font-semibold text-[#2563eb]">
-                        {job.company}
-                      </p>
-                    </div>
-                    <p class="shrink-0 text-right text-[0.625rem] font-semibold text-[#4b5563]">
-                      {formatDate(job.start)} - {formatDate(job.end)}
-                    </p>
-                  </div>
-                  <p class="mt-1 text-[0.625rem] text-[#6b7280]">{job.department}</p>
-                  <p class="mt-2 text-[0.6875rem]/5 text-[#374151]">{job.summary}</p>
-                  <p class="mt-1.5 text-[0.625rem]/4 text-[#6b7280]">
-                    {job.focus.join(' / ')}
-                  </p>
-                </div>
-              ))
-            }
-          </div>
-        </section>
-
-        <section class="cv-section" aria-labelledby="projects-heading">
-          <h2 id="projects-heading" class="cv-heading">Selected Projects</h2>
-          <div class="mt-3 grid gap-x-6 gap-y-3 sm:grid-cols-2">
-            {
-              projects.map((project) => (
-                <div class="cv-entry">
-                  <div class="flex items-start justify-between gap-3">
-                    <h3 class="text-[0.75rem] font-bold text-[#111827]">
-                      {project.name}
-                    </h3>
-                    <a
-                      href={project.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={`查看 ${project.name}`}
-                      class="shrink-0 text-[0.6875rem] no-underline"
-                    >
-                      {project.linkLabel}
-                    </a>
-                  </div>
-                  <p class="mt-1.5 text-[0.6875rem]/5 text-[#374151]">
-                    {project.description}
-                  </p>
-                  <p class="mt-1 text-[0.625rem]/4 text-[#6b7280]">{project.stack}</p>
-                </div>
-              ))
-            }
-          </div>
-        </section>
-
-        <section class="cv-section" aria-labelledby="leadership-heading">
-          <h2 id="leadership-heading" class="cv-heading">Leadership & Community</h2>
-          <div class="mt-3 space-y-2.5">
-            {
-              leadership.map((item) => (
-                <div class="cv-entry grid grid-cols-[minmax(0,1fr)_auto] gap-4">
-                  <p class="text-[0.6875rem]/5 text-[#374151]">
-                    <strong class="font-bold text-[#111827]">{item.name}</strong>
-                    <span class="ml-1.5 text-[#2563eb]">/ {item.role}</span>
-                  </p>
-                  <time class="text-[0.625rem] font-semibold text-[#6b7280]">
-                    {item.year}
-                  </time>
-                </div>
-              ))
-            }
-          </div>
-        </section>
-
-        <section class="cv-section" aria-labelledby="training-heading">
-          <h2 id="training-heading" class="cv-heading">
-            Additional Training & Activities
-          </h2>
-          <ul class="mt-3 divide-y divide-foreground/10">
-            {
-              additionalExperience.map((item) => (
-                <li class="cv-entry flex items-baseline justify-between gap-4 py-2">
-                  <p class="text-[0.6875rem]/5 text-[#374151]">
-                    <strong class="font-semibold text-[#111827]">{item.name}</strong>
-                    {item.role && (
-                      <span class="ml-1.5 text-[#2563eb]">/ {item.role}</span>
-                    )}
-                  </p>
-                  <time class="shrink-0 text-[0.625rem] font-semibold text-[#6b7280]">
-                    {item.year}
-                  </time>
-                </li>
-              ))
-            }
-          </ul>
-        </section>
+          <button type="button" data-print-cv class="cv-print-button">
+            <span class="hidden sm:inline">列印 / </span>PDF
+          </button>
+        </div>
       </div>
     </div>
-  </article>
+
+    <article class="cv-web-view cv-classic" data-cv-view-panel="web">
+      <header
+        class="cv-web-hero grid gap-10 border-b border-foreground/10 py-10 sm:py-14 lg:grid-cols-[minmax(0,1fr)_15rem] lg:items-end"
+      >
+        <div class="max-w-3xl">
+          <p class="mb-5 font-mono text-xs font-semibold uppercase text-accent">
+            Network · Security · Systems
+          </p>
+          <h1 class="text-5xl font-bold leading-none text-foreground sm:text-7xl">
+            徐嘉謙 <span
+              class="mt-3 block text-xl font-semibold text-foreground/48 sm:text-2xl"
+              >CHIEN</span
+            >
+          </h1>
+          <p class="mt-7 max-w-2xl text-xl/8 font-semibold text-foreground sm:text-2xl/9">
+            在網路、資安與系統維運之間，把複雜問題整理成可靠、可持續維護的實作。
+          </p>
+          <p class="mt-5 max-w-2xl text-base/7 text-foreground/68 sm:text-lg/8">
+            資訊工程學生，具備企業系統維運、網路管理、資訊安全與全端開發實務經驗。運營個人自治系統
+            AS215934，持續投入 BGP 路由、可靠系統與資安領域。
+          </p>
+          <nav
+            class="mt-7 flex flex-wrap gap-x-5 gap-y-3 text-sm font-semibold"
+            aria-label="聯絡方式"
+          >
+            <a href="mailto:hi@chien.dev">Email</a>
+            <a href="https://github.com/qian403" target="_blank" rel="noopener noreferrer"
+              >GitHub</a
+            >
+            <a href="https://t.me/qian50" target="_blank" rel="noopener noreferrer"
+              >Telegram</a
+            >
+            <a
+              href="https://bgp.tools/as/215934"
+              target="_blank"
+              rel="noopener noreferrer">AS215934</a
+            >
+          </nav>
+        </div>
+
+        <div
+          class="order-first flex items-end justify-between gap-6 lg:order-last lg:block"
+        >
+          <Image
+            priority
+            src={portrait}
+            alt="CHIEN 的個人頭像"
+            class="size-24 rounded-full border border-foreground/12 object-cover sm:size-32 lg:ml-auto lg:size-40"
+            widths={[128, 256, 320]}
+            width={160}
+            height={160}
+          />
+          <dl class="text-right font-mono text-xs/6 text-foreground/60 lg:mt-6">
+            <div><dt class="sr-only">所在地</dt><dd>Yilan, Taiwan</dd></div>
+            <div><dt class="sr-only">時區</dt><dd>GMT+8</dd></div>
+            <div><dt class="sr-only">目前狀態</dt><dd>Student / Engineer</dd></div>
+          </dl>
+        </div>
+      </header>
+
+      <nav class="cv-classic-nav" aria-label="履歷章節">
+        <a href="#web-experience-heading">經歷</a>
+        <a href="#web-vulnerabilities-heading">漏洞研究</a>
+        <a href="#web-projects-heading">專案</a>
+        <a href="#web-background-heading">學歷</a>
+        <a href="#web-community-heading">社群</a>
+      </nav>
+
+      <section
+        class="cv-now-section grid gap-8 border-b border-foreground/10 py-10 sm:py-12 md:grid-cols-[10rem_minmax(0,1fr)] md:gap-12"
+        aria-labelledby="web-focus-heading"
+      >
+        <div>
+          <p class="font-mono text-xs font-semibold uppercase text-accent">
+            Current focus
+          </p>
+          <h2
+            id="web-focus-heading"
+            class="mt-2 text-sm font-semibold text-foreground/65"
+          >
+            現在投入的領域
+          </h2>
+        </div>
+        <dl class="cv-now-list grid gap-6 sm:grid-cols-3 sm:gap-0">
+          <div
+            class="border-t border-foreground/10 pt-4 sm:border-l sm:border-t-0 sm:px-6 sm:pt-0"
+          >
+            <dt class="font-mono text-xs font-semibold text-accent">01 / NETWORK</dt>
+            <dd class="mt-2 text-sm/6 text-foreground/68">
+              運營 AS215934，實作 BGP 路由與網路架構。
+            </dd>
+          </div>
+          <div
+            class="border-t border-foreground/10 pt-4 sm:border-l sm:border-t-0 sm:px-6 sm:pt-0"
+          >
+            <dt class="font-mono text-xs font-semibold text-accent">02 / SYSTEMS</dt>
+            <dd class="mt-2 text-sm/6 text-foreground/68">
+              處理 Linux、容器化服務與日常系統維運。
+            </dd>
+          </div>
+          <div
+            class="border-t border-foreground/10 pt-4 sm:border-l sm:border-t-0 sm:pl-6 sm:pt-0"
+          >
+            <dt class="font-mono text-xs font-semibold text-accent">03 / COMMUNITY</dt>
+            <dd class="mt-2 text-sm/6 text-foreground/68">
+              參與 SITCON 組織與學生技術社群。
+            </dd>
+          </div>
+        </dl>
+      </section>
+
+      <section class="cv-web-section" aria-labelledby="web-experience-heading">
+        <div class="cv-web-section-label">
+          <p>01 / Experience</p>
+          <h2 id="web-experience-heading">實務經驗</h2>
+        </div>
+        <div class="cv-web-content cv-timeline">
+          {
+            workExperience.map((job) => (
+              <article class="cv-timeline-entry">
+                <p class="cv-timeline-date font-mono text-xs font-semibold text-accent">
+                  {formatDate(job.start)} - {formatDate(job.end)}
+                </p>
+                <div>
+                  <h3 class="text-xl font-bold text-foreground">{job.title}</h3>
+                  <p class="mt-1 text-sm font-semibold text-foreground/68">
+                    {job.company} · {job.department}
+                  </p>
+                  <p class="mt-3 text-base/7 text-foreground/72">{job.summary}</p>
+                  <ul class="mt-4 flex flex-wrap gap-2" aria-label="工作內容">
+                    {job.focus.map((focus) => (
+                      <li class="cv-chip">{focus}</li>
+                    ))}
+                  </ul>
+                </div>
+              </article>
+            ))
+          }
+        </div>
+      </section>
+
+      <section class="cv-web-section" aria-labelledby="web-vulnerabilities-heading">
+        <div class="cv-web-section-label">
+          <p>02 / Security Research</p>
+          <h2 id="web-vulnerabilities-heading">漏洞研究與通報</h2>
+        </div>
+        <div class="cv-web-content cv-vulnerability-timeline">
+          {
+            vulnerabilityDisclosures.map((vulnerability) => (
+              <a
+                href={vulnerability.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="cv-vulnerability-row group no-underline"
+              >
+                <span>
+                  <strong class="block font-mono text-sm font-bold text-accent">
+                    {vulnerability.id}
+                  </strong>
+                  <span class="mt-2 block font-mono text-xs text-foreground/48">
+                    {vulnerability.year} · {vulnerability.risk}
+                  </span>
+                </span>
+                <span>
+                  <strong class="block text-base font-bold text-foreground group-hover:text-accent">
+                    {vulnerability.organization}
+                  </strong>
+                  <span class="mt-2 block text-sm/6 text-foreground/68">
+                    {vulnerability.title}
+                  </span>
+                </span>
+                <span>
+                  <span class="block text-sm/6 text-foreground/68">
+                    {vulnerability.description}
+                  </span>
+                  <span class="mt-2 block font-mono text-xs/5 text-foreground/48">
+                    {vulnerability.type}
+                  </span>
+                </span>
+                <span class="text-sm font-semibold text-accent">ZeroDay ↗</span>
+              </a>
+            ))
+          }
+        </div>
+      </section>
+
+      <section class="cv-web-section" aria-labelledby="web-projects-heading">
+        <div class="cv-web-section-label">
+          <p>03 / Projects</p>
+          <h2 id="web-projects-heading">代表專案</h2>
+        </div>
+        <div
+          class="cv-web-content divide-y divide-foreground/10 border-y border-foreground/10"
+        >
+          {
+            projects.map((project, index) => (
+              <a
+                href={project.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="cv-project-row group grid gap-4 py-6 no-underline sm:grid-cols-[2.5rem_minmax(10rem,0.72fr)_minmax(0,1fr)_auto] sm:items-start"
+              >
+                <span class="font-mono text-xs text-foreground/42">
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+                <span>
+                  <strong class="block text-base font-bold text-foreground group-hover:text-accent">
+                    {project.name}
+                  </strong>
+                  <span class="mt-2 block font-mono text-xs/5 text-foreground/48">
+                    {project.stack}
+                  </span>
+                </span>
+                <span class="text-sm/6 text-foreground/68">{project.description}</span>
+                <span class="text-sm font-semibold text-accent">
+                  {project.linkLabel} ↗
+                </span>
+              </a>
+            ))
+          }
+        </div>
+      </section>
+
+      <section class="cv-web-section" aria-labelledby="web-background-heading">
+        <div class="cv-web-section-label">
+          <p>04 / Background</p>
+          <h2 id="web-background-heading">學歷與證照</h2>
+        </div>
+        <div class="cv-web-content grid gap-10 lg:grid-cols-2 lg:gap-14">
+          <div>
+            <h3 class="cv-web-subheading">Education</h3>
+            <div class="cv-compact-timeline mt-5 space-y-6">
+              {
+                education.map((item) => (
+                  <div class="grid grid-cols-[minmax(0,1fr)_auto] gap-5 border-t border-foreground/10 pt-4">
+                    <div>
+                      <p class="font-bold text-foreground">{item.school}</p>
+                      <p class="mt-1 text-sm text-foreground/62">{item.department}</p>
+                    </div>
+                    <p class="font-mono text-xs text-foreground/50">
+                      {formatDate(item.start)} - {formatDate(item.end)}
+                    </p>
+                  </div>
+                ))
+              }
+            </div>
+          </div>
+          <div>
+            <h3 class="cv-web-subheading">Certifications</h3>
+            <div class="mt-5 space-y-6">
+              {
+                certifications.map((certification) => (
+                  <div class="grid grid-cols-[minmax(0,1fr)_auto] gap-5 border-t border-foreground/10 pt-4">
+                    <div>
+                      <p class="font-bold text-foreground">{certification.name}</p>
+                      <p class="mt-1 text-sm/6 text-foreground/62">
+                        {certification.level && `${certification.level} · `}
+                        {certification.issuer}
+                      </p>
+                    </div>
+                    <p class="font-mono text-xs font-semibold text-accent">
+                      {certification.year}
+                    </p>
+                  </div>
+                ))
+              }
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="cv-web-section" aria-labelledby="web-skills-heading">
+        <div class="cv-web-section-label">
+          <p>05 / Toolbox</p>
+          <h2 id="web-skills-heading">技能與工具</h2>
+        </div>
+        <dl class="cv-web-content grid gap-x-10 gap-y-7 sm:grid-cols-2">
+          {
+            skillGroups.map((group) => (
+              <div class="border-t border-foreground/10 pt-4">
+                <dt class="font-mono text-xs font-semibold uppercase text-accent">
+                  {group.name}
+                </dt>
+                <dd class="mt-3 text-sm/7 text-foreground/72">
+                  {group.skills.join(' · ')}
+                </dd>
+              </div>
+            ))
+          }
+        </dl>
+      </section>
+
+      <section class="cv-web-section" aria-labelledby="web-community-heading">
+        <div class="cv-web-section-label">
+          <p>06 / Community</p>
+          <h2 id="web-community-heading">社群與活動</h2>
+        </div>
+        <div class="cv-web-content grid gap-10 lg:grid-cols-2 lg:gap-14">
+          <div>
+            <h3 class="cv-web-subheading">Leadership</h3>
+            <ul class="cv-compact-timeline mt-5">
+              {
+                leadership.map((item) => (
+                  <li class="grid grid-cols-[minmax(0,1fr)_auto] gap-5 py-4">
+                    <span class="text-sm/6 text-foreground/72">
+                      <>
+                        <strong class="font-semibold text-foreground">{item.name}</strong>
+                        <span class="mt-0.5 block text-foreground/52">{item.role}</span>
+                      </>
+                    </span>
+                    <time class="font-mono text-xs text-foreground/50">{item.year}</time>
+                  </li>
+                ))
+              }
+            </ul>
+          </div>
+          <div>
+            <h3 class="cv-web-subheading">Training & Activities</h3>
+            <ul class="cv-compact-timeline mt-5">
+              {
+                additionalExperience.map((item) => (
+                  <li class="grid grid-cols-[minmax(0,1fr)_auto] gap-5 py-4">
+                    <span class="text-sm/6 text-foreground/72">
+                      <>
+                        <strong class="font-semibold text-foreground">{item.name}</strong>
+                        <span class="mt-0.5 block text-foreground/52">{item.role}</span>
+                      </>
+                    </span>
+                    <time class="font-mono text-xs text-foreground/50">{item.year}</time>
+                  </li>
+                ))
+              }
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="grid gap-7 border-t border-foreground/10 py-12 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end sm:py-16"
+      >
+        <div>
+          <p class="font-mono text-xs font-semibold uppercase text-accent">Contact</p>
+          <h2 class="mt-4 text-2xl font-bold text-foreground sm:text-3xl">
+            聊聊網路、資安或系統工程
+          </h2>
+          <p class="mt-3 max-w-xl text-foreground/65">
+            歡迎交流技術、社群合作，或任何值得一起動手解決的問題。
+          </p>
+        </div>
+        <a href="mailto:hi@chien.dev" class="text-sm font-semibold">hi@chien.dev ↗</a>
+      </section>
+    </article>
+
+    <article
+      class="cv-paper cv-print-view"
+      data-cv-view-panel="print"
+      aria-hidden="true"
+      inert
+    >
+      <header class="cv-header border-b border-[#d4d4d8] pb-4">
+        <div class="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <h1 class="text-[2rem] font-bold leading-none text-[#111827]">徐嘉謙</h1>
+            <p class="mt-2 text-lg font-semibold text-[#2563eb]">CHIEN</p>
+            <p class="mt-3 text-[0.6875rem] font-semibold uppercase text-[#4b5563]">
+              Network / Security / Systems Engineer
+            </p>
+          </div>
+
+          <address class="not-italic text-[0.6875rem]/5 text-[#374151] sm:text-right">
+            <p>Yilan, Taiwan · GMT+8</p>
+            <p><a href="mailto:hi@chien.dev">hi@chien.dev</a></p>
+            <p><a href="https://github.com/qian403">github.com/qian403</a></p>
+            <p><a href="https://t.me/qian50">t.me/qian50</a></p>
+          </address>
+        </div>
+
+        <p class="mt-4 border-l-2 border-[#2563eb] pl-4 text-[0.75rem]/5 text-[#374151]">
+          資訊工程學生，具備企業系統維運、網路管理、資訊安全與全端開發實務經驗。運營個人自治系統
+          AS215934，持續投入 BGP 路由、可靠系統與資安領域。
+        </p>
+      </header>
+
+      <div
+        class="cv-columns mt-4 grid gap-7 sm:grid-cols-[minmax(0,0.82fr)_minmax(0,1.9fr)]"
+      >
+        <aside class="cv-sidebar space-y-5 sm:border-r sm:border-[#e4e4e7] sm:pr-6">
+          <section class="cv-section" aria-labelledby="education-heading">
+            <h2 id="education-heading" class="cv-heading">Education</h2>
+            <div class="mt-3 space-y-4">
+              {
+                education.map((item) => (
+                  <div class="cv-entry">
+                    <h3 class="text-[0.75rem] font-bold text-[#111827]">{item.school}</h3>
+                    <p class="mt-0.5 text-[0.6875rem] font-semibold text-[#2563eb]">
+                      {item.department}
+                    </p>
+                    <p class="mt-1 text-[0.625rem] text-[#6b7280]">
+                      {formatDate(item.start)} - {formatDate(item.end)}
+                    </p>
+                  </div>
+                ))
+              }
+            </div>
+          </section>
+
+          <section class="cv-section" aria-labelledby="certifications-heading">
+            <h2 id="certifications-heading" class="cv-heading">Certifications</h2>
+            <div class="mt-3 space-y-3.5">
+              {
+                certifications.map((certification) => (
+                  <div class="cv-entry">
+                    <div class="flex items-start justify-between gap-3">
+                      <h3 class="text-[0.6875rem]/4 font-bold text-[#111827]">
+                        {certification.name}
+                      </h3>
+                      <span class="shrink-0 text-[0.625rem] font-semibold text-[#2563eb]">
+                        {certification.year}
+                      </span>
+                    </div>
+                    {certification.level && (
+                      <p class="mt-0.5 text-[0.625rem] font-semibold text-[#4b5563]">
+                        {certification.level}
+                      </p>
+                    )}
+                    <p class="mt-0.5 text-[0.625rem]/4 text-[#6b7280]">
+                      {certification.issuer}
+                    </p>
+                  </div>
+                ))
+              }
+            </div>
+          </section>
+
+          <section class="cv-section" aria-labelledby="skills-heading">
+            <h2 id="skills-heading" class="cv-heading">Technical Skills</h2>
+            <dl class="mt-3 space-y-3.5">
+              {
+                skillGroups.map((group) => (
+                  <div class="cv-entry">
+                    <dt class="text-[0.625rem] font-bold uppercase text-[#2563eb]">
+                      {group.name}
+                    </dt>
+                    <dd class="mt-1 text-[0.6875rem]/5 text-[#374151]">
+                      {group.skills.join(' · ')}
+                    </dd>
+                  </div>
+                ))
+              }
+            </dl>
+          </section>
+        </aside>
+
+        <div class="cv-main min-w-0 space-y-4">
+          <section class="cv-section" aria-labelledby="experience-heading">
+            <h2 id="experience-heading" class="cv-heading">Work Experience</h2>
+            <div class="mt-3 space-y-4">
+              {
+                workExperience.map((job) => (
+                  <div class="cv-entry">
+                    <div class="flex items-start justify-between gap-4">
+                      <div>
+                        <h3 class="text-[0.8125rem] font-bold text-[#111827]">
+                          {job.title}
+                        </h3>
+                        <p class="mt-0.5 text-[0.6875rem] font-semibold text-[#2563eb]">
+                          {job.company}
+                        </p>
+                      </div>
+                      <p class="shrink-0 text-right text-[0.625rem] font-semibold text-[#4b5563]">
+                        {formatDate(job.start)} - {formatDate(job.end)}
+                      </p>
+                    </div>
+                    <p class="mt-1 text-[0.625rem] text-[#6b7280]">{job.department}</p>
+                    <p class="mt-2 text-[0.6875rem]/5 text-[#374151]">{job.summary}</p>
+                    <p class="mt-1.5 text-[0.625rem]/4 text-[#6b7280]">
+                      {job.focus.join(' / ')}
+                    </p>
+                  </div>
+                ))
+              }
+            </div>
+          </section>
+
+          <section class="cv-section" aria-labelledby="vulnerabilities-heading">
+            <h2 id="vulnerabilities-heading" class="cv-heading">
+              Vulnerability Disclosure
+            </h2>
+            <div class="mt-3 space-y-3">
+              {
+                vulnerabilityDisclosures.map((vulnerability) => (
+                  <div class="cv-entry">
+                    <div class="flex items-start justify-between gap-3">
+                      <div>
+                        <h3 class="text-[0.75rem]/4 font-bold text-[#111827]">
+                          {vulnerability.organization}
+                        </h3>
+                        <p class="mt-0.5 text-[0.625rem]/4 text-[#4b5563]">
+                          {vulnerability.title}
+                        </p>
+                      </div>
+                      <a
+                        href={vulnerability.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`查看 ${vulnerability.id}`}
+                        class="shrink-0 text-[0.625rem] font-semibold no-underline"
+                      >
+                        {vulnerability.id}
+                      </a>
+                    </div>
+                    <p class="mt-1 text-[0.625rem]/4 text-[#6b7280]">
+                      {vulnerability.type} · {vulnerability.risk}
+                    </p>
+                  </div>
+                ))
+              }
+            </div>
+          </section>
+
+          <section class="cv-section" aria-labelledby="projects-heading">
+            <h2 id="projects-heading" class="cv-heading">Selected Projects</h2>
+            <div class="mt-3 grid gap-x-6 gap-y-3 sm:grid-cols-2">
+              {
+                projects.map((project) => (
+                  <div class="cv-entry">
+                    <div class="flex items-start justify-between gap-3">
+                      <h3 class="text-[0.75rem] font-bold text-[#111827]">
+                        {project.name}
+                      </h3>
+                      <a
+                        href={project.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`查看 ${project.name}`}
+                        class="shrink-0 text-[0.6875rem] no-underline"
+                      >
+                        {project.linkLabel}
+                      </a>
+                    </div>
+                    <p class="mt-1.5 text-[0.6875rem]/5 text-[#374151]">
+                      {project.description}
+                    </p>
+                    <p class="mt-1 text-[0.625rem]/4 text-[#6b7280]">{project.stack}</p>
+                  </div>
+                ))
+              }
+            </div>
+          </section>
+
+          <section class="cv-section" aria-labelledby="leadership-heading">
+            <h2 id="leadership-heading" class="cv-heading">Leadership & Community</h2>
+            <div class="mt-3 space-y-2.5">
+              {
+                leadership.map((item) => (
+                  <div class="cv-entry grid grid-cols-[minmax(0,1fr)_auto] gap-4">
+                    <p class="text-[0.6875rem]/5 text-[#374151]">
+                      <strong class="font-bold text-[#111827]">{item.name}</strong>
+                      <span class="ml-1.5 text-[#2563eb]">/ {item.role}</span>
+                    </p>
+                    <time class="text-[0.625rem] font-semibold text-[#6b7280]">
+                      {item.year}
+                    </time>
+                  </div>
+                ))
+              }
+            </div>
+          </section>
+
+          <section class="cv-section" aria-labelledby="training-heading">
+            <h2 id="training-heading" class="cv-heading">
+              Additional Training & Activities
+            </h2>
+            <ul class="mt-3 divide-y divide-foreground/10">
+              {
+                additionalExperience.map((item) => (
+                  <li class="cv-entry flex items-baseline justify-between gap-4 py-2">
+                    <p class="text-[0.6875rem]/5 text-[#374151]">
+                      <strong class="font-semibold text-[#111827]">{item.name}</strong>
+                      {item.role && (
+                        <span class="ml-1.5 text-[#2563eb]">/ {item.role}</span>
+                      )}
+                    </p>
+                    <time class="shrink-0 text-[0.625rem] font-semibold text-[#6b7280]">
+                      {item.year}
+                    </time>
+                  </li>
+                ))
+              }
+            </ul>
+          </section>
+        </div>
+      </div>
+    </article>
+  </div>
 </Layout>
 
 <script>
-  document
-    .querySelector<HTMLButtonElement>('[data-print-cv]')
-    ?.addEventListener('click', () => {
-      window.print()
+  function initCvView() {
+    const root = document.querySelector<HTMLElement>('[data-cv-root]')
+    if (!root || root.dataset.initialized === 'true') return
+
+    root.dataset.initialized = 'true'
+    const viewButtons = root.querySelectorAll<HTMLButtonElement>('[data-cv-view]')
+    const viewPanels = root.querySelectorAll<HTMLElement>('[data-cv-view-panel]')
+
+    function setView(view: 'web' | 'print', updateUrl = true) {
+      root!.dataset.view = view
+      viewButtons.forEach((button) => {
+        button.setAttribute('aria-pressed', String(button.dataset.cvView === view))
+      })
+      viewPanels.forEach((panel) => {
+        const isActive = panel.dataset.cvViewPanel === view
+        panel.setAttribute('aria-hidden', String(!isActive))
+        panel.inert = !isActive
+      })
+
+      if (!updateUrl) return
+      const url = new URL(window.location.href)
+      if (view === 'print') url.searchParams.set('view', 'print')
+      else url.searchParams.delete('view')
+      window.history.replaceState({}, '', url)
+    }
+
+    viewButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        setView(button.dataset.cvView === 'print' ? 'print' : 'web')
+      })
     })
+
+    root
+      .querySelector<HTMLButtonElement>('[data-print-cv]')
+      ?.addEventListener('click', () => {
+        window.print()
+      })
+
+    const initialView = new URL(window.location.href).searchParams.get('view')
+    setView(initialView === 'print' ? 'print' : 'web', false)
+  }
+
+  initCvView()
+  document.addEventListener('astro:page-load', initCvView)
 </script>
 
 <style>
+  .cv-toolbar {
+    position: sticky;
+    top: 4rem;
+    z-index: 20;
+    border-bottom: 1px solid color-mix(in oklab, var(--theme-foreground) 10%, transparent);
+    background: color-mix(in oklab, var(--theme-background) 92%, transparent);
+    backdrop-filter: blur(14px);
+  }
+
+  .cv-view-switch {
+    display: inline-grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 2.5rem;
+    padding: 0.2rem;
+    border: 1px solid color-mix(in oklab, var(--theme-foreground) 16%, transparent);
+    border-radius: 0.375rem;
+    background: color-mix(in oklab, var(--theme-foreground) 4%, transparent);
+  }
+
+  .cv-view-switch button {
+    min-width: 4.75rem;
+    padding: 0.4rem 0.7rem;
+    border-radius: 0.25rem;
+    color: color-mix(in oklab, var(--theme-foreground) 58%, transparent);
+    font-size: 0.75rem;
+    font-weight: 700;
+    line-height: 1rem;
+    transition:
+      background-color 150ms ease,
+      color 150ms ease;
+  }
+
+  .cv-view-switch button[aria-pressed='true'] {
+    background: var(--theme-foreground);
+    color: var(--theme-background);
+  }
+
+  .cv-print-button {
+    min-height: 2.5rem;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid color-mix(in oklab, var(--theme-foreground) 18%, transparent);
+    border-radius: 0.375rem;
+    color: var(--theme-foreground);
+    font-size: 0.75rem;
+    font-weight: 700;
+    transition:
+      border-color 150ms ease,
+      color 150ms ease;
+  }
+
+  .cv-print-button:hover {
+    border-color: color-mix(in oklab, var(--theme-accent) 60%, transparent);
+    color: var(--theme-accent);
+  }
+
+  .cv-print-view,
+  .cv-root[data-view='print'] .cv-web-view {
+    display: none;
+  }
+
+  .cv-root[data-view='print'] .cv-print-view {
+    display: block;
+  }
+
+  .cv-classic {
+    width: min(920px, 100%);
+    margin-inline: auto;
+    letter-spacing: 0;
+  }
+
+  .cv-classic .cv-web-hero {
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    align-items: center !important;
+    gap: 3rem;
+    padding-block: 4rem !important;
+  }
+
+  .cv-classic .cv-web-hero h1 {
+    font-size: 2.75rem;
+    line-height: 1.12;
+  }
+
+  .cv-classic .cv-web-hero h1 span {
+    margin-top: 0.6rem;
+    font-size: 1rem;
+  }
+
+  .cv-classic .cv-web-hero h1 + p {
+    margin-top: 1.5rem;
+    font-size: 1.125rem;
+    line-height: 1.85rem;
+  }
+
+  .cv-classic .cv-web-hero h1 + p + p {
+    margin-top: 0.9rem;
+    font-size: 0.9375rem;
+    line-height: 1.65rem;
+  }
+
+  .cv-classic .cv-web-hero img {
+    width: 6.5rem !important;
+    height: 6.5rem !important;
+  }
+
+  .cv-classic .cv-web-hero > div:last-child {
+    order: 0 !important;
+  }
+
+  .cv-classic-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.5rem;
+    padding-block: 1rem;
+    border-bottom: 1px solid color-mix(in oklab, var(--theme-foreground) 10%, transparent);
+    font-size: 0.8125rem;
+    font-weight: 700;
+  }
+
+  .cv-classic-nav a {
+    color: color-mix(in oklab, var(--theme-foreground) 62%, transparent);
+    text-decoration: none;
+  }
+
+  .cv-classic-nav a:hover {
+    color: var(--theme-accent);
+  }
+
+  .cv-now-section {
+    display: block !important;
+    padding-block: 3rem !important;
+  }
+
+  .cv-now-section > div:first-child {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+  }
+
+  .cv-now-section > div:first-child h2 {
+    margin-top: 0;
+  }
+
+  .cv-now-list {
+    margin-top: 2rem;
+  }
+
+  .cv-web-section {
+    display: block;
+    padding-block: 3rem;
+    border-bottom: 1px solid color-mix(in oklab, var(--theme-foreground) 10%, transparent);
+  }
+
+  .cv-web-section-label {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    padding-bottom: 0.9rem;
+    border-bottom: 1px solid color-mix(in oklab, var(--theme-foreground) 12%, transparent);
+  }
+
+  .cv-web-section-label > p {
+    color: var(--theme-accent);
+    font-family: var(--default-mono-font-family);
+    font-size: 0.75rem;
+    font-weight: 700;
+    line-height: 1rem;
+    text-transform: uppercase;
+  }
+
+  .cv-web-section-label > h2 {
+    margin-top: 0;
+    scroll-margin-top: 10rem;
+    color: var(--theme-foreground);
+    font-size: 1.35rem;
+    font-weight: 700;
+    line-height: 1.75rem;
+  }
+
+  .cv-web-subheading {
+    color: color-mix(in oklab, var(--theme-foreground) 62%, transparent);
+    font-size: 0.75rem;
+    font-weight: 700;
+    line-height: 1rem;
+    text-transform: uppercase;
+  }
+
+  .cv-timeline {
+    position: relative;
+    margin-top: 2rem;
+  }
+
+  .cv-timeline-entry {
+    position: relative;
+    display: grid;
+    grid-template-columns: 9.5rem minmax(0, 1fr);
+    gap: 2rem;
+    padding: 0 0 2.25rem 1.75rem;
+  }
+
+  .cv-timeline-entry + .cv-timeline-entry {
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .cv-timeline-entry::after,
+  .cv-vulnerability-row::after,
+  .cv-compact-timeline > *::after {
+    position: absolute;
+    top: 0.32rem;
+    left: 0;
+    width: 0.65rem;
+    height: 0.65rem;
+    border: 2px solid color-mix(in oklab, var(--theme-accent) 62%, transparent);
+    border-radius: 50%;
+    background: var(--theme-background);
+    content: '';
+  }
+
+  .cv-timeline-entry:not(:last-child)::before,
+  .cv-vulnerability-row:not(:last-child)::before,
+  .cv-compact-timeline > *:not(:last-child)::before {
+    position: absolute;
+    top: 0.9rem;
+    bottom: -0.3rem;
+    left: 0.3rem;
+    width: 1px;
+    background: color-mix(in oklab, var(--theme-foreground) 18%, transparent);
+    content: '';
+  }
+
+  .cv-timeline-entry:last-child {
+    padding-bottom: 0;
+  }
+
+  .cv-chip {
+    padding: 0.3rem 0.55rem;
+    border: 1px solid color-mix(in oklab, var(--theme-foreground) 13%, transparent);
+    border-radius: 0.25rem;
+    color: color-mix(in oklab, var(--theme-foreground) 66%, transparent);
+    font-size: 0.7rem;
+    font-weight: 600;
+    line-height: 1rem;
+  }
+
+  .cv-project-row {
+    color: inherit;
+  }
+
+  .cv-web-content:not(.cv-timeline, .cv-vulnerability-timeline) {
+    margin-top: 2rem;
+  }
+
+  .cv-vulnerability-timeline {
+    margin-top: 2rem;
+  }
+
+  .cv-vulnerability-row {
+    position: relative;
+    display: grid;
+    grid-template-columns: 8rem minmax(11rem, 0.8fr) minmax(0, 1fr) auto;
+    gap: 1.5rem;
+    padding: 0 0 2.25rem 1.75rem;
+    color: inherit;
+  }
+
+  .cv-compact-timeline > * {
+    position: relative;
+    margin-top: 0 !important;
+    margin-left: 0;
+    padding: 0 0 1.5rem 1.75rem !important;
+    border: 0 !important;
+  }
+
+  .cv-compact-timeline > *:last-child {
+    padding-bottom: 0 !important;
+  }
+
+  @media (max-width: 767px) {
+    .cv-classic .cv-web-hero {
+      grid-template-columns: 1fr !important;
+      gap: 1.75rem;
+      padding-block: 3rem !important;
+    }
+
+    .cv-classic .cv-web-hero > div:last-child {
+      order: -1 !important;
+      justify-content: flex-start;
+    }
+
+    .cv-classic .cv-web-hero h1 {
+      font-size: 2.25rem;
+    }
+
+    .cv-classic .cv-web-hero img {
+      width: 5.5rem !important;
+      height: 5.5rem !important;
+    }
+
+    .cv-web-section-label {
+      display: block;
+    }
+
+    .cv-web-section-label > h2 {
+      margin-top: 0.55rem;
+    }
+
+    .cv-timeline-entry,
+    .cv-vulnerability-row {
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+    }
+  }
+
   .cv-paper {
     width: min(210mm, 100%);
     min-height: 297mm;
@@ -396,7 +1176,17 @@ function formatDate(date: string | null): string {
 
   @media (max-width: 639px) {
     .cv-toolbar {
-      padding-inline: 0;
+      margin-inline: calc(var(--spacing) * -5);
+      padding-inline: calc(var(--spacing) * 5);
+    }
+
+    .cv-view-switch button {
+      min-width: 4.25rem;
+      padding-inline: 0.45rem;
+    }
+
+    .cv-print-button {
+      padding-inline: 0.65rem;
     }
 
     .cv-paper {
@@ -422,13 +1212,21 @@ function formatDate(date: string | null): string {
   @media print {
     @page {
       size: A4;
-      margin: 6mm 9mm;
+      margin: 4mm 9mm;
     }
 
     :global(.site-header),
     :global(footer),
     .cv-toolbar {
       display: none !important;
+    }
+
+    .cv-web-view {
+      display: none !important;
+    }
+
+    .cv-print-view {
+      display: block !important;
     }
 
     :global(html),
@@ -459,8 +1257,12 @@ function formatDate(date: string | null): string {
       -webkit-print-color-adjust: exact;
     }
 
+    .cv-paper :is(p, address, li, dd, time) {
+      line-height: 4.2mm !important;
+    }
+
     .cv-header {
-      padding-bottom: 3mm !important;
+      padding-bottom: 2mm !important;
       break-after: avoid-page;
     }
 
@@ -469,12 +1271,12 @@ function formatDate(date: string | null): string {
     }
 
     .cv-header > p {
-      margin-top: 3mm !important;
+      margin-top: 2mm !important;
       padding-left: 3mm !important;
     }
 
     .cv-columns {
-      margin-top: 3mm !important;
+      margin-top: 2mm !important;
       gap: 5mm !important;
       grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.9fr) !important;
       break-inside: auto;
@@ -496,7 +1298,7 @@ function formatDate(date: string | null): string {
 
     .cv-sidebar > * + *,
     .cv-main > * + * {
-      margin-top: 3mm !important;
+      margin-top: 2mm !important;
     }
 
     .cv-heading {
@@ -515,15 +1317,19 @@ function formatDate(date: string | null): string {
     }
 
     .cv-section > :not(.cv-heading) {
-      margin-top: 2mm !important;
+      margin-top: 1.25mm !important;
     }
 
     .cv-section :is(.space-y-4, .space-y-3\.5, .space-y-2\.5) > :not(:first-child) {
-      margin-top: 2mm !important;
+      margin-top: 1.25mm !important;
     }
 
     .cv-section > .grid {
-      row-gap: 2mm !important;
+      row-gap: 1.25mm !important;
+    }
+
+    #training-heading + ul > li {
+      padding-block: 0.4mm !important;
     }
 
     .cv-paper a {
