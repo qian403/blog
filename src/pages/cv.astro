@@ -378,9 +378,7 @@ function formatDate(date: string | null): string {
           <p>03 / Projects</p>
           <h2 id="web-projects-heading">代表專案</h2>
         </div>
-        <div
-          class="cv-web-content divide-y divide-foreground/10 border-y border-foreground/10"
-        >
+        <div class="cv-web-content cv-project-list divide-y divide-foreground/10">
           {
             projects.map((project, index) => (
               <a
@@ -1078,6 +1076,10 @@ function formatDate(date: string | null): string {
 
   .cv-project-row {
     color: inherit;
+  }
+
+  .cv-project-list {
+    margin-top: 0 !important;
   }
 
   .cv-web-content:not(.cv-timeline, .cv-vulnerability-timeline) {
