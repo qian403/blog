@@ -416,7 +416,7 @@ function formatDate(date: string | null): string {
         <div class="cv-web-content grid gap-10 lg:grid-cols-2 lg:gap-14">
           <div>
             <h3 class="cv-web-subheading">Education</h3>
-            <div class="cv-compact-timeline mt-5 space-y-6">
+            <div class="cv-compact-timeline mt-5">
               {
                 education.map((item) => (
                   <div class="grid grid-cols-[minmax(0,1fr)_auto] gap-5 border-t border-foreground/10 pt-4">
@@ -1101,8 +1101,7 @@ function formatDate(date: string | null): string {
 
   .cv-compact-timeline > * {
     position: relative;
-    margin-top: 0 !important;
-    margin-left: 0;
+    margin: 0 !important;
     padding: 0 0 1.5rem 1.75rem !important;
     border: 0 !important;
   }
