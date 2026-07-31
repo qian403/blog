@@ -129,6 +129,29 @@ const filteredHeadings = headings.filter(({ depth }) => depth >= 2 && depth <= 3
   )
   const desktopQuery = window.matchMedia('(min-width: 1024px)')
 
+  const keepTocItemVisible = (item: HTMLLIElement) => {
+    if (item.getClientRects().length === 0) return
+
+    const nav = item.closest<HTMLElement>('nav')
+    if (!nav || nav.scrollHeight <= nav.clientHeight) return
+
+    const itemRect = item.getBoundingClientRect()
+    const navRect = nav.getBoundingClientRect()
+    const edgePadding = 8
+
+    if (itemRect.top < navRect.top + edgePadding) {
+      nav.scrollTop += itemRect.top - navRect.top - edgePadding
+    } else if (itemRect.bottom > navRect.bottom - edgePadding) {
+      nav.scrollTop += itemRect.bottom - navRect.bottom + edgePadding
+    }
+  }
+
+  const keepActiveTocItemsVisible = () => {
+    allTocItems
+      .filter((item) => item.classList.contains('active-heading'))
+      .forEach(keepTocItemVisible)
+  }
+
   const setMobileTocOpen = (open: boolean, restoreFocus = true) => {
     if (!responsiveToc || !openButton || !mobileShell || !mobilePanel) return
     responsiveToc.dataset.open = String(open)
@@ -139,6 +162,7 @@ const filteredHeadings = headings.filter(({ depth }) => depth >= 2 && depth <= 3
 
     if (open) {
       closeButton?.focus()
+      requestAnimationFrame(keepActiveTocItemsVisible)
     } else if (restoreFocus) {
       openButton.focus()
     }
@@ -155,6 +179,8 @@ const filteredHeadings = headings.filter(({ depth }) => depth >= 2 && depth <= 3
         link?.removeAttribute('aria-current')
       }
     })
+
+    requestAnimationFrame(keepActiveTocItemsVisible)
 
     if (currentHeading) {
       currentHeading.textContent =

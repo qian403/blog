@@ -713,7 +713,7 @@ body.editorial-layout {
   }
 
   h2 {
-    @apply mt-16 mb-6 border-b border-foreground/10 pb-3 text-3xl leading-tight font-bold text-heading2;
+    @apply mt-16 mb-6 text-3xl leading-tight font-bold text-heading2;
   }
 
   h3 {
@@ -770,15 +770,57 @@ body.editorial-layout {
   }
 
   div.expressive-code {
-    @apply my-9 min-w-0 max-w-full;
+    @apply my-6 min-w-0 max-w-full;
+    content-visibility: visible;
+    contain-intrinsic-size: none;
 
     figure {
-      @apply min-w-0 max-w-full overflow-hidden rounded-lg! border border-foreground/10!;
+      @apply m-0 min-w-0 max-w-full overflow-hidden rounded-md! border border-foreground/12!;
+      background: color-mix(
+        in oklab,
+        var(--theme-foreground) 2.5%,
+        transparent
+      ) !important;
+
+      &.is-terminal {
+        figcaption.header {
+          display: none !important;
+        }
+
+        div.copy {
+          --button-spacing: 8px;
+        }
+      }
+
+      &.has-title figcaption.header {
+        min-height: 2.25rem;
+        border-bottom: 1px solid
+          color-mix(in oklab, var(--theme-foreground) 10%, transparent) !important;
+        border-radius: 0 !important;
+        background: color-mix(
+          in oklab,
+          var(--theme-foreground) 4%,
+          transparent
+        ) !important;
+
+        span.title {
+          padding-inline: 0.875rem !important;
+          border: 0 !important;
+          border-radius: 0 !important;
+          background: transparent !important;
+          text-align: left;
+        }
+      }
 
       & > pre {
         max-width: 100%;
         overflow-x: auto !important;
         overflow-y: hidden;
+        border-radius: 0 !important;
+
+        & > code {
+          padding-block: 0.75rem !important;
+        }
       }
     }
   }
@@ -792,6 +834,7 @@ body.editorial-layout {
   }
 
   table {
+    @apply border-0 p-0;
     display: block;
     width: max-content;
     max-width: 100%;
