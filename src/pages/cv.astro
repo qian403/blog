@@ -140,10 +140,30 @@ const vulnerabilityDisclosures = [
 ]
 
 const leadership = [
-  { name: 'SITCON 學生計算機年會 2026', role: '總召', year: '2026' },
-  { name: 'SITCON Camp 2025', role: '副召', year: '2025' },
-  { name: 'SITCON 學生計算機年會 2025', role: '行政組副組長', year: '2025' },
-  { name: 'SITCON 學生計算機年會 2024', role: '場務組志工', year: '2024' },
+  {
+    name: 'SITCON 學生計算機年會 2026',
+    role: '總召',
+    year: '2026',
+    href: 'https://sitcon.org/2026/',
+  },
+  {
+    name: 'SITCON Camp 2025',
+    role: '副召',
+    year: '2025',
+    href: 'https://sitcon.camp/2025/',
+  },
+  {
+    name: 'SITCON 學生計算機年會 2025',
+    role: '行政組副組長',
+    year: '2025',
+    href: 'https://sitcon.org/2025/',
+  },
+  {
+    name: 'SITCON 學生計算機年會 2024',
+    role: '場務組志工',
+    year: '2024',
+    href: 'https://sitcon.org/2024/',
+  },
 ]
 
 const additionalExperience = [
@@ -519,7 +539,16 @@ function formatDate(date: string | null): string {
                   <li class="grid grid-cols-[minmax(0,1fr)_auto] gap-5 py-4">
                     <span class="text-sm/6 text-foreground/72">
                       <>
-                        <strong class="font-semibold text-foreground">{item.name}</strong>
+                        <a
+                          href={item.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="group no-underline"
+                        >
+                          <strong class="font-semibold text-foreground group-hover:text-accent">
+                            {item.name}
+                          </strong>
+                        </a>
                         <span class="mt-0.5 block text-foreground/52">{item.role}</span>
                       </>
                     </span>
@@ -763,7 +792,14 @@ function formatDate(date: string | null): string {
                 leadership.map((item) => (
                   <div class="cv-entry grid grid-cols-[minmax(0,1fr)_auto] gap-4">
                     <p class="text-[0.6875rem]/5 text-[#374151]">
-                      <strong class="font-bold text-[#111827]">{item.name}</strong>
+                      <a
+                        href={item.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="font-bold text-[#111827] no-underline"
+                      >
+                        {item.name}
+                      </a>
                       <span class="ml-1.5 text-[#2563eb]">/ {item.role}</span>
                     </p>
                     <time class="text-[0.625rem] font-semibold text-[#6b7280]">
@@ -1234,7 +1270,7 @@ function formatDate(date: string | null): string {
   .cv-paper {
     width: min(210mm, 100%);
     min-height: 297mm;
-    margin: 0 auto 4rem;
+    margin: 2rem auto 4rem;
     padding: 14mm 15mm;
     background: #fff;
     color: #18181b;
