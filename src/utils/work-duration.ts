@@ -9,11 +9,16 @@ function toMonthIndex(value: string): number {
   return year * 12 + month - 1
 }
 
-export function formatWorkDuration(
+interface WorkPeriod {
+  start: string
+  end: string | null
+}
+
+function getWorkDurationMonths(
   start: string,
   end: string | null,
-  currentDate = new Date(),
-): string {
+  currentDate: Date,
+): number {
   const startMonth = toMonthIndex(start)
   const endMonth = end
     ? toMonthIndex(end)
@@ -23,9 +28,33 @@ export function formatWorkDuration(
   if (totalMonths < 1)
     throw new Error(`Work end date cannot precede start date: ${start}`)
 
+  return totalMonths
+}
+
+function formatDuration(totalMonths: number): string {
   const years = Math.floor(totalMonths / 12)
   const months = totalMonths % 12
   return [years > 0 && `${years} 年`, months > 0 && `${months} 個月`]
     .filter(Boolean)
     .join(' ')
+}
+
+export function formatWorkDuration(
+  start: string,
+  end: string | null,
+  currentDate = new Date(),
+): string {
+  return formatDuration(getWorkDurationMonths(start, end, currentDate))
+}
+
+export function formatWorkPeriodsDuration(
+  periods: WorkPeriod[],
+  currentDate = new Date(),
+): string {
+  const totalMonths = periods.reduce(
+    (total, period) =>
+      total + getWorkDurationMonths(period.start, period.end, currentDate),
+    0,
+  )
+  return formatDuration(totalMonths)
 }

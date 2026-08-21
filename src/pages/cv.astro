@@ -5,7 +5,7 @@ import portrait from '~/content/images/me.png'
 import IconEmail from '~/icons/email.svg'
 import IconGithub from '~/icons/github.svg'
 import IconSend from '~/icons/send.svg'
-import { formatWorkDuration } from '~/utils/work-duration'
+import { formatWorkPeriodsDuration } from '~/utils/work-duration'
 
 const workExperience = [
   {
@@ -349,19 +349,20 @@ function formatDate(date: string | null): string {
             workExperience.map((job) => (
               <article class="cv-timeline-entry">
                 <div class="cv-timeline-date space-y-3 font-mono text-xs font-semibold text-accent">
-                  {job.periods.map((period) => (
-                    <p>
-                      {formatDate(period.start)} - {formatDate(period.end)}
-                      <span
-                        class="mt-1 block text-foreground/48"
-                        data-work-duration
-                        data-work-start={period.start}
-                        data-work-end={period.end ?? ''}
-                      >
-                        {formatWorkDuration(period.start, period.end)}
-                      </span>
-                    </p>
-                  ))}
+                  <div class="space-y-1">
+                    {job.periods.map((period) => (
+                      <p>
+                        {formatDate(period.start)} - {formatDate(period.end)}
+                      </p>
+                    ))}
+                  </div>
+                  <p
+                    class="text-foreground/48"
+                    data-work-duration
+                    data-work-periods={JSON.stringify(job.periods)}
+                  >
+                    {formatWorkPeriodsDuration(job.periods)}
+                  </p>
                 </div>
                 <div>
                   <h3 class="text-xl font-bold text-foreground">{job.title}</h3>
@@ -702,19 +703,20 @@ function formatDate(date: string | null): string {
                         </p>
                       </div>
                       <div class="shrink-0 space-y-1.5 text-right text-[0.625rem] font-semibold text-[#4b5563]">
-                        {job.periods.map((period) => (
-                          <p>
-                            {formatDate(period.start)} - {formatDate(period.end)}
-                            <span
-                              class="mt-0.5 block text-[#6b7280]"
-                              data-work-duration
-                              data-work-start={period.start}
-                              data-work-end={period.end ?? ''}
-                            >
-                              {formatWorkDuration(period.start, period.end)}
-                            </span>
-                          </p>
-                        ))}
+                        <div>
+                          {job.periods.map((period) => (
+                            <p>
+                              {formatDate(period.start)} - {formatDate(period.end)}
+                            </p>
+                          ))}
+                        </div>
+                        <p
+                          class="text-[#6b7280]"
+                          data-work-duration
+                          data-work-periods={JSON.stringify(job.periods)}
+                        >
+                          {formatWorkPeriodsDuration(job.periods)}
+                        </p>
                       </div>
                     </div>
                     <p class="mt-1 text-[0.625rem] text-[#6b7280]">{job.department}</p>
@@ -849,14 +851,14 @@ function formatDate(date: string | null): string {
 </Layout>
 
 <script>
-  import { formatWorkDuration } from '~/utils/work-duration'
+  import { formatWorkPeriodsDuration } from '~/utils/work-duration'
 
   function updateWorkDurations(root: HTMLElement) {
     root.querySelectorAll<HTMLElement>('[data-work-duration]').forEach((element) => {
-      const start = element.dataset.workStart
-      if (!start) return
+      const periods = element.dataset.workPeriods
+      if (!periods) return
 
-      element.textContent = formatWorkDuration(start, element.dataset.workEnd || null)
+      element.textContent = formatWorkPeriodsDuration(JSON.parse(periods))
     })
   }
 
