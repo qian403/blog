@@ -149,8 +149,8 @@ export default defineConfig({
         if (pathname === '/links') return false
         if (pathname === '/markdown-preview') return false
         if (/^\/posts\/\d+$/.test(pathname)) return false
-        // Tag archives are crawlable through article links, but most contain only
-        // one article and add a large number of low-value URLs to the sitemap.
+        // Tag archives remain crawlable so search engines can see their noindex
+        // directive, but they do not belong in the sitemap's core URL set.
         if (pathname.startsWith('/tags/')) return false
 
         return true
