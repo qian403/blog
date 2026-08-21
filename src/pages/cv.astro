@@ -14,8 +14,10 @@ const workExperience = [
     department: '系統維運與安全部門',
     summary: '負責系統維運、資訊安全，以及全端開發。',
     focus: ['系統維運', '資訊安全', '前後端開發'],
-    start: '2024-11',
-    end: null as string | null,
+    periods: [
+      { start: '2024-11', end: '2025-06' },
+      { start: '2025-12', end: null },
+    ],
   },
   {
     title: '實習網路管理工程師',
@@ -23,8 +25,7 @@ const workExperience = [
     department: '電腦部門',
     summary: '參與企業網路環境、設備與日常資訊系統的管理維護。',
     focus: ['網路管理', '設備維護', '技術支援'],
-    start: '2020-07',
-    end: '2023-08',
+    periods: [{ start: '2020-07', end: '2023-08' }],
   },
 ]
 
@@ -347,17 +348,21 @@ function formatDate(date: string | null): string {
           {
             workExperience.map((job) => (
               <article class="cv-timeline-entry">
-                <p class="cv-timeline-date font-mono text-xs font-semibold text-accent">
-                  {formatDate(job.start)} - {formatDate(job.end)}
-                  <span
-                    class="mt-1 block text-foreground/48"
-                    data-work-duration
-                    data-work-start={job.start}
-                    data-work-end={job.end ?? ''}
-                  >
-                    {formatWorkDuration(job.start, job.end)}
-                  </span>
-                </p>
+                <div class="cv-timeline-date space-y-3 font-mono text-xs font-semibold text-accent">
+                  {job.periods.map((period) => (
+                    <p>
+                      {formatDate(period.start)} - {formatDate(period.end)}
+                      <span
+                        class="mt-1 block text-foreground/48"
+                        data-work-duration
+                        data-work-start={period.start}
+                        data-work-end={period.end ?? ''}
+                      >
+                        {formatWorkDuration(period.start, period.end)}
+                      </span>
+                    </p>
+                  ))}
+                </div>
                 <div>
                   <h3 class="text-xl font-bold text-foreground">{job.title}</h3>
                   <p class="mt-1 text-sm font-semibold text-foreground/68">
@@ -696,17 +701,21 @@ function formatDate(date: string | null): string {
                           {job.company}
                         </p>
                       </div>
-                      <p class="shrink-0 text-right text-[0.625rem] font-semibold text-[#4b5563]">
-                        {formatDate(job.start)} - {formatDate(job.end)}
-                        <span
-                          class="mt-0.5 block text-[#6b7280]"
-                          data-work-duration
-                          data-work-start={job.start}
-                          data-work-end={job.end ?? ''}
-                        >
-                          {formatWorkDuration(job.start, job.end)}
-                        </span>
-                      </p>
+                      <div class="shrink-0 space-y-1.5 text-right text-[0.625rem] font-semibold text-[#4b5563]">
+                        {job.periods.map((period) => (
+                          <p>
+                            {formatDate(period.start)} - {formatDate(period.end)}
+                            <span
+                              class="mt-0.5 block text-[#6b7280]"
+                              data-work-duration
+                              data-work-start={period.start}
+                              data-work-end={period.end ?? ''}
+                            >
+                              {formatWorkDuration(period.start, period.end)}
+                            </span>
+                          </p>
+                        ))}
+                      </div>
                     </div>
                     <p class="mt-1 text-[0.625rem] text-[#6b7280]">{job.department}</p>
                     <p class="mt-2 text-[0.6875rem]/5 text-[#374151]">{job.summary}</p>
