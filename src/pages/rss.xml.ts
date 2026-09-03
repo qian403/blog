@@ -17,7 +17,7 @@ export async function GET(_context: AstroGlobal) {
   const posts = await getSortedPosts()
   return rss({
     stylesheet: '/rss.xsl',
-    title: siteConfig.title,
+    title: 'CHIEN 的技術筆記｜網路技術、資訊安全、BGP、Linux 與系統維運最新文章',
     description: siteConfig.description,
     site: siteConfig.site,
     items: posts.map((post) => ({

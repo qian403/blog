@@ -10,7 +10,7 @@ draft: false
 lang: ''
 ---
 
-# Introduction
+## Introduction
 
 這裡放的是一些解題紀錄。
 如果某題沒有出現在這裡，只有兩種可能：一是我已經解過了，二是我還沒解到。
@@ -159,3 +159,7 @@ open(chr(47) + 'flag' + chr(46) + 'txt').read()
 
 **Flag：**
 `picoCTF{這些瓷磚能捕捉你腳步產生的動能。}`
+
+## 延伸閱讀
+
+如果想先從基礎題型開始，可以參考 [PicoCTF Web Exploitation Easy 分級解題紀錄](/posts/picoctf_easy/)，再回來比較不同漏洞的利用條件。

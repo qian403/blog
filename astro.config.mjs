@@ -151,7 +151,7 @@ export default defineConfig({
         if (/^\/posts\/\d+$/.test(pathname)) return false
         // Tag archives remain crawlable so search engines can see their noindex
         // directive, but they do not belong in the sitemap's core URL set.
-        if (pathname.startsWith('/tags/')) return false
+        if (pathname === '/tags' || pathname.startsWith('/tags/')) return false
 
         return true
       },

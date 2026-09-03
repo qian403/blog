@@ -215,8 +215,7 @@ Status for the jail: sshd
 
 ---
 
-## 一些花式用法
+## 延伸閱讀
 
-:::info
-之後補上
-:::
+- [MTR 網路診斷工具完整教學：Linux 網路追蹤與監控指南](/posts/mtr-basic/)
+- [dig 指令完整教學：DNS 查詢、範例與故障排除](/posts/dig-guide/)

@@ -159,3 +159,7 @@ Heap dump（堆轉儲）是 Java 虛擬機（JVM）在特定時間點的內存�
 
 - FLAG
   - picoCTF{||自己去試試看啦haskdlfjdisgsdmgzld||}
+
+## 延伸閱讀
+
+完成 Easy 題目後，可以接著看 [PicoCTF Web Exploitation Medium 分級解題紀錄](/posts/picoctf_med_web/)，比較 SSTI、`eval()` 黑名單繞過等題型的解題思路。

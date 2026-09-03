@@ -16,6 +16,10 @@ export const getStaticPaths = (async ({ paginate }) => {
 const { page } = Astro.props
 const pageTitle =
   page.currentPage > 1 ? `文章彙整（第 ${page.currentPage} 頁）` : '文章彙整'
+const seoTitle =
+  page.currentPage > 1
+    ? `技術文章彙整第 ${page.currentPage} 頁｜網路、資安、BGP、Linux 與系統維運｜CHIEN 的技術筆記`
+    : '技術文章彙整｜網路、資安、BGP、Linux 與系統維運｜CHIEN 的技術筆記'
 const pageDescription =
   page.currentPage > 1
     ? `第 ${page.currentPage} 頁的技術文章彙整，收錄網路技術、資訊安全、BGP、DevOps 與 Linux 主題文章。`
@@ -39,6 +43,7 @@ const itemList = page.data.map((post, index) => ({
 
 <Layout
   title={pageTitle}
+  seoTitle={seoTitle}
   description={pageDescription}
   pageType="collection"
   noindex={page.currentPage > 1}

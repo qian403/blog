@@ -10,7 +10,7 @@ draft: false
 lang: 'zh-TW'
 ---
 
-# uv：極速 Python 套件與專案管理工具
+## uv：極速 Python 套件與專案管理工具
 
 :::tip
 **已經在使用 uv 了嗎？**  

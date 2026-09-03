@@ -56,6 +56,25 @@ if (addendum.length > 0) {
 }
 
 const sortedPosts = await getSortedPosts()
+const normalizedPostTags = new Set(
+  postData.tags.map((tag) => tag.trim().toLocaleLowerCase()),
+)
+const relatedPosts = sortedPosts
+  .filter((candidate) => candidate.id !== post.id)
+  .map((candidate) => ({
+    post: candidate,
+    sharedTagCount: candidate.data.tags.filter((tag) =>
+      normalizedPostTags.has(tag.trim().toLocaleLowerCase()),
+    ).length,
+  }))
+  .filter(({ sharedTagCount }) => sharedTagCount > 0)
+  .sort(
+    (a, b) =>
+      b.sharedTagCount - a.sharedTagCount ||
+      b.post.data.published.getTime() - a.post.data.published.getTime(),
+  )
+  .slice(0, 3)
+  .map(({ post: relatedPost }) => relatedPost)
 
 // Get series posts if this post is part of a series
 let series: Collation<'posts'> | undefined
@@ -159,6 +178,13 @@ if (postData.tags && postData.tags.length > 0) {
         <DividerText text={`${series.title} Series`} />
         {series.entries.map((seriesPost) => (
           <PostPreview post={seriesPost} />
+        ))}
+      </section>
+    ) : relatedPosts.length > 0 ? (
+      <section>
+        <DividerText text="Related Posts" />
+        {relatedPosts.map((relatedPost) => (
+          <PostPreview post={relatedPost} />
         ))}
       </section>
     ) : prev || next ? (

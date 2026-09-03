@@ -9,7 +9,7 @@ draft: false
 lang: ''
 ---
 
-# 客製化你的 Astro Blog
+## 客製化你的 Astro Blog
 
 在用了一陣子的 Astro 之後發現我的模板其實有些功能是我想要但是原本沒有的，因此我就嘗試自己動手修改一些功能，這篇文章就是紀錄以及教學如何客製化你的 Blog。
 
@@ -209,3 +209,7 @@ import SiteRuntime from '../components/SiteRuntime.astro'
   </div>
 </footer>
 ```
+
+## 延伸閱讀
+
+如果你也會用 Markdown 維護文章，可以接著參考 [Markdown 完整教學指南](/posts/markdown/)，確認標題、程式碼區塊、圖片與數學公式的寫法。

@@ -25,7 +25,12 @@ const latestPosts = recentPosts.slice(0, 5)
 const postsHaveSeries = sortedPosts.some((post) => post.data.series)
 ---
 
-<Layout description={siteConfig.description} pageType="website" wide>
+<Layout
+  seoTitle="CHIEN 的技術筆記｜網路技術、資訊安全、BGP、Linux 與系統維運實戰分享"
+  description={siteConfig.description}
+  pageType="website"
+  wide
+>
   {
     HomeContent && (
       <HomeBanner avatarImage={homeAvatarImage}>

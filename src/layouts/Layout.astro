@@ -24,6 +24,7 @@ interface ItemListEntry {
 
 interface Props {
   title?: string
+  seoTitle?: string
   description?: string
   tags?: string[]
   author?: string
@@ -41,6 +42,7 @@ interface Props {
 
 const {
   title,
+  seoTitle,
   description,
   tags,
   author,
@@ -59,7 +61,8 @@ const legacyLayout = legacy
 const normalizedSite = siteConfig.site.replace(/\/$/, '')
 const pageUrl = canonical || new URL(Astro.url.pathname, Astro.site).href
 const metadataType = pageType === 'article' ? 'article' : 'website'
-const pageTitle = title ? `${title} - ${siteConfig.title}` : siteConfig.title
+const pageTitle =
+  seoTitle || (title ? `${title} - ${siteConfig.title}` : siteConfig.title)
 const pageDescription = description || siteConfig.description
 const pageAuthor = author || siteConfig.author
 const articleSocialCard =

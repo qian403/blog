@@ -161,5 +161,7 @@ MTR 是網路診斷的瑞士刀，結合了 ping 的持續監控和 traceroute �
 
 想了解更多關於 MTR 和網路診斷的知識嗎？推薦以下資源：
 
+- [dig 指令完整教學：DNS 查詢、範例與故障排除](/posts/dig-guide/)
+- [curl 完整教學：HTTP 請求、API 測試與網站故障排除](/posts/curl-guide/)
 - [MTR：Linux 網路診斷工具使用教學](https://blog.gtwang.org/linux/mtr-linux-network-diagnostic-tool/)
 - [Linux MTR 命令使用解释](https://blog.csdn.net/duxing_langzi/article/details/110278793)
