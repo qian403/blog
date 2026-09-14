@@ -1,213 +1,209 @@
 ---
-title: '如何更改電腦與手機的 DNS 設定？完整教學指南'
+title: '如何更改 DNS？Windows、macOS、Linux 與手機設定教學'
 published: 2025-12-04
-description: '詳細教學如何在 Windows、macOS、Linux、iOS 和 Android 等各平台上更改 DNS 設定，提升網路速度與安全性。繞過小紅書封鎖、突破網路長城限制。'
-image: ''
-tags:
-  [
-    DNS,
-    Network,
-    Windows,
-    macOS,
-    Linux,
-    iOS,
-    Android,
-    Tutorial,
-    小紅書,
-    封鎖,
-    RPZ,
-    網路長城,
-    GFW,
-    DNS封鎖,
-    翻牆,
-    網路審查,
-    小紅書被封,
-    DNS污染,
-  ]
-category: 'Network'
+lastUpdated: 2026-09-14
+description: '整理 Windows、macOS、Linux、iOS 與 Android 的 DNS 設定、驗證及還原方式，說明系統 DNS、瀏覽器 DoH 與私人 DNS 的差異，以及更換 DNS 的限制。'
+tags: [DNS, Network, Windows, macOS, Linux, iOS, Android, DoH, DoT, 網路診斷]
 draft: false
-lang: 'zh-TW'
 ---
 
-## 什麼是 DNS？為什麼要更改它？
+## 先確認要改哪一層 DNS
 
-**DNS（Domain Name System）** 是網際網路的「電話簿」，負責將網址（如 `google.com`）轉換成 IP 位址。
+DNS（Domain Name System）負責把網域名稱轉換成 IP 位址。更換 DNS 解析器可能改善查詢延遲，或排除特定解析器回傳錯誤答案的問題，但不會直接增加網路頻寬，也不保證網站下載更快。
 
-DNS 也常被用作**網路審查**工具。透過 **DNS 污染**、**RPZ (Response Policy Zone)** 等技術，政府或 ISP 可以封鎖特定網站。最近的例子就是台灣政府封鎖**小紅書**。這種手法也是中國**網路長城（GFW）**的手段之一，不過 GFW 還結合了 IP 封鎖、深度封包檢測（DPI）等更複雜的技術。
+設定之前，先分清楚你要處理的範圍：
 
-### 更改 DNS 的好處
+| 設定位置                | 影響範圍                 | 驗證方式                                     |
+| ----------------------- | ------------------------ | -------------------------------------------- |
+| 作業系統／網路連線      | 使用系統解析器的應用程式 | 檢查連線設定，搭配 `nslookup` 或系統解析工具 |
+| 瀏覽器安全 DNS（DoH）   | 使用該設定的瀏覽器請求   | 查看瀏覽器設定，搭配提供者的診斷頁           |
+| Android 私人 DNS（DoT） | 使用系統解析機制的請求   | 查看私人 DNS 連線狀態，再測試解析            |
 
-- **提升網路速度**：某些 DNS 伺服器回應更快
-- **增強安全性**：防止釣魚網站和惡意軟體
-- **改善隱私**：避免 ISP 追蹤瀏覽記錄
-- **繞過網路限制**：訪問被封鎖的網站（如小紅書）
+應用程式可能使用自己的解析器，VPN 或公司管理政策也可能接管 DNS。瀏覽器設定成功，不代表其他程式也會使用同一個 DNS。
 
-:::important
-更改為國際公共 DNS(如 Google 8.8.8.8 或 Cloudflare 1.1.1.1)可繞過 DNS 封鎖,但請注意可能涉及法律問題,使用前請自行評估風險。
-:::
+本文整理設定操作與判讀方式；選單名稱可能隨作業系統版本、手機品牌或管理政策不同。修改前先記下原本的設定，方便還原。
 
-### 推薦的公共 DNS
+## 選擇公共 DNS
 
-| DNS 提供商     | 主要 DNS  | 備用 DNS          | 特色                       |
-| -------------- | --------- | ----------------- | -------------------------- |
-| **Google**     | `8.8.8.8` | `8.8.4.4`         | 速度快、穩定性高、全球覆蓋 |
-| **Cloudflare** | `1.1.1.1` | `1.0.0.1`         | 注重隱私、速度最快         |
-| **Quad9**      | `9.9.9.9` | `149.112.112.112` | 主打安全性                 |
+| 提供者             | IPv4 位址                    | 適合留意的特性                                   |
+| ------------------ | ---------------------------- | ------------------------------------------------ |
+| Google Public DNS  | `8.8.8.8`、`8.8.4.4`         | 一般公共解析服務                                 |
+| Cloudflare 1.1.1.1 | `1.1.1.1`、`1.0.0.1`         | 一般公共解析服務；惡意網站過濾使用另外的服務位址 |
+| Quad9              | `9.9.9.9`、`149.112.112.112` | 預設服務包含惡意網域封鎖                         |
 
-## 電腦端設定
-
-:::tip
-**最快方法**：想快速繞過 DNS 封鎖（如小紅書），建議先試「方法一：瀏覽器設定」，幾秒鐘就能完成！
-:::
-
-### 方法一：瀏覽器設定（最簡單）
-
-現代瀏覽器內建安全 DNS（DoH）功能，**最快速且不影響系統**。
-
-#### Chrome / Edge / Brave
-
-1. 點選右上角 `⋮` > 「設定」> 「隱私權和安全性」> 「安全性」
-2. 啟用「使用安全 DNS」，選擇 **Google Public DNS** 或 **Cloudflare**
-3. 立即生效，無需重啟
-
-#### Firefox
-
-1. 點選 `☰` > 「設定」> 「隱私權與安全性」
-2. 勾選「啟用 DNS over HTTPS」
-3. 選擇 **Cloudflare** 或 **Google**
+沒有一個提供者在所有網路環境都最快。若要比較，可用 [dig 查詢教學](/posts/dig-guide/) 的方法，對同一組網域重複測量查詢時間，區分有、無快取的結果。
 
 :::note
-**優點**：只影響瀏覽器，適合快速測試  
-**限制**：其他應用程式仍使用系統 DNS
+只更換 DNS IP 不代表啟用加密。傳統 DNS 通常使用 UDP／TCP 53；DoH 使用 HTTPS，DoT 使用 TLS。加密 DNS 可以保護用戶端到解析器之間的查詢傳輸，但解析器仍能看到查詢，ISP 也仍可能看到目的 IP 等連線資訊。
 :::
 
-### 方法二：Windows 系統設定
+## 瀏覽器：設定安全 DNS（DoH）
 
-#### 圖形介面
+### Chrome、Edge 與 Brave
 
-1. 按 `Win + I` > 「網路和網際網路」> 「進階網路設定」> 「變更介面卡選項」
-2. 在網路連線上按右鍵 > 「內容」
-3. 雙擊「網際網路通訊協定第 4 版 (TCP/IPv4)」
-4. 選擇「使用下列的 DNS 伺服器位址」
-   - 慣用：`8.8.8.8`
-   - 其他：`8.8.4.4`
-5. 點選「確定」
+1. 開啟設定，搜尋「安全 DNS」。
+2. 找到「使用安全 DNS」並啟用。
+3. 選擇指定提供者，或依提供者官方文件填入 DoH 網址。
 
-#### PowerShell（進階）
+這些瀏覽器的選單位置不完全相同，使用設定頁的搜尋功能較容易找到。受管理的裝置可能無法修改。
+
+### Firefox
+
+1. 開啟「設定」→「隱私權與安全性」。
+2. 找到「DNS over HTTPS」，選擇適合的保護層級及提供者。
+3. 檢查頁面顯示的連線狀態。
+
+自動模式可能依網路環境停用 DoH，或在連線失敗時回退。若指定自訂提供者，請使用其公布的 DoH 端點。
+
+### 如何驗證瀏覽器 DoH
+
+使用 Cloudflare 時，可在同一個瀏覽器開啟 [1.1.1.1 診斷頁](https://1.1.1.1/help)，查看連線與 DoH 狀態。其他提供者請依其診斷文件檢查；DNS 洩漏測試通常只能協助辨識解析器，不能單獨證明傳輸已加密。
+
+**不要用 `nslookup` 的結果判定瀏覽器 DoH 是否成功。** 它的查詢路徑可能與瀏覽器不同。DNS 快取、VPN 及擴充功能也可能影響測試結果。
+
+## Windows：修改網路介面的 DNS
+
+### 圖形介面
+
+以下使用傳統網路連線視窗，方便在不同 Windows 版本操作：
+
+1. 按 `Win + R`，輸入 `ncpa.cpl`。
+2. 找到正在使用的 Wi-Fi 或乙太網路介面，右鍵開啟「內容」。
+3. 選取「網際網路通訊協定第 4 版 (TCP/IPv4)」→「內容」。
+4. 選擇「使用下列的 DNS 伺服器位址」，填入 `8.8.8.8` 與 `8.8.4.4`。
+5. 儲存設定，再測試網站是否能解析。
+
+這些步驟只設定 IPv4。若連線也取得 IPv6 DNS，請一併檢查；不要為了更換 DNS 而任意停用 IPv6。
+
+### PowerShell
+
+以系統管理員身分開啟 PowerShell，先確認介面名稱與原本設定：
 
 ```powershell
-# 以系統管理員身分執行
+Get-DnsClientServerAddress
 Set-DnsClientServerAddress -InterfaceAlias "Wi-Fi" -ServerAddresses ("8.8.8.8","8.8.4.4")
+Get-DnsClientServerAddress -InterfaceAlias "Wi-Fi"
 ```
 
-### 方法三：macOS 系統設定
+把 `Wi-Fi` 替換成實際介面名稱。若原本由 DHCP 自動取得 DNS，可用以下指令恢復；若原本是手動設定，請填回先前記錄的位址：
 
-1. Apple 選單 > 「系統設定」> 「網路」
-2. 選擇連線 > 「詳細資料」> 「DNS」
-3. 點選 `+` 新增 DNS：`8.8.8.8` 和 `8.8.4.4`
-4. 點選「好」> 「套用」
+```powershell
+Set-DnsClientServerAddress -InterfaceAlias "Wi-Fi" -ResetServerAddresses
+```
 
-**終端機方式**：
+## macOS：修改網路服務的 DNS
+
+1. 開啟「系統設定」→「網路」。
+2. 選取正在使用的網路服務，開啟「詳細資訊」→「DNS」。
+3. 記錄原本的手動項目，新增 `8.8.8.8` 與 `8.8.4.4` 並儲存。
+
+也可以在終端機先列出網路服務，再修改指定服務：
 
 ```bash
-sudo networksetup -setdnsservers Wi-Fi 8.8.8.8 8.8.4.4
+networksetup -listallnetworkservices
+networksetup -getdnsservers "Wi-Fi"
+sudo networksetup -setdnsservers "Wi-Fi" 8.8.8.8 8.8.4.4
+scutil --dns
 ```
 
-## 手機端設定
-
-### iOS
-
-1. 「設定」> 「Wi-Fi」> 點選網路旁的 `ⓘ`
-2. 「設定 DNS」> 選擇「手動」
-3. 刪除現有 DNS，新增 `8.8.8.8` 和 `8.8.4.4`
-4. 點選「儲存」
-
-:::tip
-推薦安裝 Google 或 Cloudflare 的 App (如 1.1.1.1) 啟用加密 DNS
-:::
-
-### Android
-
-#### 私人 DNS（推薦，Android 9+）
-
-1. 「設定」> 「網路和網際網路」> 「私人 DNS」
-2. 選擇「私人 DNS 提供者主機名稱」
-3. 輸入：
-   - Cloudflare：`1dot1dot1dot1.cloudflare-dns.com`
-   - Google：`dns.google`
-4. 點選「儲存」
-
-:::important
-私人 DNS 使用 DoT 協定，提供更好的隱私保護
-:::
-
-#### Wi-Fi 設定
-
-1. 長按 Wi-Fi 網路 > 「修改網路」> 「進階選項」
-2. IP 設定改為「靜態」
-3. DNS 1：`8.8.8.8`，DNS 2：`8.8.4.4`
-
-## 如何測試 DNS 是否生效？
-
-### 線上檢測
-
-- [Cloudflare 檢測](https://1.1.1.1/help)
-- [DNS Leak Test](https://dnsleaktest.com/)
-
-### 命令列
+`scutil --dns` 可查看包含 VPN、作用範圍等資訊的解析器設定。若原本是自動取得，可清除這個服務的手動 DNS：
 
 ```bash
-# Windows/macOS/Linux
-nslookup google.com
+sudo networksetup -setdnsservers "Wi-Fi" Empty
 ```
 
-查看輸出中的「Server」欄位，應顯示你設定的 DNS。
+## Linux：依網路管理工具設定
 
-## 常見問題 FAQ
+### NetworkManager（桌面環境常見）
 
-### Q1: 更改 DNS 會影響網路速度嗎？
+先確認作用中的連線名稱：
 
-可以稍微提升速度，但差異不明顯。最大好處是穩定性和安全性。
+```bash
+nmcli connection show --active
+```
 
-### Q2: 我該選擇哪個 DNS？
+以下的 `你的連線名稱` 是佔位文字，請替換成查到的名稱。先記錄設定，再指定 IPv4 DNS，並忽略 DHCP 提供的 IPv4 DNS：
 
-- **一般使用者**：Google (8.8.8.8) 或 Cloudflare (1.1.1.1)
-- **注重隱私**：Cloudflare (1.1.1.1)
-- **注重安全**：Quad9 (9.9.9.9)
+```bash
+nmcli connection show "你的連線名稱"
+sudo nmcli connection modify "你的連線名稱" ipv4.dns "1.1.1.1 1.0.0.1" ipv4.ignore-auto-dns yes
+sudo nmcli connection up "你的連線名稱"
+nmcli device show
+```
 
-### Q3: 如何恢復預設設定？
+重新啟用連線可能短暫斷線，透過 SSH 管理主機時應先準備可用的復原管道。IPv6 使用獨立設定，若要一併修改，請依提供者文件設定 `ipv6.dns` 與 `ipv6.ignore-auto-dns`。
 
-將 DNS 改回「自動取得」或「DHCP」即可。
+若原本使用自動 DNS，可還原：
 
-### Q4: 什麼是 RPZ？台灣有封鎖網站嗎？
+```bash
+sudo nmcli connection modify "你的連線名稱" ipv4.dns "" ipv4.ignore-auto-dns no
+sudo nmcli connection up "你的連線名稱"
+```
 
-**RPZ (Response Policy Zone)** 是 DNS 層級的內容過濾技術。台灣自 2020 年起要求電信業者實施 RPZ，原意是防詐騙，但出現爭議：
+### systemd-resolved：臨時指定解析器
 
-- 🚫 某些網站僅憑公文就被封鎖
-- ⚠️ 誤封事件：Instagram、小紅書等
-- 📋 缺乏申訴管道
+先以 `resolvectl status` 確認介面名稱。以下使用 `eth0` 作為範例：
 
-:::warning
-更改 DNS 訪問被誤封的合法網站（如小紅書）是合理自保，但訪問明顯違法內容仍可能觸法。
-:::
+```bash
+resolvectl status
+sudo resolvectl dns eth0 1.1.1.1 1.0.0.1
+resolvectl query example.com
+```
 
-### Q5: 更改 DNS 就能完全翻牆了嗎？
+這是執行期間設定，重開機或網路管理服務重設介面後可能消失；要永久保存，應修改實際管理該介面的 NetworkManager、systemd-networkd 或 Netplan 設定。多介面或 VPN 環境還會受 DNS 路由影響。
 
-**不完全是**。DNS 封鎖只是網路審查的一種：
+移除臨時介面設定可用 `sudo resolvectl revert eth0`。不要直接把 `/etc/resolv.conf` 改成固定檔案，因為它可能由網路管理工具維護。
 
-- ✅ **DNS 封鎖**：更改 DNS 可繞過（台灣 RPZ、中國 DNS 污染）
-- ❌ **IP 封鎖**：需要 VPN
-- ❌ **深度封包檢測（DPI）**：需要 VPN
+## iOS：Wi-Fi 的手動 DNS
 
-中國的 GFW 同時使用三種技術，單純更改 DNS 無法突破。但台灣目前僅 DNS 層級封鎖，更改 DNS 就足夠。
+1. 開啟「設定」→「Wi-Fi」，點選目前網路旁的 `ⓘ`。
+2. 在「設定 DNS」選擇「手動」。
+3. 記錄原本設定，替換成 `8.8.8.8` 與 `8.8.4.4`，再儲存。
 
-## 結語
+這只影響該 Wi-Fi 網路，不會同時修改行動數據的 DNS，也不代表啟用加密 DNS。要恢復自動設定，回到同一頁選擇「自動」。
 
-更改 DNS 是簡單有效的網路優化方式，幾分鐘就能完成。無論是提升速度、安全性或隱私保護，都值得一試！
+若使用提供者的 App，請確認啟用的是 DNS 功能還是 VPN／隧道模式，兩者影響的流量範圍不同。
 
-:::note
-**延伸閱讀**：
+## Android：私人 DNS（Android 9 以上）
 
-- [Cloudflare 1.1.1.1 官方網站](https://1.1.1.1/)
-- [什麼是 DNS over HTTPS?](https://www.cloudflare.com/learning/dns/dns-over-tls/)
-:::
+1. 在設定中搜尋「私人 DNS」。
+2. 選擇「私人 DNS 提供者主機名稱」。
+3. 輸入 `dns.google` 或 `one.one.one.one`，再儲存。
+
+這裡需要的是提供者主機名稱，不是 `8.8.8.8` 之類的 IP 位址。私人 DNS 使用 DoT；指定提供者後，如果網路阻擋其連線，系統 DNS 解析可能失敗，可先改回「自動」確認問題。
+
+不建議只為更換 DNS 就把 Wi-Fi 的 IP 設定改成「靜態」。若未正確填入 IP、閘道與網路前綴，可能造成斷線或位址衝突。
+
+## 驗證系統 DNS：查詢成功不等於設定已全面生效
+
+可以先執行以下查詢：
+
+```bash
+nslookup example.com
+```
+
+觀察回應的伺服器與解析結果。若看到 `127.0.0.53` 或路由器位址，可能只是本機 stub resolver 或 DNS 轉送器，不能直接判定設定失敗；Linux 可再查 `resolvectl status`，macOS 可查 `scutil --dns`。
+
+若要單獨測試指定解析器是否可用：
+
+```bash
+nslookup example.com 1.1.1.1
+```
+
+**指定伺服器的查詢成功，只證明這次查詢可用，不代表系統或瀏覽器已改用它。** 網站仍打不開時，可繼續用 [curl 排查 HTTP、TLS 與連線問題](/posts/curl-guide/)，不要把所有連線故障都歸因於 DNS。
+
+## 更換 DNS 能繞過哪些限制？
+
+若問題來自特定解析器的過濾政策，例如 RPZ，改用其他可連線的解析器可能取得不同答案。但途中若存在 DNS 攔截、IP 封鎖、TLS／SNI 過濾，或服務本身的存取限制，單純更換 DNS 不一定有效。
+
+因此，不能把「更換公共 DNS」當作所有網站封鎖的通用解法，也不能只憑一次成功查詢，就判定整個網路沒有其他限制。
+
+## 延伸閱讀與官方文件
+
+- [dig 指令教學：比較解析器與排查 DNS 問題](/posts/dig-guide/)
+- [MTR 網路診斷：檢查路徑與封包遺失](/posts/mtr-basic/)
+- [Google Public DNS 設定文件](https://developers.google.com/speed/public-dns/docs/using)
+- [Cloudflare 1.1.1.1 設定文件](https://developers.cloudflare.com/1.1.1.1/setup/)
+- [DNS over HTTPS（DoH）說明](https://www.cloudflare.com/learning/dns/dns-over-https/)
+- [DNS over TLS（DoT）說明](https://www.cloudflare.com/learning/dns/dns-over-tls/)
+- [Quad9 服務位址與功能](https://docs.quad9.net/services/)

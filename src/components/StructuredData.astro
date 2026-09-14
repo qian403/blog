@@ -204,4 +204,7 @@ const structuredData = {
 }
 ---
 
-<script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+<script
+  type="application/ld+json"
+  set:html={JSON.stringify(structuredData).replace(/</g, '\\u003c')}
+/>

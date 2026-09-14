@@ -1,6 +1,7 @@
 ---
 title: 'dig 指令完整教學：DNS 查詢、範例與故障排除'
 published: 2026-03-18
+lastUpdated: 2026-09-14
 description: '從 dig 基本語法到 A、AAAA、MX、TXT、NS、SOA、PTR 查詢，學會用 dig 排查 DNS 設定錯誤、快取與授權問題。'
 image: ''
 tags: [DNS, dig, Network, Linux, DevOps, 故障排除, 網路診斷, 命令列]
@@ -125,7 +126,7 @@ cloudflare.com.         192     IN      A       104.16.133.229
 
 - `status: NOERROR`：查詢成功
 - `ANSWER SECTION`：真正查到的答案
-- `300`：TTL，代表快取存活秒數
+- `192`：此範例回應中的 TTL，代表記錄還可快取的秒數
 - `SERVER`：這次是問哪台 DNS 伺服器
 - `Query time`：查詢耗時
 

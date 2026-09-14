@@ -33,7 +33,7 @@ const config: SiteConfig = {
   // Path to the image used for generating social media previews.
   // Needs to be a square JPEG file due to limitations of the social card generator.
   // Try https://squoosh.app/ to easily convert images to JPEG.
-  socialCardAvatarImage: './src/content/avatar.jpg',
+  socialCardAvatarImage: './public/avatar.jpg',
   // System monospace stack avoids a render-blocking font download and late font swap.
   font: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New'",
   // For pagination, the number of posts to display per page.

@@ -32,8 +32,12 @@ const remarkDescription: RemarkPlugin = (options?: { maxChars?: number }) => {
     let description = data.astro?.frontmatter?.description || findFirstParagraph(tree)
     if (description && data.astro?.frontmatter) {
       if (description.length > maxChars) {
-        const lastSpace = description.slice(0, maxChars).lastIndexOf(' ')
-        description = description.slice(0, lastSpace) + '…'
+        const excerpt = description.slice(0, maxChars - 1)
+        const lastSpace = excerpt.lastIndexOf(' ')
+        // Chinese paragraphs often have no spaces. Only prefer a word boundary
+        // near the limit so an early English word cannot erase the summary.
+        const end = lastSpace >= excerpt.length * 0.8 ? lastSpace : excerpt.length
+        description = excerpt.slice(0, end).trimEnd() + '…'
       }
       data.astro.frontmatter.description = description
     }
