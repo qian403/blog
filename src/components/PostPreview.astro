@@ -5,14 +5,15 @@ import { render } from 'astro:content'
 import Tags from '~/components/Tags.astro'
 import PostInfo from '~/components/PostInfo.astro'
 import type { Collation } from '~/types'
-import { TagsGroup } from '~/utils'
+import { dateString, TagsGroup } from '~/utils'
 
 interface Props {
   post: CollectionEntry<'posts'>
   variant?: 'default' | 'featured' | 'compact'
+  dateMode?: 'published' | 'activity'
 }
 
-const { post, variant = 'default' } = Astro.props
+const { post, variant = 'default', dateMode = 'published' } = Astro.props
 
 const { remarkPluginFrontmatter } = await render(post)
 const description = post.data.description || remarkPluginFrontmatter.description
@@ -23,6 +24,11 @@ if (post.data.tags && post.data.tags.length > 0) {
 }
 const samePage = Astro.url.pathname === `/posts/${post.id}/`
 const articleLink = samePage ? `#${post.id}` : `/posts/${post.id}/`
+const displayDate =
+  dateMode === 'activity' && post.data.lastUpdated
+    ? post.data.lastUpdated
+    : post.data.published
+const isUpdatedDate = dateMode === 'activity' && Boolean(post.data.lastUpdated)
 ---
 
 <article class="w-full py-5 my-1 md:my-4 border-accent/10">
@@ -53,9 +59,10 @@ const articleLink = samePage ? `#${post.id}` : `/posts/${post.id}/`
       <div class="group grid gap-3 border-b border-foreground/10 py-7 sm:grid-cols-[8rem_minmax(0,1fr)_auto] sm:items-start sm:gap-6">
         <time
           class="font-mono text-sm text-foreground/65"
-          datetime={post.data.published.toISOString()}
+          datetime={displayDate.toISOString()}
         >
-          {post.data.published.toISOString().slice(0, 10)}
+          {isUpdatedDate ? '更新 ' : ''}
+          {dateString(displayDate)}
         </time>
         <div class="min-w-0">
           <h2 class="text-xl font-semibold leading-snug text-heading1 sm:text-2xl">

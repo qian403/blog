@@ -19,7 +19,11 @@ if (home.length > 0) {
   homeAvatarImage = homeEntry.data.avatarImage
 }
 const sortedPosts = await getSortedPosts()
-const recentPosts = [...sortedPosts].reverse()
+const recentPosts = [...sortedPosts].sort((a, b) => {
+  const aActivity = (a.data.lastUpdated || a.data.published).getTime()
+  const bActivity = (b.data.lastUpdated || b.data.published).getTime()
+  return bActivity - aActivity || b.data.published.getTime() - a.data.published.getTime()
+})
 const latestPosts = recentPosts.slice(0, 5)
 
 const postsHaveSeries = sortedPosts.some((post) => post.data.series)
@@ -42,11 +46,11 @@ const postsHaveSeries = sortedPosts.some((post) => post.data.series)
     latestPosts.length > 0 && (
       <section aria-labelledby="latest-heading">
         <BlockHeader>
-          <span id="latest-heading">文章</span>
+          <span id="latest-heading">最新文章與更新</span>
         </BlockHeader>
         <div class="mt-4">
           {latestPosts.map((post) => (
-            <PostPreview post={post} variant="compact" />
+            <PostPreview post={post} variant="compact" dateMode="activity" />
           ))}
         </div>
         <div class="flex justify-end">

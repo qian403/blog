@@ -17,14 +17,30 @@ import Color from 'color'
 import { slug } from 'github-slugger'
 
 export function dateString(date: Date) {
-  return date.toISOString().split('T')[0]
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'Asia/Taipei',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  })
+    .formatToParts(date)
+    .reduce<Record<string, string>>((values, part) => {
+      values[part.type] = part.value
+      return values
+    }, {})
+
+  return `${parts.year}-${parts.month}-${parts.day}`
 }
 
 export function dateTimeString(date: Date) {
   const d = dateString(date)
-  const h = date.getHours().toString().padStart(2, '0')
-  const m = date.getMinutes().toString().padStart(2, '0')
-  return `${d} ${h}:${m}`
+  const time = new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'Asia/Taipei',
+    hour: '2-digit',
+    minute: '2-digit',
+    hourCycle: 'h23',
+  }).format(date)
+  return `${d} ${time}`
 }
 
 export function pick(obj: Record<string, any>, keys: string[]) {
