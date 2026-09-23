@@ -11,7 +11,7 @@ draft: false
 如果用 `/etc/apt/sources.list`，開啟設定檔
 
 ```bash
-sudo nano /etc/apt/sources.list
+sudo vim /etc/apt/sources.list
 ```
 
 把 Debian 官方來源的網域改成 `mirror.twds.com.tw`。以 Debian 12（`bookworm`）為例，改完會像這樣
@@ -29,7 +29,7 @@ deb https://mirror.twds.com.tw/debian-security bookworm-security main non-free-f
 如果來源放在 `/etc/apt/sources.list.d/debian.sources`，就編輯這份，不用另外新增 `sources.list`：
 
 ```bash
-sudo nano /etc/apt/sources.list.d/debian.sources
+sudo vim /etc/apt/sources.list.d/debian.sources
 ```
 
 把一般套件的 `URIs:` 改成 `/debian`，安全更新的改成 `/debian-security`。Debian 13（`trixie`）範例如下：
@@ -55,7 +55,7 @@ Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
 Ubuntu 24.04 通常使用 `/etc/apt/sources.list.d/ubuntu.sources`：
 
 ```bash
-sudo nano /etc/apt/sources.list.d/ubuntu.sources
+sudo vim /etc/apt/sources.list.d/ubuntu.sources
 ```
 
 將一般套件與安全更新段落的 `URIs:` 都改成 `https://mirror.twds.com.tw/ubuntu`，其他欄位不變。以 Ubuntu 24.04（`noble`）為例：
@@ -81,7 +81,7 @@ Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
 Ubuntu 22.04 若使用 `/etc/apt/sources.list`，開啟後修改現有來源網址：
 
 ```bash
-sudo nano /etc/apt/sources.list
+sudo vim /etc/apt/sources.list
 ```
 
 以 Ubuntu 22.04（`jammy`）為例：
@@ -97,7 +97,7 @@ deb https://mirror.twds.com.tw/ubuntu jammy-security main restricted universe mu
 
 ## 更新套件索引
 
-Nano 按 `Ctrl + O`、Enter 儲存，再按 `Ctrl + X` 離開。接著執行：
+按 `Esc`，輸入 `:wq` 後按 Enter 儲存並離開 Vim。接著執行：
 
 ```bash
 sudo apt update
