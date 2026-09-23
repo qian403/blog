@@ -1,7 +1,7 @@
 ---
 title: 'Better Nano: 讓你的 Nano 編輯器更好用 (優化腳本推薦)'
 published: 2024-05-06
-description: '介紹 better-nano 優化腳本，為 Nano 提供各種優化，提升使用效率。'
+description: '介紹 better-nano 優化腳本，分享 Nano 編輯器（nano editor）的語法高亮、行號與操作設定。'
 image: ''
 tags: [Nano, Linux, Terminal, Editor, Productivity, Shell]
 category: 'Linux'
@@ -11,7 +11,9 @@ lang: 'zh-TW'
 
 ## 前言：為什麼需要優化 Nano？
 
-對於許多 Linux 使用者和系統管理員來說，**Nano** 是最常接觸的文字編輯器之一。它輕量、簡單，且幾乎預裝在所有的 Linux 發行版中。然而，預設的 Nano 功能較為陽春，缺乏語法高亮、行號顯示等現代編輯器常見的功能，這在編輯程式碼或設定檔時可能會降低效率。
+對於許多 Linux 使用者和系統管理員來說，**GNU Nano 編輯器（nano editor）** 是最常接觸的文字編輯器之一。它輕量、簡單，且幾乎預裝在所有的 Linux 發行版中。然而，預設設定未必開啟語法高亮、行號顯示等功能，這在編輯程式碼或設定檔時可能會降低效率。
+
+想找 Nano 外掛（nano plugin）來改善編輯體驗，也可以先看看 Nano 內建的設定：語法高亮、行號與滑鼠支援都能透過 `.nanorc` 調整，不需要另外安裝外掛。
 
 這篇文章要介紹一個由 [OsGa](https://osga.dev/) 開發的 **better-nano** 優化腳本，它能一鍵升級你的 Nano 使用體驗。
 
