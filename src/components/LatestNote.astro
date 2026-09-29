@@ -1,0 +1,119 @@
+---
+import type { CollectionEntry } from 'astro:content'
+import ChevronsRight from '~/icons/chevrons-right.svg'
+import { dateString } from '~/utils'
+
+interface Props {
+  note: CollectionEntry<'notes'>
+}
+
+const { note } = Astro.props
+---
+
+<section class="latest-note" aria-labelledby="latest-note-heading">
+  <div class="note-label">
+    <h2 id="latest-note-heading"><span aria-hidden="true"></span>最近的近況</h2>
+    <time datetime={note.data.published.toISOString()}>
+      {dateString(note.data.published)}
+    </time>
+  </div>
+  <div class="note-summary">
+    <h3><a href={`/notes/#${note.id}`}>{note.data.title}</a></h3>
+    <p>{note.data.description}</p>
+  </div>
+  <a class="all-notes" href="/notes/">
+    所有近況 <ChevronsRight class="size-4" />
+  </a>
+</section>
+
+<style>
+  .latest-note {
+    display: grid;
+    grid-template-columns: 9rem minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 2rem;
+    margin-top: 2rem;
+    padding: 1.5rem;
+    border: 1px solid color-mix(in oklab, var(--theme-foreground) 12%, transparent);
+    border-radius: 0.5rem;
+    background: color-mix(in oklab, var(--theme-foreground) 2%, transparent);
+  }
+
+  .note-label h2 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  .note-label h2 span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--theme-green);
+  }
+
+  time {
+    display: block;
+    margin-top: 0.5rem;
+    font-family: var(--theme-font), monospace;
+    font-size: 0.75rem;
+    color: color-mix(in oklab, var(--theme-foreground) 65%, transparent);
+  }
+
+  h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--theme-heading1);
+  }
+
+  a {
+    text-decoration: none;
+    transition: color 160ms ease;
+  }
+
+  a:hover {
+    color: var(--theme-accent);
+  }
+
+  .note-summary p {
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    line-height: 1.8;
+    color: color-mix(in oklab, var(--theme-foreground) 68%, transparent);
+  }
+
+  .all-notes {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+    font-size: 0.75rem;
+    color: color-mix(in oklab, var(--theme-foreground) 70%, transparent);
+  }
+
+  @media (max-width: 767px) {
+    .latest-note {
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 1rem;
+      padding: 1.25rem;
+    }
+
+    .note-label {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem 1rem;
+    }
+
+    time {
+      margin-top: 0;
+    }
+
+    .note-summary {
+      grid-column: 1 / -1;
+      grid-row: 2;
+    }
+  }
+</style>

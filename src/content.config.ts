@@ -36,6 +36,17 @@ const homeCollection = defineCollection({
     }),
 })
 
+const notesCollection = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/notes' }),
+  schema: z.object({
+    title: z.string(),
+    published: z.coerce.date(),
+    description: z.string(),
+    draft: z.boolean().optional().default(false),
+    tags: z.array(z.string()).optional().default([]),
+  }),
+})
+
 const addendumCollection = defineCollection({
   loader: glob({ pattern: ['addendum.md', 'addendum.mdx'], base: './src/content' }),
   schema: ({ image }) =>
@@ -51,6 +62,7 @@ const addendumCollection = defineCollection({
 
 export const collections = {
   posts: postsCollection,
+  notes: notesCollection,
   home: homeCollection,
   addendum: addendumCollection,
 }

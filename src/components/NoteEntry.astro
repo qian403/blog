@@ -1,0 +1,153 @@
+---
+import { render, type CollectionEntry } from 'astro:content'
+import { dateString } from '~/utils'
+
+interface Props {
+  note: CollectionEntry<'notes'>
+}
+
+const { note } = Astro.props
+const { Content } = await render(note)
+const noteLink = `/notes/#${note.id}`
+---
+
+<article
+  id={note.id}
+  class="note-entry"
+  aria-labelledby={`${note.id}-title`}
+  data-pagefind-body
+>
+  <div class="note-meta">
+    <span class="timeline-dot" aria-hidden="true"></span>
+    <time datetime={note.data.published.toISOString()}>
+      {dateString(note.data.published)}
+    </time>
+    <span class="note-kind">隨手記</span>
+  </div>
+  <h4 id={`${note.id}-title`}>
+    <a href={noteLink}>{note.data.title}</a>
+  </h4>
+  <div class="note-body prose">
+    <Content />
+  </div>
+  <footer class="note-footer">
+    {
+      note.data.tags.length > 0 && (
+        <ul aria-label="近況主題">
+          {note.data.tags.map((tag) => (
+            <li>#{tag}</li>
+          ))}
+        </ul>
+      )
+    }
+    <a href={noteLink} aria-label={`連結至近況：${note.data.title}`}>
+      <span aria-hidden="true">↗</span> 這則近況
+    </a>
+  </footer>
+</article>
+
+<style>
+  .note-entry {
+    position: relative;
+    padding: 0 0 2.5rem 2rem;
+    border-left: 1px solid color-mix(in oklab, var(--theme-foreground) 14%, transparent);
+    scroll-margin-top: 6rem;
+    min-width: 0;
+  }
+
+  .note-entry + .note-entry {
+    padding-top: 2.5rem;
+  }
+
+  .note-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    color: color-mix(in oklab, var(--theme-foreground) 65%, transparent);
+    font-family: var(--theme-font), monospace;
+    font-size: 0.75rem;
+    line-height: 1.5rem;
+  }
+
+  .timeline-dot {
+    position: absolute;
+    left: -5px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--theme-accent);
+    box-shadow: 0 0 0 5px var(--theme-background);
+  }
+
+  .note-kind {
+    border-left: 1px solid color-mix(in oklab, var(--theme-foreground) 18%, transparent);
+    padding-left: 0.75rem;
+  }
+
+  h4 {
+    margin-top: 1rem;
+    color: var(--theme-heading1);
+    font-size: 1.5rem;
+    line-height: 1.5;
+    font-weight: 650;
+    text-wrap: balance;
+  }
+
+  h4 a {
+    text-decoration: none;
+    transition: color 160ms ease;
+  }
+
+  h4 a:hover {
+    color: var(--theme-accent);
+  }
+
+  .note-body {
+    overflow-wrap: anywhere;
+  }
+
+  .note-body :global(p) {
+    margin-block: 1.25rem;
+    font-size: 1rem;
+    line-height: 1.9;
+  }
+
+  .note-footer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1.75rem;
+    padding-top: 1rem;
+    border-top: 1px solid color-mix(in oklab, var(--theme-foreground) 10%, transparent);
+    font-size: 0.75rem;
+    color: color-mix(in oklab, var(--theme-foreground) 65%, transparent);
+  }
+
+  .note-footer ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .note-footer a {
+    margin-left: auto;
+    text-decoration: none;
+  }
+
+  .note-footer a:hover {
+    color: var(--theme-accent);
+  }
+
+  @media (max-width: 639px) {
+    .note-entry {
+      padding-left: 1.25rem;
+    }
+
+    h4 {
+      font-size: 1.25rem;
+    }
+  }
+</style>

@@ -8,6 +8,8 @@ import BlockHeader from '~/components/BlockHeader.astro'
 import HomeBanner from '~/components/HomeBanner.astro'
 import siteConfig from '~/site.config'
 import SeriesSection from '~/components/SeriesSection.astro'
+import LatestNote from '~/components/LatestNote.astro'
+import { getSortedNotes } from '~/utils/notes'
 
 const home = await getCollection('home')
 let HomeContent
@@ -27,6 +29,7 @@ const recentPosts = [...sortedPosts].sort((a, b) => {
 const latestPosts = recentPosts.slice(0, 5)
 
 const postsHaveSeries = sortedPosts.some((post) => post.data.series)
+const [latestNote] = await getSortedNotes()
 ---
 
 <Layout
@@ -42,6 +45,7 @@ const postsHaveSeries = sortedPosts.some((post) => post.data.series)
       </HomeBanner>
     )
   }
+  {latestNote && <LatestNote note={latestNote} />}
   {
     latestPosts.length > 0 && (
       <section aria-labelledby="latest-heading">

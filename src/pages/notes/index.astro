@@ -1,0 +1,335 @@
+---
+import Layout from '~/layouts/Layout.astro'
+import PageIntro from '~/components/PageIntro.astro'
+import NoteEntry from '~/components/NoteEntry.astro'
+import { getSortedNotes, groupNotesByDate } from '~/utils/notes'
+
+const notes = await getSortedNotes()
+const years = groupNotesByDate(notes)
+---
+
+<Layout
+  title="近況"
+  description="CHIEN 的近況與隨手記。技術文章之外，記下一些零碎的發現、生活片段，以及還在路上的想法。"
+  pageType="collection"
+  wide
+>
+  <PageIntro
+    eyebrow="Notes / Life in progress"
+    title="近況"
+    description="不一定是一篇文章，也值得被記下來。"
+  />
+
+  <div class="notes-layout">
+    <aside class="notes-aside" aria-label="關於近況">
+      <p class="aside-heading">隨手記，也慢慢寫。</p>
+      <p class="aside-copy">
+        技術文章之外，留一點空間給零碎的發現、生活片段，以及還在路上的想法。
+      </p>
+      <div class="notes-status">
+        <span class="status-dot" aria-hidden="true"></span>
+        不定期更新 <span class="note-count">{notes.length} 則紀錄</span>
+      </div>
+      {
+        years.length > 0 && (
+          <nav class="notes-archive" aria-label="依年月瀏覽近況">
+            <h2 class="archive-label">依年月瀏覽</h2>
+            {years.map((yearGroup, index) => (
+              <details open={index === 0}>
+                <summary>
+                  <span class="year-chevron" aria-hidden="true">
+                    ›
+                  </span>
+                  <span>{yearGroup.year} 年</span>
+                  <span class="archive-count">{yearGroup.count}</span>
+                </summary>
+                <ul>
+                  {yearGroup.months.map((monthGroup) => (
+                    <li>
+                      <a href={`#notes-${yearGroup.year}-${monthGroup.month}`}>
+                        <span>{Number(monthGroup.month)} 月</span>
+                        <span class="archive-count">{monthGroup.notes.length}</span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </details>
+            ))}
+          </nav>
+        )
+      }
+      <a class="articles-link" href="/posts/"
+        >技術文章在這裡 <span aria-hidden="true">↗</span></a
+      >
+    </aside>
+
+    <section aria-label="近況紀錄" class="notes-feed">
+      {
+        notes.length > 0 ? (
+          years.map((yearGroup) => (
+            <section class="notes-year" aria-labelledby={`year-${yearGroup.year}`}>
+              <div class="year-heading">
+                <h2 id={`year-${yearGroup.year}`}>{yearGroup.year}</h2>
+                <span>{yearGroup.count} 則近況</span>
+              </div>
+              {yearGroup.months.map((monthGroup) => (
+                <section
+                  class="notes-month"
+                  id={`notes-${yearGroup.year}-${monthGroup.month}`}
+                  aria-labelledby={`month-${yearGroup.year}-${monthGroup.month}`}
+                >
+                  <h3 id={`month-${yearGroup.year}-${monthGroup.month}`}>
+                    <span>{monthGroup.month}</span> 月
+                  </h3>
+                  {monthGroup.notes.map((note) => (
+                    <NoteEntry note={note} />
+                  ))}
+                </section>
+              ))}
+            </section>
+          ))
+        ) : (
+          <p class="text-foreground/65">還沒有近況，下一個想法就從這裡開始。</p>
+        )
+      }
+      {
+        notes.length > 0 && (
+          <p class="feed-end">
+            <span aria-hidden="true">·</span> 從這裡開始，慢慢累積。
+          </p>
+        )
+      }
+    </section>
+  </div>
+</Layout>
+
+<style>
+  .notes-layout {
+    display: grid;
+    grid-template-columns: 15rem minmax(0, 1fr);
+    gap: 5rem;
+    padding-block: 3.5rem 1rem;
+  }
+
+  .notes-aside {
+    align-self: start;
+  }
+
+  .aside-heading {
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  .aside-copy {
+    margin-top: 0.875rem;
+    font-size: 0.875rem;
+    line-height: 1.9;
+    color: color-mix(in oklab, var(--theme-foreground) 65%, transparent);
+  }
+
+  .notes-status {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+    font-size: 0.75rem;
+    color: color-mix(in oklab, var(--theme-foreground) 65%, transparent);
+  }
+
+  .status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--theme-green);
+  }
+
+  .note-count {
+    margin-left: auto;
+    font-family: var(--theme-font), monospace;
+  }
+
+  .notes-archive {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid color-mix(in oklab, var(--theme-foreground) 10%, transparent);
+  }
+
+  .archive-label {
+    margin-bottom: 1rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: color-mix(in oklab, var(--theme-foreground) 65%, transparent);
+  }
+
+  details + details {
+    margin-top: 0.5rem;
+  }
+
+  summary {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.625rem 0;
+    cursor: pointer;
+    list-style: none;
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  summary:focus-visible {
+    outline: 1px solid var(--theme-accent);
+    outline-offset: 3px;
+  }
+
+  .year-chevron {
+    display: inline-block;
+    font-size: 1.125rem;
+    font-weight: 400;
+    color: color-mix(in oklab, var(--theme-foreground) 55%, transparent);
+  }
+
+  details[open] .year-chevron {
+    transform: rotate(90deg);
+  }
+
+  .archive-count {
+    margin-left: auto;
+    font-family: var(--theme-font), monospace;
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: color-mix(in oklab, var(--theme-foreground) 55%, transparent);
+  }
+
+  .notes-archive ul {
+    margin-left: 0.25rem;
+    padding-left: 1.25rem;
+    border-left: 1px solid color-mix(in oklab, var(--theme-foreground) 14%, transparent);
+  }
+
+  .notes-archive li a {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 0.5rem 0.5rem 0.75rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    color: color-mix(in oklab, var(--theme-foreground) 70%, transparent);
+    text-decoration: none;
+  }
+
+  .notes-archive li a:hover {
+    background: color-mix(in oklab, var(--theme-accent) 7%, transparent);
+    color: var(--theme-accent);
+  }
+
+  .articles-link {
+    display: block;
+    margin-top: 1.5rem;
+    font-size: 0.75rem;
+    color: color-mix(in oklab, var(--theme-foreground) 65%, transparent);
+    text-decoration: none;
+  }
+
+  .articles-link:hover {
+    color: var(--theme-accent);
+  }
+
+  .notes-feed {
+    min-width: 0;
+    padding-left: 5px;
+  }
+
+  .notes-year + .notes-year {
+    margin-top: 3.5rem;
+  }
+
+  .year-heading {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-bottom: 1rem;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid color-mix(in oklab, var(--theme-foreground) 14%, transparent);
+  }
+
+  .year-heading h2 {
+    font-family: var(--theme-font), monospace;
+    font-size: 1.75rem;
+    line-height: 1.25;
+    font-weight: 500;
+  }
+
+  .year-heading > span {
+    font-size: 0.75rem;
+    color: color-mix(in oklab, var(--theme-foreground) 55%, transparent);
+  }
+
+  .notes-month {
+    scroll-margin-top: 6rem;
+  }
+
+  .notes-month + .notes-month {
+    margin-top: 2rem;
+  }
+
+  .notes-month > h3 {
+    display: flex;
+    align-items: baseline;
+    gap: 0.25rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: color-mix(in oklab, var(--theme-foreground) 65%, transparent);
+  }
+
+  .notes-month > h3 span {
+    font-family: var(--theme-font), monospace;
+    font-size: 1rem;
+    color: var(--theme-foreground);
+  }
+
+  .feed-end {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding-top: 1rem;
+    font-size: 0.75rem;
+    color: color-mix(in oklab, var(--theme-foreground) 55%, transparent);
+  }
+
+  .feed-end span {
+    margin-left: -4px;
+    font-size: 1.25rem;
+  }
+
+  @media (max-width: 767px) {
+    .notes-layout {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 2.5rem;
+      padding-top: 2rem;
+    }
+
+    .notes-aside {
+      padding-bottom: 2rem;
+      border-bottom: 1px solid
+        color-mix(in oklab, var(--theme-foreground) 10%, transparent);
+    }
+
+    .notes-status {
+      justify-content: flex-start;
+    }
+
+    .note-count {
+      margin-left: 0.5rem;
+    }
+
+    .articles-link {
+      display: inline-block;
+    }
+  }
+</style>

@@ -46,6 +46,24 @@
 
 所有文章位於 `src/content/posts/` 目錄下。
 
+## 💬 近況
+
+短篇近況放在 `src/content/notes/`，每則是一個 Markdown 檔案。新增後會依日期由新到舊排序，出現在 `/notes/`，最新一則也會顯示於首頁。頁面以「年份 → 月份」兩層分類，左側可展開年份並跳至月份。分類使用 `published` 的台北時間，不用手動維護分類。
+
+```markdown
+---
+title: '今天的一點發現'
+published: 2026-09-29T12:00:00+08:00
+description: '首頁顯示的簡短摘要。'
+tags: ['隨手記']
+draft: false
+---
+
+在這裡寫近況，幾句話也可以。支援一般 Markdown 語法。
+```
+
+`title`、`published`、`description` 為必填，`tags` 可省略。`draft: true` 的近況不會出現在頁面。檔名會作為這則近況的連結 ID，發表後建議保留原檔名。
+
 ## 📧 聯絡方式
 
 - GitHub: [@qian403](https://github.com/qian403)

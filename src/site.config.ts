@@ -53,6 +53,10 @@ const config: SiteConfig = {
       url: '/about/',
     },
     {
+      name: 'Notes',
+      url: '/notes/',
+    },
+    {
       name: 'CV',
       url: '/cv/',
     },
