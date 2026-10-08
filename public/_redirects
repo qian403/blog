@@ -1,2 +1,16 @@
+# 2025-11 改版前（Fuwari）的舊文章網址，直接 301 到現在的網址。
+# 必須放在舊網域規則之前，讓 blog.qian30.net 與 blog.chien.dev 都只轉一次。
+/posts/mtr/mtr-1/ https://blog.chien.dev/posts/mtr-basic/ 301
+/posts/mtr/mtr-1 https://blog.chien.dev/posts/mtr-basic/ 301
+/posts/web3-wallet/backup-phrase-leak/ https://blog.chien.dev/posts/seed-phrase-leakage-scam/ 301
+/posts/web3-wallet/backup-phrase-leak https://blog.chien.dev/posts/seed-phrase-leakage-scam/ 301
+/posts/web3/backup-phrase-leak/ https://blog.chien.dev/posts/seed-phrase-leakage-scam/ 301
+/posts/web3/backup-phrase-leak https://blog.chien.dev/posts/seed-phrase-leakage-scam/ 301
+/posts/picoctf/picoctf_easy/ https://blog.chien.dev/posts/picoctf_easy/ 301
+/posts/picoctf/picoctf_easy https://blog.chien.dev/posts/picoctf_easy/ 301
+/archive/* https://blog.chien.dev/posts/ 301
+/moments/ https://blog.chien.dev/notes/ 301
+/moments https://blog.chien.dev/notes/ 301
+
 # 舊域名 301 重定向到新域名（SEO 域名遷移）
 https://blog.qian30.net/* https://blog.chien.dev/:splat 301
