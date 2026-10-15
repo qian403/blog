@@ -105,4 +105,9 @@ sudo apt update
 
 看到來源出現 `mirror.twds.com.tw`，而且沒有錯誤，就完成了。
 
-參考：[TWDS 鏡像站](https://mirror.twds.com.tw/) 
+參考：[TWDS 鏡像站](https://mirror.twds.com.tw/)
+
+## 延伸閱讀
+
+- 新主機設定好套件來源後，可以接著用 [Fail2ban 防護 SSH 暴力破解](/posts/fail2ban1/)。
+- 不習慣 Vim 的話，可以改用 nano 編輯設定檔，搭配 [Better Nano](/posts/better-nano/) 會更好用。

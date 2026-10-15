@@ -41,6 +41,8 @@ sudo apt-get install fail2ban -y
 
 安裝完成後，Fail2ban 服務會自動啟動。
 
+如果 `apt-get update` 很慢，可以先參考 [Debian、Ubuntu 更換 APT 來源：改用 TWDS 鏡像站](/posts/apt-twds-mirror/)。
+
 ---
 
 ## 基礎設定

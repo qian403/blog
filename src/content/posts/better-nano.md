@@ -61,6 +61,8 @@ chmod +x install.sh
 
 透過 **better-nano**，你可以保留 Nano 的輕量優勢，同時獲得接近 IDE 的視覺體驗。如果你是 Vim 或 Emacs 的苦手，但又需要比預設 Nano 更強大的功能，這個腳本絕對值得一試。
 
+實際編輯系統設定檔的例子，可以參考 [更換 APT 來源到 TWDS 鏡像站](/posts/apt-twds-mirror/) 和 [Fail2ban SSH 防護設定](/posts/fail2ban1/)。
+
 ---
 
 _感謝 [OsGa](https://osga.dev/) 開發此工具。_
