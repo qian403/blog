@@ -58,7 +58,7 @@ const config: SiteConfig = {
     },
     {
       name: 'CV',
-      url: '/cv/',
+      url: 'https://chien.dev/cv',
     },
     {
       name: 'Archive',
