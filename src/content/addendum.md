@@ -1,6 +1,6 @@
 ---
 avatarImage:
-  src: './images/me.png'
+  src: './images/me.jpg'
   alt: 'qian avatar'
 ---
 
