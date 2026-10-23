@@ -26,6 +26,7 @@ import remarkMathFlag from './src/plugins/remark-math-flag' /* Load KaTeX styles
 import rehypeKatex from 'rehype-katex' /* again, for latex math support */
 import remarkGemoji from './src/plugins/remark-gemoji' /* for shortcode emoji support */
 import rehypePixelated from './src/plugins/rehype-pixelated' /* Custom plugin to handle pixelated images */
+import rehypeImageWidth from './src/plugins/rehype-image-width' /* Custom plugin to set image width via #w=400 */
 import remarkSpoiler from './src/plugins/remark-spoiler' /* Custom plugin to handle spoiler syntax ||content|| */
 
 // 從文章 frontmatter 讀取日期，用於 sitemap lastmod
@@ -131,6 +132,7 @@ export default defineConfig({
       ],
       rehypeUnwrapImages,
       rehypePixelated,
+      rehypeImageWidth,
       rehypeKatex,
     ],
   },
