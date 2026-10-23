@@ -120,10 +120,6 @@ const { avatarImage } = Astro.props
     transform-style: preserve-3d;
     transform: rotateX(-12deg) rotateY(0deg);
     will-change: transform;
-    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-  .coin.is-dragging {
-    transition: none !important;
   }
 
   .coin-face {
@@ -161,23 +157,17 @@ const { avatarImage } = Astro.props
   /* Edge panel: centred on coin centre via top/left:50% + negative margins,
      default transform-origin (center), then rotated into place. No backface
      culling → visible from every angle. */
-  .coin-panel {
+  .coin :global(.coin-panel) {
     position: absolute;
     top: 50%;
     left: 50%;
     pointer-events: none;
     background: linear-gradient(
       to right,
-      color-mix(in oklab, var(--foreground, #111) 60%, transparent),
-      color-mix(in oklab, var(--foreground, #111) 22%, transparent) 50%,
-      color-mix(in oklab, var(--foreground, #111) 60%, transparent)
+      color-mix(in oklab, var(--foreground, #111) 55%, var(--background, #fff)),
+      color-mix(in oklab, var(--foreground, #111) 30%, var(--background, #fff)) 50%,
+      color-mix(in oklab, var(--foreground, #111) 55%, var(--background, #fff))
     );
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .coin {
-      transition: none !important;
-    }
   }
 </style>
 
@@ -211,110 +201,130 @@ const { avatarImage } = Astro.props
 
     // Rotation state. rotateY spins the coin (around vertical axis) only.
     // Drag X → spin. Vertical drag ignored (no tilt) so it only turns left/right.
+    const DRAG_GAIN = 0.5
+    const GLIDE_POW = 3
+    const GLIDE_T = 900
+    const GLIDE_MIN = 450
+    const GLIDE_MAX = 1800
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
+
     let rotY = 0
-    let velY = 0 // current spin velocity (deg per frame) for inertia
     let dragging = false
     let lastX = 0
-    let lastT = 0
     let rafId = 0
+    let samples: { t: number; r: number }[] = []
 
     const apply = () => {
       coin.style.transform = `rotateX(-12deg) rotateY(${rotY}deg)`
     }
     apply()
 
-    // Snap a rotation value to the nearest face (0 or 180, mod 360).
-    const snapTarget = (r) => {
-      const m = ((r % 360) + 360) % 360
-      const candidates = [0, 180, 360]
-      let best = 0
-      let bestDist = Infinity
-      for (const c of candidates) {
-        const d = Math.abs(m - c)
-        if (d < bestDist) {
-          bestDist = d
-          best = c
-        }
-      }
-      // return target in the same revolution as r
-      const base = r - m
-      return base + best
+    const stop = () => {
+      if (rafId) cancelAnimationFrame(rafId)
+      rafId = 0
     }
 
-    // Inertia loop: after release, keep spinning with decaying velocity.
-    // When velocity drops below threshold, snap to nearest face (0/180°).
-    const SNAP_VEL = 0.4 // below this velocity → start snapping
-    let snapping = false
-    let snapFrom = 0
-    let snapTo = 0
-    let snapStart = 0
-    const SNAP_DUR = 350
-    const inertia = () => {
-      rafId = 0
-      if (snapping) return // handled by snap loop
-      if (Math.abs(velY) < SNAP_VEL) {
-        // begin snap animation to nearest face
-        snapping = true
-        snapFrom = rotY
-        snapTo = snapTarget(rotY)
-        snapStart = performance.now()
-        coin.classList.remove('is-dragging')
-        const snapLoop = () => {
-          const t = (performance.now() - snapStart) / SNAP_DUR
-          if (t >= 1) {
-            rotY = snapTo
-            velY = 0
-            snapping = false
-            apply()
-            rafId = 0
-            return
-          }
-          // easeOutCubic
-          const e = 1 - Math.pow(1 - t, 3)
-          rotY = snapFrom + (snapTo - snapFrom) * e
-          apply()
-          rafId = requestAnimationFrame(snapLoop)
+    const nearestFace = (r: number) => Math.round(r / 180) * 180
+
+    const releaseVelocity = (now: number) => {
+      const recent = samples.filter((s) => now - s.t <= 80)
+      if (recent.length < 2) return 0
+      const first = recent[0]
+      const last = recent[recent.length - 1]
+      if (now - last.t > 50) return 0
+      const dt = last.t - first.t
+      return dt > 0 ? (last.r - first.r) / dt : 0
+    }
+
+    const glide = (target: number, duration: number) => {
+      const r0 = rotY
+      const start = performance.now()
+      const step = () => {
+        const t = Math.min((performance.now() - start) / duration, 1)
+        rotY = r0 + (target - r0) * (1 - Math.pow(1 - t, GLIDE_POW))
+        apply()
+        rafId = t < 1 ? requestAnimationFrame(step) : 0
+      }
+      rafId = requestAnimationFrame(step)
+    }
+
+    const spring = (target: number, v: number) => {
+      const omega = (2 * Math.PI) / 650
+      const zeta = 0.78
+      let last = performance.now()
+      const step = () => {
+        const now = performance.now()
+        let dt = Math.min(now - last, 32)
+        last = now
+        while (dt > 0) {
+          const h = Math.min(dt, 4)
+          const a = -omega * omega * (rotY - target) - 2 * zeta * omega * v
+          v += a * h
+          rotY += v * h
+          dt -= h
         }
-        rafId = requestAnimationFrame(snapLoop)
+        if (Math.abs(target - rotY) < 0.05 && Math.abs(v) < 0.002) {
+          rotY = target
+          apply()
+          rafId = 0
+          return
+        }
+        apply()
+        rafId = requestAnimationFrame(step)
+      }
+      rafId = requestAnimationFrame(step)
+    }
+
+    const settle = (v: number) => {
+      stop()
+      const natural = rotY + (v * GLIDE_T) / GLIDE_POW
+      if (reduceMotion.matches) {
+        rotY = nearestFace(natural)
+        apply()
         return
       }
-      rotY += velY
-      velY *= 0.94
-      apply()
-      rafId = requestAnimationFrame(inertia)
+      if (Math.abs(v) > 0.15) {
+        let best: number | null = null
+        let bestT = 0
+        for (const face of [-180, 0, 180].map((d) => nearestFace(natural) + d)) {
+          const duration = (GLIDE_POW * (face - rotY)) / v
+          if (duration < GLIDE_MIN || duration > GLIDE_MAX) continue
+          if (best === null || Math.abs(duration - GLIDE_T) < Math.abs(bestT - GLIDE_T)) {
+            best = face
+            bestT = duration
+          }
+        }
+        if (best !== null) {
+          glide(best, bestT)
+          return
+        }
+      }
+      spring(nearestFace(natural), v)
     }
 
     const onDown = (e: PointerEvent) => {
-      if (rafId) cancelAnimationFrame(rafId)
-      rafId = 0
-      velY = 0
+      stop()
       dragging = true
-      coin.classList.add('is-dragging')
       lastX = e.clientX
-      lastT = performance.now()
+      samples = [{ t: performance.now(), r: rotY }]
       stage.setPointerCapture(e.pointerId)
     }
     const onMove = (e: PointerEvent) => {
       if (!dragging) return
-      const dx = e.clientX - lastX
-      const now = performance.now()
-      const dt = Math.max(1, now - lastT)
-      rotY += dx * 0.5
-      velY = ((dx * 0.5) / dt) * 16
+      rotY += (e.clientX - lastX) * DRAG_GAIN
       lastX = e.clientX
-      lastT = now
+      const now = performance.now()
+      samples.push({ t: now, r: rotY })
+      if (samples.length > 12) samples.shift()
       apply()
     }
     const onUp = (e: PointerEvent) => {
       if (!dragging) return
       dragging = false
-      coin.classList.remove('is-dragging')
       try {
         stage.releasePointerCapture(e.pointerId)
       } catch {}
-      if (Math.abs(velY) > 0.01) {
-        rafId = requestAnimationFrame(inertia)
-      }
+      settle(releaseVelocity(performance.now()))
     }
 
     stage.addEventListener('pointerdown', onDown)
@@ -324,33 +334,17 @@ const { avatarImage } = Astro.props
     stage.addEventListener('lostpointercapture', onUp)
 
     // Keyboard: left/right arrows to spin, with snap to nearest face.
-    const animateTo = (target) => {
-      if (rafId) cancelAnimationFrame(rafId)
-      const from = rotY
-      const start = performance.now()
-      const dur = 350
-      const step = () => {
-        const t = (performance.now() - start) / dur
-        if (t >= 1) {
-          rotY = target
-          apply()
-          rafId = 0
-          return
-        }
-        const e = 1 - Math.pow(1 - t, 3)
-        rotY = from + (target - from) * e
-        apply()
-        rafId = requestAnimationFrame(step)
-      }
-      rafId = requestAnimationFrame(step)
-    }
     stage.addEventListener('keydown', (e: KeyboardEvent) => {
-      if (e.key === 'ArrowLeft') {
-        animateTo(snapTarget(rotY - 180))
-        e.preventDefault()
-      } else if (e.key === 'ArrowRight') {
-        animateTo(snapTarget(rotY + 180))
-        e.preventDefault()
+      const dir = e.key === 'ArrowLeft' ? -1 : e.key === 'ArrowRight' ? 1 : 0
+      if (!dir) return
+      e.preventDefault()
+      stop()
+      const target = nearestFace(rotY) + dir * 180
+      if (reduceMotion.matches) {
+        rotY = target
+        apply()
+      } else {
+        spring(target, 0)
       }
     })
   }
