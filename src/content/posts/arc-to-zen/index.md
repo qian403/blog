@@ -8,7 +8,7 @@ draft: false
 
 The Browser Company 在 2026 年 10 月 22 日宣布，Arc 會在 **2026 年 12 月 22 日**正式關閉。從 2025 年 5 月 Arc 進入維護模式、9 月被 Atlassian 收購之後，其實就有預感會走到這一步，只是真的發生了還是有點捨不得
 
-![我的 Arc 身份卡#w=400](images/arc-id-card.png)
+![我的 Arc 身份卡#w=400](https://api-cp.c-h.tw/v1/chunkproxy/files/01a16a8a-4509-7c8b-b4e3-bb1f926f27d9)
 
 這是我的 Arc 身份卡，從 2024 年 3 月 27 日開始用，拿到了一週年和兩週年的徽章，最後停在 Supreme Steward。用了兩年多，側邊欄分頁、Spaces、Peek 這些設計已經很難回去用傳統瀏覽器了，我的需求跟習慣基本上只有 Arc 這種的模式才有辦法滿足了，簡單來說就是被慣壞了
 

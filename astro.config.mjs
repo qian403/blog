@@ -138,6 +138,8 @@ export default defineConfig({
   },
   image: {
     responsiveStyles: true,
+    // Optimize remote images hosted on chunkproxy at build time
+    domains: ['api-cp.c-h.tw'],
   },
   vite: {
     plugins: [tailwindcss()],
