@@ -50,7 +50,7 @@ The Browser Company 在 2026 年 10 月 22 日宣布，Arc 會在 **2026 年 12 
 
 ## 持續關注的 Arc 平替
 
-另外還有兩個看起來跟 Arc 很像的新瀏覽器，之後也會持續關注，但目前使用人數都偏少，用起來怕怕的也感覺還不是很穩定
+另外還有幾個看起來跟 Arc 很像的新瀏覽器，之後也會持續關注，但目前使用人數都偏少，用起來怕怕的也感覺還不是很穩定
 
 ### Ardia
 
@@ -72,7 +72,7 @@ The Browser Company 在 2026 年 10 月 22 日宣布，Arc 會在 **2026 年 12 
 
 [Crest](https://crestbrowser.com/) 直接把自己定位成 Arc 的精神續作，Spaces、側邊欄、Peek、Split View 都有
 
-- 支援 Mac（Apple Silicon）、iPad、iPhone，是這三個裡面唯一有行動版的
+- 支援 Mac（Apple Silicon）、iPad、iPhone，是這幾個裡面唯一有 iPad 版的
 - 以 Chromium 為主，Mac 上可以針對個別網站改用 WebKit
 - 可以替不同 Space 設定側邊欄主題和擴充功能
 - 私密 Space，可以加上生物辨識鎖
@@ -82,20 +82,35 @@ The Browser Company 在 2026 年 10 月 22 日宣布，Arc 會在 **2026 年 12 
 
 免費、MPL 2.0 開源，目前是 Early Access，官方也有寫安全性還沒經過獨立稽核
 
+### Yab
+
+[Yab](https://yetanotherbrowser.com/)（Yet Another Browser）保留了 Arc 的 Spaces、釘選分頁、Peek、Split View，主打的是把 AI 助理整合進來，官網的標語是「Everything you loved about Arc, and your own Claude or ChatGPT doing the work in your tabs」
+
+- 支援 macOS 15.4 以上，另外有 iPhone 版 Beta
+- 用的是 macOS 內建的 WebKit，安裝檔只有 40 MB
+- 可以串接自己的 Claude、ChatGPT、Codex、Cursor 等 AI 助理，在分頁裡幫忙做事，也能排程每天的 AI 任務
+- 內建廣告與追蹤器阻擋
+- 支援從 Chrome Web Store 安裝擴充功能，例如 Bitwarden、uBlock Origin Lite、Dark Reader
+- 可以匯入 Arc 的 Spaces、釘選分頁和分頁，也支援從 Chrome、Safari、Firefox、Brave、Dia 匯入
+- 不需要註冊帳號
+
+免費，目前版本是 0.37.x。官網沒有提到開源或開發者是誰，這點跟前面幾個不太一樣
+
 ## 平替們的簡單比較
 
-|  | Zen Browser | Ardia | Crest |
-| --- | --- | --- | --- |
-| 核心 | Firefox（Gecko） | Chromium | Chromium（Mac 可選 WebKit） |
-| 平台 | macOS / Windows / Linux | macOS（Apple Silicon） | Mac / iPad / iPhone |
-| 授權 | MPL 2.0 | GPL-3.0 | MPL 2.0 |
-| 狀態 | Beta | 早期（0.2.x） | Early Access |
-| 擴充功能 | Firefox 擴充功能 | Chrome Web Store | 支援，可依 Space 分開 |
-| Arc 匯入 | 官方開發中，可用社群工具 | 支援 | 支援 |
+|  | Zen Browser | Ardia | Crest | Yab |
+| --- | --- | --- | --- | --- |
+| 核心 | Firefox（Gecko） | Chromium | Chromium（Mac 可選 WebKit） | WebKit |
+| 平台 | macOS / Windows / Linux | macOS（Apple Silicon） | Mac / iPad / iPhone | macOS 15.4+ / iPhone（Beta） |
+| 授權 | MPL 2.0 | GPL-3.0 | MPL 2.0 | 官網未提及開源 |
+| 狀態 | Beta | 早期（0.2.x） | Early Access | 0.37.x |
+| 擴充功能 | Firefox 擴充功能 | Chrome Web Store | 支援，可依 Space 分開 | Chrome Web Store |
+| Arc 匯入 | 官方開發中，可用社群工具 | 支援 | 支援 | 支援 |
+| AI 整合 | 非主打 | 非主打 | 非主打 | 主打功能 |
 
 ## 最後
 
-Arc 讓我重新思考瀏覽器可以長什麼樣子，謝謝 The Browser Company 做出這麼有趣的產品。接下來先把主力搬到 Zen，Ardia 和 Crest 也會繼續追，等它們更成熟再回來寫一篇使用心得
+Arc 讓我重新思考瀏覽器可以長什麼樣子，謝謝 The Browser Company 做出這麼有趣的產品。接下來先把主力搬到 Zen，Ardia、Crest 和 Yab 也會繼續追，等它們更成熟再回來寫一篇使用心得
 
 如果你知道其他類似 Arc 的瀏覽器，歡迎在底下留言補充，或直接跟我聯絡，我會把它加進這篇文章，也會一起關注
 
