@@ -27,6 +27,7 @@ interface Props {
   seoTitle?: string
   description?: string
   tags?: string[]
+  keywords?: string[]
   author?: string
   published?: Date
   updated?: Date
@@ -45,6 +46,7 @@ const {
   seoTitle,
   description,
   tags,
+  keywords,
   author,
   published,
   updated,
@@ -206,7 +208,9 @@ let generatedCss: string = cssLines.join('\n')
     }
     {
       pageType === 'article' &&
-        tags?.map((tag) => <meta property="article:tag" content={tag} />)
+        [...(tags ?? []), ...(keywords ?? [])].map((tag) => (
+          <meta property="article:tag" content={tag} />
+        ))
     }
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={pageTitle} />
@@ -247,6 +251,7 @@ let generatedCss: string = cssLines.join('\n')
       image={pageImage}
       url={pageUrl}
       tags={tags}
+      keywords={keywords}
       breadcrumbs={breadcrumbs}
       itemList={itemList}
     />

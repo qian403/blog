@@ -1,8 +1,23 @@
 ---
 title: 'Arc 停止支援了，準備搬家'
 published: 2026-10-24
-description: 'The Browser Company 宣布 Arc 將在 2026 年 12 月 22 日正式關閉，整理一下時程，以及我接下來要改用的 Zen Browser 和另外兩個值得關注的 Arc 平替：Ardia、Crest。'
-tags: [Arc, Zen Browser, Ardia, Crest, Browser, macOS, Tools]
+description: 'The Browser Company 宣布 Arc 瀏覽器將在 2026 年 12 月 22 日正式關閉，這篇整理關閉時程，以及我接下來要改用的 Zen Browser，還有三個值得關注的 Arc 替代方案：Ardia、Crest、Yab。'
+tags: [Arc, Zen Browser, Ardia, Crest, Yab, Browser, macOS, Tools]
+keywords:
+  [
+    Arc 替代,
+    Arc 替代方案,
+    Arc 平替,
+    Arc 推薦,
+    Arc 停止更新,
+    Arc 關閉怎麼辦,
+    Arc 瀏覽器替代,
+    類似 Arc 的瀏覽器,
+    Zen Browser 中文,
+    Zen 瀏覽器推薦,
+    Dia 瀏覽器,
+    Chromium 替代瀏覽器,
+  ]
 draft: false
 ---
 
@@ -28,7 +43,7 @@ The Browser Company 在 2026 年 10 月 22 日宣布，Arc 會在 **2026 年 12 
 
 至於大家一直在問的開源，CEO Josh Miller 之前就說過，Arc 沒辦法開源，因為它和 Dia 共用的 Arc Development Kit（ADK）是公司的核心價值
 
-不過 Dia 主打的是 AI，跟我喜歡 Arc 的地方不太一樣。我平常其實幾乎很少用到瀏覽器裡的 AI 功能，在 Arc 上也是一樣，我在意的一直是側邊欄、Spaces 這些操作方式，所以我決定往開源的方向找
+不過 Dia 主打的是 AI，跟我喜歡 Arc 的地方不太一樣。我平常其實幾乎很少用到瀏覽器裡的 AI 功能，在 Arc 上也是一樣，我在意的一直是側邊欄、Spaces 這些操作方式，所以我開始找 Arc 的替代方案，而且鎖定開源這個方向
 
 ## 我的選擇：Zen Browser
 
@@ -48,9 +63,9 @@ The Browser Company 在 2026 年 10 月 22 日宣布，Arc 會在 **2026 年 12 
 
 選它的原因很簡單：開源、跨平台、社群活躍，就算哪天團隊不做了，程式碼也還在，不會再遇到 Arc 這種說關就關的情況。比較需要注意的是它目前還標示為 Beta（寫這篇時最新是 1.23.4b），Arc 匯入功能官方也還在做，現在要搬 Spaces 和釘選分頁，可以先用社群做的轉移工具
 
-## 持續關注的 Arc 平替
+## 持續關注的其他 Arc 替代方案
 
-另外還有幾個看起來跟 Arc 很像的新瀏覽器，之後也會持續關注，但目前使用人數都偏少，用起來怕怕的也感覺還不是很穩定
+除了 Zen，另外還有幾個看起來跟 Arc 很像的替代瀏覽器，之後也會持續關注，但目前使用人數都偏少，用起來怕怕的也感覺還不是很穩定
 
 ### Ardia
 
@@ -96,7 +111,7 @@ The Browser Company 在 2026 年 10 月 22 日宣布，Arc 會在 **2026 年 12 
 
 免費，目前版本是 0.37.x。官網沒有提到開源或開發者是誰，這點跟前面幾個不太一樣
 
-## 平替們的簡單比較
+## Arc 替代方案比較表
 
 |  | Zen Browser | Ardia | Crest | Yab |
 | --- | --- | --- | --- | --- |
@@ -109,6 +124,8 @@ The Browser Company 在 2026 年 10 月 22 日宣布，Arc 會在 **2026 年 12 
 | AI 整合 | 非主打 | 非主打 | 非主打 | 主打功能 |
 
 ## 最後
+
+**簡單結論**：想找 Arc 的替代方案，目前最成熟、我自己最推薦的是開源的 Zen Browser；如果想要更貼近 Arc 原本的樣子，可以持續關注 Ardia、Crest、Yab 這三個 Arc 平替，等它們更穩定再入手。
 
 Arc 讓我重新思考瀏覽器可以長什麼樣子，謝謝 The Browser Company 做出這麼有趣的產品。接下來先把主力搬到 Zen，Ardia、Crest 和 Yab 也會繼續追，等它們更成熟再回來寫一篇使用心得
 

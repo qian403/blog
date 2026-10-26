@@ -13,6 +13,8 @@ const postsCollection = defineCollection({
       author: z.string().optional(),
       series: z.string().optional(),
       tags: z.array(z.string()).optional().default([]),
+      // 只餵給 JSON-LD / meta 的隱形關鍵字，不顯示在頁面、不生成 tag 頁
+      keywords: z.array(z.string()).optional(),
       coverImage: z
         .strictObject({
           src: image(),

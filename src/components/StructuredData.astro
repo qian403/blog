@@ -28,6 +28,7 @@ interface Props {
   image?: string
   url: string
   tags?: string[]
+  keywords?: string[]
   breadcrumbs?: BreadcrumbItem[]
   itemList?: ItemListEntry[]
 }
@@ -42,6 +43,7 @@ const {
   image,
   url,
   tags,
+  keywords,
   breadcrumbs,
   itemList,
 } = Astro.props
@@ -110,7 +112,9 @@ const articleSchema =
         breadcrumb: breadcrumbs?.length ? { '@id': breadcrumbId } : undefined,
         url,
         inLanguage: 'zh-TW',
-        keywords: tags?.join(', ') || siteConfig.tags.join(', '),
+        keywords:
+          [...(keywords ?? []), ...(tags ?? [])].join(', ') ||
+          siteConfig.tags.join(', '),
       }
     : null
 
