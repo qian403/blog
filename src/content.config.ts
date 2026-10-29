@@ -22,6 +22,7 @@ const postsCollection = defineCollection({
         })
         .optional(),
       toc: z.boolean().optional().default(true),
+      comments: z.boolean().optional().default(true),
     }),
 })
 

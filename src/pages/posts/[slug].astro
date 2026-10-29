@@ -197,7 +197,7 @@ if (postData.tags && postData.tags.length > 0) {
     ) : null
   }
   {
-    siteConfig.giscus && (
+    siteConfig.giscus && postData.comments && (
       <section>
         <DividerText text="Comments" />
         <GiscusLoader />
