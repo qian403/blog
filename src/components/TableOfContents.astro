@@ -188,44 +188,60 @@ const filteredHeadings = headings.filter(({ depth }) => depth >= 2 && depth <= 3
     }
   }
 
-  const visibleHeadings = new Set<HTMLElement>()
-  const passedHeadings = new Set<HTMLElement>()
-  const headingOrder = new Map(anchors.map((anchor, index) => [anchor, index]))
+  // 每次都從標題的實際位置計算目前段落，而不是累積 IntersectionObserver 的事件。
+  // 快速捲動時標題可能一幀內直接跨過偵測區，observer 不會觸發，
+  // 舊狀態殘留會讓目錄停在最後一個標題（卡在最下面）。
+  const activationOffset = 80
+  let activeSlug = ''
+  let updateScheduled = false
 
-  const headingObserver = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        const heading = entry.target as HTMLElement
-        if (entry.isIntersecting) visibleHeadings.add(heading)
-        else visibleHeadings.delete(heading)
+  const findActiveHeading = () => {
+    if (anchors.length === 0) return undefined
 
-        if (entry.boundingClientRect.top < 80) passedHeadings.add(heading)
-        else passedHeadings.delete(heading)
-      })
+    const viewportHeight = window.innerHeight
+    const scrolledToBottom =
+      window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2
 
-      const visibleHeading = [...visibleHeadings].sort(
-        (first, second) =>
-          (headingOrder.get(first) ?? 0) - (headingOrder.get(second) ?? 0),
-      )[0]
+    if (scrolledToBottom) {
+      return (
+        anchors.findLast((anchor) => anchor.getBoundingClientRect().top < viewportHeight) ??
+        anchors[anchors.length - 1]
+      )
+    }
 
-      if (visibleHeading) {
-        setActiveHeading(visibleHeading.id)
-        return
+    const zoneBottom = viewportHeight * 0.3
+    let active: HTMLElement | undefined
+
+    for (const anchor of anchors) {
+      const top = anchor.getBoundingClientRect().top
+      if (top < activationOffset) {
+        active = anchor
+        continue
       }
+      if (top <= zoneBottom) active = anchor
+      break
+    }
 
-      const latestHeadingAbove = [...passedHeadings].sort(
-        (first, second) =>
-          (headingOrder.get(second) ?? 0) - (headingOrder.get(first) ?? 0),
-      )[0]
+    return active ?? anchors[0]
+  }
 
-      if (latestHeadingAbove) {
-        setActiveHeading(latestHeadingAbove.id)
-      }
-    },
-    { rootMargin: '-80px 0px -70% 0px' },
-  )
+  const updateActiveHeadingFromScroll = () => {
+    updateScheduled = false
+    const active = findActiveHeading()
+    if (!active || active.id === activeSlug) return
+    activeSlug = active.id
+    setActiveHeading(active.id)
+  }
 
-  anchors.forEach((anchor) => headingObserver.observe(anchor))
+  const scheduleActiveHeadingUpdate = () => {
+    if (updateScheduled) return
+    updateScheduled = true
+    requestAnimationFrame(updateActiveHeadingFromScroll)
+  }
+
+  window.addEventListener('scroll', scheduleActiveHeadingUpdate, { passive: true })
+  window.addEventListener('resize', scheduleActiveHeadingUpdate, { passive: true })
+  updateActiveHeadingFromScroll()
 
   const updateActiveHeadingFromHash = () => {
     const activeSlug = decodeURIComponent(window.location.hash.slice(1))
